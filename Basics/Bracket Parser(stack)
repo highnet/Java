@@ -1,4 +1,4 @@
-public class Aufgabe4 {
+public class parser {
 
 	private static boolean check(String toBeChecked) {
 
