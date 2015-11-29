@@ -1,0 +1,79 @@
+public class Aufgabe4 {
+
+	private static boolean check(String toBeChecked) {
+
+		System.out.println("Parsing: \"" + toBeChecked + "\" ");
+		Deque<Character> buffer = new LinkedList<Character>(); // create a stack
+
+		int length = toBeChecked.length();
+
+		for (int i = 0; i < length; i++) {
+
+			if (toBeChecked.charAt(i) == '(' || toBeChecked.charAt(i) == '['|| toBeChecked.charAt(i) == '{') {
+				buffer.offerFirst(toBeChecked.charAt(i));
+
+			}
+
+			else if (((!buffer.isEmpty() && ((toBeChecked.charAt(i) == ')' && buffer.peek() == '(') || (toBeChecked.charAt(i) == ']' && buffer.peek() == '[') || (toBeChecked.charAt(i) == '}' && buffer.peek() == '{'))))) {
+				buffer.pop();
+
+			}
+
+			else if (buffer.isEmpty() && (toBeChecked.charAt(i) == ')'|| toBeChecked.charAt(i) == '}' || toBeChecked.charAt(i) == ']')) {
+				return false;
+			}
+
+		}
+
+		if (buffer.isEmpty() == true) {
+			return true;
+		}
+
+		return false;
+	}
+
+	// Just for testing ...
+	public static void main(String[] args) {
+
+		String data0True = "";
+		String data1True = "a*[a+12]";
+		String data2True = "a+(b)-c";
+		String data3True = "a+{b+8+(b+c)}/a";
+		String data4True = "[()]";
+
+		String data5False = "[";
+		String data6False = "(}";
+		String data7False = "a)[]";
+		String data8False = "([)]";
+		String data9False = "][";
+
+		System.out.println(check(data0True));
+		System.out.println(check(data1True));
+		System.out.println(check(data2True));
+		System.out.println(check(data3True));
+		System.out.println(check(data4True));
+		System.out.println();
+
+		System.out.println("----------------");
+
+		System.out.println(check(data5False));
+		System.out.println(check(data6False));
+		System.out.println(check(data7False));
+		System.out.println(check(data8False));
+		System.out.println(check(data9False));
+		System.out.println();
+
+		System.out.println("---------------");
+
+		if (check(data0True) == true && check(data1True) == true
+				&& check(data2True) == true && check(data3True) == true
+				&& check(data4True) == true && check(data5False) == false
+				&& check(data6False) == false && check(data7False) == false
+				&& check(data8False) == false && check(data9False) == false) {
+			System.out.println();
+			System.out.println("---------------");
+			System.out.println("All test cases validated.");
+		}
+	}
+
+}
