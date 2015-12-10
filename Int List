@@ -1,0 +1,115 @@
+package Test;
+
+public class IntList {
+
+    ListNode head = null;
+
+    private class ListNode {
+
+        int elem;
+        ListNode next = null;
+        ListNode scanHead = null;
+
+        ListNode(int elem, ListNode next) {
+            this.elem = elem;
+            this.next = next;
+        }
+
+        int getElem() {
+            return this.elem;
+        }
+
+        ListNode getNext() {
+            return this.next;
+        }
+
+        void add(int elem) {
+
+            if (scanHead.getNext() == null) {
+                ListNode newNode = new ListNode(elem,null);
+                scanHead.next = newNode;
+                return;
+            } else {
+                scanHead = scanHead.getNext();
+                add(elem);
+                return;
+            }
+        }
+
+
+        ListNode reverseR() {
+            //TODO add code here
+            return null;
+        }
+
+    }
+
+
+    public void offerLast(int elem) { // (add) iterativ
+        System.out.println("attempting to add " + elem);
+        ListNode x = new ListNode(elem, head);
+        head = x;
+        System.out.println(head.getElem());
+    }
+
+    public void offerFirst(int elem) { // (add) rekursiv
+        System.out.println("attempting to add " + elem);
+        ListNode x = new ListNode(elem, head);
+        x.scanHead = head;
+        x.add(elem);
+
+    }
+
+    public boolean search(int value) {
+
+        ListNode scanDummy = head;
+
+
+        while (true) {
+            if (scanDummy.getNext() == null) {
+                if (value == scanDummy.getElem()) {
+                    System.out.println("found");
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            if (value == scanDummy.getElem()) {
+                System.out.println("found");
+                return true;
+            } else {
+                scanDummy = scanDummy.getNext();
+            }
+        }
+
+
+        //    return false;
+
+
+    }
+
+    public String toStrings() {
+        ListNode scanDummy = head;
+        String finalString = "";
+
+        while (true) {
+            if (scanDummy.getNext() == null) {
+                finalString += " " + scanDummy.getElem();
+                return finalString;
+            } else {
+                finalString += " " + scanDummy.getElem();
+                scanDummy = scanDummy.getNext();
+            }
+
+
+        }
+
+
+    }
+
+
+}
+
+
+
