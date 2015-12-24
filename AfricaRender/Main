@@ -1,0 +1,107 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Main extends JFrame {
+
+    final static int WIDTH = 1260;
+    final static int HEIGHT = 600;
+
+
+    public Main() {
+        this.initialize();
+
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+
+                Main window = new Main();
+
+                window.setSize(WIDTH, HEIGHT);
+
+                File africaData = new File("/Users/bokense1/Desktop/Risky0.2/src/Africa.map");
+
+                Coordinate[] mapData = generateCoords(africaData);
+
+                int[] xpoints = getXCoord(mapData);
+                int[] ypoints = getYCoord(mapData);
+                int npoints = 924;
+
+
+                GameMap africa = new GameMap(xpoints, ypoints, npoints);
+
+                window.add(africa);
+
+
+            }
+        });
+
+
+    }
+
+    private static int[] getXCoord(Coordinate[] mapData) {
+
+        int[] xpoints = new int[924];
+
+        for (int i = 0; i < mapData.length; i++) {
+            xpoints[i] = mapData[i].x;
+        }
+
+        return xpoints;
+    }
+
+
+    private static int[] getYCoord(Coordinate[] mapData) {
+
+        int[] ypoints = new int[924];
+
+        for (int i = 0; i < mapData.length; i++) {
+            ypoints[i] = mapData[i].y;
+        }
+
+        return ypoints;
+    }
+
+    private static Coordinate[] generateCoords(File dataFile) {
+
+        Coordinate[] mapData = new Coordinate[924];
+
+        try {
+            Scanner scn = new Scanner(dataFile);
+            int repeater = 0;
+            int i = 0;
+            while (scn.hasNext()) {
+
+                int x = scn.nextInt();
+                int y = scn.nextInt();
+
+                System.out.println(x + "," + y);
+                mapData[i++] = new Coordinate(x, y);
+                repeater++;
+            }
+            System.out.println(repeater);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        return mapData;
+    }
+
+
+    private void initialize() {
+
+        this.setSize(WIDTH, HEIGHT);
+        this.setTitle("Baba Yetu");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(1, 4)); // Sucks D.
+        this.setVisible(true);
+
+    }
+}
