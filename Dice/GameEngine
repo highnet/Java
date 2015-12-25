@@ -1,0 +1,168 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * Created by bokense1 on 21/12/15.
+ */
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class GameEngine extends JPanel implements ActionListener, MouseListener {
+
+
+    Timer timer;
+    JButton rollDie;
+    JButton resetDie;
+    boolean rollRequested;
+
+    int rng1 = 0;
+    int rng2 = 0;
+
+    public GameEngine() { // Game Engine CONSTRUCTOR.
+
+        addMouseListener(this);
+
+
+        rollDie = new JButton("Roll");
+        resetDie = new JButton("Reset");
+
+        rollDie.addActionListener(this);
+        resetDie.addActionListener(this);
+
+
+        this.add(rollDie);
+        this.add(resetDie);
+
+        setFocusable(true); // Setting requires for keyboard listener.
+        timer = new Timer(16, this);
+        timer.start();
+        rollRequested = false;
+
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == timer) {
+            this.repaint();
+        }
+
+        if (e.getSource() == rollDie) {
+            System.out.println("ROLL");
+
+
+            rng1 = (int) ((Math.random() * (7 - 1)) + 1);
+            rng2 = (int) ((Math.random() * (7 - 1)) + 1);
+
+            System.out.println(rng1 + ", " + rng2);
+
+            rollRequested = true;
+        }
+
+        if (e.getSource() == resetDie) {
+            System.out.println("Reset");
+            rollRequested = false;
+        }
+
+    }
+
+
+    //Render object.
+    public void paintComponent(Graphics g) {
+
+        super.paintComponent(g);
+
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 300, 300);
+
+
+        if (rollRequested) {
+            g.setColor(Color.black);
+
+            g.drawRect(70, 90, 60, 60);
+            g.drawRect(170, 90, 60, 60);
+
+            switch (rng1) {
+                case 1:
+                    g.fillOval(90, 110, 20, 20);
+                    break;
+                case 2:
+                    g.fillOval(75, 110, 20, 20);
+                    g.fillOval(105, 110, 20, 20);
+                    break;
+                case 3:
+                    g.fillOval(73, 130, 20, 20);
+                    g.fillOval(85, 111, 20, 20);
+                    g.fillOval(106, 95, 20, 20);
+                    break;
+                case 4:
+                    g.fillOval(74, 97, 20, 20);
+                    g.fillOval(106, 103, 20, 20);
+                    g.fillOval(76, 125, 20, 20);
+                    g.fillOval(107, 130, 20, 20);
+                    break;
+                case 5:
+                    g.fillOval(79, 100, 20, 20);
+                    g.fillOval(112, 99, 20, 20);
+                    g.fillOval(95, 113, 20, 20);
+                    g.fillOval(75, 126, 20, 20);
+                    g.fillOval(112, 127, 20, 20);
+                    break;
+                case 6:
+                    g.fillOval(81, 95, 20, 20);
+                    g.fillOval(80, 113, 20, 20);
+                    g.fillOval(82, 133, 20, 20);
+                    g.fillOval(109, 117, 20, 20);
+                    g.fillOval(109, 133, 20, 20);
+                    g.fillOval(114, 97, 20, 20);
+                    break;
+
+
+            }
+
+            g.drawString(rng1 + "+" + rng2 + " = ", 135, 180);
+            String result = String.valueOf(rng1 + rng2);
+            g.drawString(result, 145, 190);
+
+        }
+    }
+
+    private void getStringResult(int rng1, int rng2) {
+
+
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        System.out.println("" + e.getX() + ", " + e.getY());
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+}
+
+
