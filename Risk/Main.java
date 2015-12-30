@@ -1,13 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Main extends JFrame {
 
-    final static int WIDTH = 1260;
-    final static int HEIGHT = 600;
+    final static int WIDTH = 1250;
+    final static int HEIGHT = 650;
 
 
     public Main() {
@@ -20,13 +18,12 @@ public class Main extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
 
+
                 Main window = new Main();
 
                 window.setSize(WIDTH, HEIGHT);
 
-                File africaData = new File("/Users/bokense1/Desktop/Risky0.2/src/Africa.map");
-
-                GameMap worldMap = new GameMap();
+                GameEngine worldMap = new GameEngine();
 
                 window.add(worldMap);
 
@@ -36,3 +33,15 @@ public class Main extends JFrame {
 
 
     }
+
+    private void initialize() {
+
+        this.setSize(WIDTH, HEIGHT);
+        this.setTitle("Risk");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(1, 4)); // Sucks D.
+        this.setVisible(true);
+
+    }
+}
