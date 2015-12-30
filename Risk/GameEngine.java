@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 /*
  *
@@ -46,32 +47,60 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // needs a polygon array.
+        paintBackgroundImage(g, Color.WHITE);
 
-        g.setColor(Color.blue);
-        g.fillRect(0, 0, 1650, 650);
-
-
+        // Prints all territory landmass as unclaimed.
         for (int i = 0; i < gameData.territory.size(); i++) {
             gameData.territory.get(i).printTerritory(g, "fill", currentlySelectedName);
 
         }
+
+        // Prints the outline of all territories
         for (int i = 0; i < gameData.territory.size(); i++) {
             gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName);
         }
 
+        // Print all capital cities in black.
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritoryCapital(g);
+            gameData.territory.get(i).printTerritoryCapital(g, Color.black);
         }
 
+        // Draws the number of units of each territory.
         for (int i = 0; i < gameData.territory.size(); i++) {
-            g.setColor(Color.BLACK);
+            g.setColor(Color.white);
+            ;
             g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
+        }
+
+        // Changes the color of the capital city of the neighbours of currentlyselected to display to the user
+        // the new possibilities of attack
+        if (currentlySelected != null) {
+            paintNeighbours(g);
 
 
         }
+    }
 
+    private void paintNeighbours(Graphics g) {
+        int index = 0; // Iterate through all territories until we reach currentlySelected.
+        while (index < gameData.territory.size()) {
+            if (gameData.territory.get(index).getName().equals(currentlySelected.getName())) { // if we find a match
+                ArrayList<Territory> neighbours = gameData.territory.get(index).getNeighbours(); // retrieve the neighbours of the currentlySelected territory
+                for (Territory neighbour : neighbours) { // for each neighbour, print the capital city in magenta color.
+                    neighbour.printTerritoryCapital(g, Color.magenta);
 
+                }
+            }
+
+            index++;
+
+        }
+    }
+
+    private void paintBackgroundImage(Graphics g, Color col) {
+
+        g.setColor(col);
+        g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
     }
 
 
