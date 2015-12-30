@@ -51,19 +51,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         // needs a polygon array.
 
         g.setColor(Color.blue);
-        g.fillRect(0,0,1650,650);
+        g.fillRect(0, 0, 1650, 650);
 
 
-        g.setColor(Color.lightGray);
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g,"fill");
+            gameData.territory.get(i).printTerritory(g, "fill");
+      //      gameData.territory.get(i).printMyPolygon(g,"fill",i);
             // Polygon[] countriesPoly = gameData.
         }
-        g.setColor(Color.black);
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g,"outline");
+            gameData.territory.get(i).printTerritory(g, "outline");
             // Polygon[] countriesPoly = gameData.
         }
+
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            gameData.territory.get(i).printTerritoryCapital(g);
+
+
+        }
+
 
     }
 
