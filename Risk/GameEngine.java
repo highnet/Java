@@ -20,6 +20,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     Timer timer = new Timer(16, this);
     PlayField gameData;
 
+    Font currentlySelectedLabelFont = new Font("Consola", Font.BOLD, 23);
+    Font territoryArmyCountLabelFont = new Font("Bell MT", Font.ITALIC, 18);
+
 
     public GameEngine() {
 
@@ -32,7 +35,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             e.printStackTrace();
         }
 
-        System.out.println("[Dev] Done loading gamedata");
+        System.out.println("[Dev] Done loading all gamedata...");
 
 
         addMouseListener(this);
@@ -49,15 +52,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         paintBackgroundImage(g, Color.WHITE);
 
+
         // Prints all territory landmass as unclaimed.
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "fill", currentlySelectedName);
+            gameData.territory.get(i).printTerritory(g, "fill", currentlySelectedName, Color.lightGray);
 
         }
 
         // Prints the outline of all territories
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName);
+            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
         }
 
         // Print all capital cities in black.
@@ -68,17 +72,58 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         // Draws the number of units of each territory.
         for (int i = 0; i < gameData.territory.size(); i++) {
             g.setColor(Color.white);
-            ;
+            g.setFont(territoryArmyCountLabelFont);
             g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
         }
 
         // Changes the color of the capital city of the neighbours of currentlyselected to display to the user
         // the new possibilities of attack
+
         if (currentlySelected != null) {
+            paintCurrentlySelectedCapitalHighlighted(g);
+            paintCurrentlySelectedCapitalContourHighlighted(g);
             paintNeighbours(g);
 
+        }
+
+        paintCurrentlySelectedLabel(g);
+
+
+    }
+
+    private void paintCurrentlySelectedCapitalContourHighlighted(Graphics g) {
+
+
+        int index = 0; // Iterate through all territories until we reach currentlySelected.
+        while (index < gameData.territory.size()) {
+            if (gameData.territory.get(index).getName().equals(currentlySelected.getName())) { // if we find a match
+
+                gameData.territory.get(index).printTerritory(g, "outline", currentlySelected.getName(), Color.yellow);
+            }
+
+            index++;
 
         }
+    }
+
+    private void paintCurrentlySelectedCapitalHighlighted(Graphics g) {
+        int index = 0; // Iterate through all territories until we reach currentlySelected.
+        while (index < gameData.territory.size()) {
+            if (gameData.territory.get(index).getName().equals(currentlySelected.getName())) { // if we find a match
+                gameData.territory.get(index).printTerritoryCapital(g, Color.yellow);
+            }
+
+            index++;
+
+        }
+
+
+    }
+
+    private void paintCurrentlySelectedLabel(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.setFont(currentlySelectedLabelFont);
+        g.drawString(currentlySelectedName + "   > ", 435, 565);
     }
 
     private void paintNeighbours(Graphics g) {
