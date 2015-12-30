@@ -1,0 +1,205 @@
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+
+public class PlayField {
+    public ArrayList<Continent> continent;
+    public ArrayList<Territory> territory;
+
+    public PlayField() {
+        continent = new ArrayList<Continent>();
+        territory = new ArrayList<Territory>();
+
+    }
+
+    public Polygon[] getPolys() {
+
+        Polygon[] arr = new Polygon[1];
+    //    arr[0] = territory.get(0).createPolygon();
+
+
+
+      return arr;
+    }
+
+
+    public void print_PlayField(Graphics g) {
+        if (this.continent.size() > 0) {
+            for (int i = 0; i < this.continent.size(); i++) {
+                this.continent.get(i).printContinent(g);
+            }
+        } else {
+            for (int i = 0; i < this.territory.size(); i++) {
+                this.territory.get(i).printTerritory(g);
+            }
+        }
+    }
+
+    public ArrayList<Continent> getContinent() {
+        return continent;
+    }
+
+    public ArrayList<Territory> getTerritory() {
+        return territory;
+    }
+
+    /**
+     * this method will load all data from the Mapfile and create the Field and store the data for the Game
+     *
+     * @param map filepath and name  from which the information will be loaded
+     * @throws java.io.FileNotFoundException after this exception the game cannot be started because the data does not exist.
+     */
+    public void loadData(File map) throws FileNotFoundException {
+        Scanner sc = new Scanner(map);
+
+        String command = "";
+        HashMap<String, Territory> territory = new HashMap<String, Territory>();
+
+        while (sc.hasNext()) {
+            command = sc.next();
+
+            if (command.equals("patch-of")) {
+                String name = "";
+                while (sc.hasNext() && !sc.hasNextInt()) {
+                    if (!name.equals(""))
+                        name += " ";
+                    name += sc.next();
+                }
+
+
+                Patch p = new Patch();
+                Scanner coodsScanner = new Scanner(sc.nextLine());
+                while (coodsScanner.hasNext()) {
+                    int x = 0;
+                    int y = 0;
+                    if (coodsScanner.hasNextInt())
+                        x = coodsScanner.nextInt();
+                    if (coodsScanner.hasNextInt())
+                        y = coodsScanner.nextInt();
+
+                    p.addData(new Point(x, y));
+                }
+                coodsScanner.close();
+                if (territory.containsKey(name)) {
+                    territory.get(name).addPatch(p);
+                } else {
+                    territory.put(name, new Territory());
+                    territory.get(name).setName(name);
+                    territory.get(name).addPatch(p);
+                }
+
+
+            } else if (command.equals("capital-of")) {
+                String name = "";
+                while (sc.hasNext() && !sc.hasNextInt()) {
+                    if (!name.equals(""))
+                        name += " ";
+                    name += sc.next();
+                }
+                /* create the coords for the capital of the Territory */
+                int x = 0;
+                int y = 0;
+                if (sc.hasNextInt())
+                    x = sc.nextInt();
+                if (sc.hasNextInt())
+                    y = sc.nextInt();
+
+                Point p = new Point(x, y);
+                if (territory.containsKey(name)) {
+                    territory.get(name).setCapital(p);
+                }
+                // otherwise its useless because the file must be corrupt!
+            } else if (command.equals("neighbors-of")) {
+                if (sc.hasNextLine()) {
+                    String[] line = sc.nextLine().split(":");
+
+                    String name = "";
+                    if (line[0].charAt(0) == ' ') {
+                        for (int i = 1; i < line[0].length(); i++) {
+                            if ((i == line[0].length() - 1 && !(line[0].charAt(i) == ' ')) || i < line[0].length() - 1)
+                                name += line[0].charAt(i);
+                        }
+                    } else
+                        name = line[0];
+
+                    String neighbour = "";
+                    String word = "";
+                    Scanner territoryScanner = new Scanner(line[1]);
+                    while (territoryScanner.hasNext()) {
+                        word = territoryScanner.next();
+
+                        if (word.equals("-")) {
+                            if (territory.containsKey(neighbour)) {
+                                territory.get(name).addNeighbour(territory.get(neighbour));
+                            }
+                            neighbour = "";
+                        } else {
+                            if (!neighbour.equals(""))
+                                neighbour += " ";
+
+                            neighbour += word;
+                        }
+                        if (!territoryScanner.hasNext()) {
+                            if (territory.containsKey(neighbour)) {
+                                territory.get(name).addNeighbour(territory.get(neighbour));
+                            }
+                            neighbour = "";
+                        }
+                    }
+                    territoryScanner.close();
+                }
+            } else if (command.equals("continent")) {
+                if (sc.hasNextLine()) {
+
+                    String[] line = sc.nextLine().split(":");
+                    String neighbour = "";
+                    String word = "";
+
+                    String[] firstSplit = line[0].split(" ");
+                    if (firstSplit.length > 2) {
+                        for (int i = 1; i < firstSplit.length - 1; i++) {
+                            if (!word.equals(""))
+                                word += " ";
+                            word += firstSplit[i];
+                        }
+                    } else
+                        word = firstSplit[1];
+
+
+                    continent.add(new Continent(word, Integer.parseInt(firstSplit[firstSplit.length - 1])));
+
+
+                    Scanner territoryScanner = new Scanner(line[1]);
+                    while (territoryScanner.hasNext()) {
+                        word = territoryScanner.next();
+
+                        if (word.equals("-")) {
+
+                            if (territory.containsKey(neighbour)) {
+                                continent.get(continent.size() - 1).addTerritory(territory.get(neighbour));
+                            }
+                            neighbour = "";
+                        } else {
+                            if (!neighbour.equals(""))
+                                neighbour += " ";
+
+                            neighbour += word;
+                        }
+                    }
+                    territoryScanner.close();
+                }
+            }
+        }
+
+
+        this.territory.addAll(territory.values());
+        sc.close();
+
+    }
+
+
+}
