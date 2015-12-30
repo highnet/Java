@@ -7,7 +7,7 @@ public class Territory {
     private String name;
     private Point capital;
     private ArrayList<Territory> neighbour = new ArrayList<Territory>();
-    private ArrayList<Polygon> p = new ArrayList<Polygon>();
+    private ArrayList<Polygon> polygonArrayList = new ArrayList<Polygon>();
     private boolean newPatchData = false;
     private int army = 0; // counter for armys on this Territory the information
 
@@ -77,14 +77,14 @@ public class Territory {
 
 
     public void createPolygon() {
-        p.clear();
+        polygonArrayList.clear();
         for (int i = 0; i < this.patch.size(); i++) {
-            p.add(patch.get(i).get_Polygon());
+            polygonArrayList.add(patch.get(i).get_Polygon());
 
         }
     }
 
-    public void printTerritory(Graphics g, String printStyle, String currentlySelectedName) {
+    public void printTerritory(Graphics g, String printStyle, String currentlySelectedName, Color col) {
         /* check if there are new Data for this Territory
          * if this is true we need to rebuild the Polygon ArrayList
 		 */
@@ -95,21 +95,22 @@ public class Territory {
         }
 
         if (printStyle == "fill") {
-            g.setColor(Color.lightGray);
 
 
-            for (int i = 0; i < this.p.size(); i++) {
+            for (Polygon poly : this.polygonArrayList) {
+                g.setColor(col);
                 if (currentlySelectedName == this.name) {
                     g.setColor(Color.green);
                 }
-                g.fillPolygon(p.get(i));
+                g.fillPolygon(poly);
             }
 
         } else if (printStyle == "outline") {
-            g.setColor(Color.black);
-            for (int i = 0; i < this.p.size(); i++) {
-
-                g.drawPolygon(p.get(i));
+            for (Polygon poly : this.polygonArrayList) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setStroke(new BasicStroke(3));
+                g2d.setColor(col);
+                g2d.drawPolygon(poly);
             }
         }
     }
@@ -126,8 +127,8 @@ public class Territory {
 
     public boolean check_isInsideTerritory(int x, int y) {
 
-        for (int i = 0; i < this.p.size(); i++) {
-            if (p.get(i).contains(x, y))
+        for (int i = 0; i < this.polygonArrayList.size(); i++) {
+            if (polygonArrayList.get(i).contains(x, y))
                 return true;
         }
 
