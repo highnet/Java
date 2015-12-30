@@ -114,11 +114,11 @@ public class Territory {
         }
     }
 
-    public void printTerritoryCapital(Graphics g) {
-        g.setColor(Color.black);
+    public void printTerritoryCapital(Graphics g, Color col) {
 
         // Determines the size of the capital cities(oval).
         final int capitalCityDimension = 8;
+        g.setColor(col);
 
         g.fillOval((int) this.capital.getX(), (int) this.capital.getY(), capitalCityDimension, capitalCityDimension);
     }
