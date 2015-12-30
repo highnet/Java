@@ -24,7 +24,6 @@ public class Territory {
     }
 
 
-
     /**
      * this will be used on the first stage of the game where the capture of the territory is the business
      */
@@ -80,7 +79,7 @@ public class Territory {
         }
     }
 
-    public void printTerritory(Graphics g) {
+    public void printTerritory(Graphics g, String argument) {
         /* check if there are new Data for this Territory
          * if this is true we need to rebuild the Polygon ArrayList
 		 */
@@ -88,9 +87,14 @@ public class Territory {
             createPolygon();
             newPatchData = false;
         }
-
-        for (int i = 0; i < this.p.size(); i++) {
-            g.drawPolygon(p.get(i));
+        if (argument == "fill") {
+            for (int i = 0; i < this.p.size(); i++) {
+                g.fillPolygon(p.get(i));
+            }
+        } else if (argument == "outline") {
+            for (int i = 0; i < this.p.size(); i++) {
+                g.drawPolygon(p.get(i));
+            }
         }
     }
 
