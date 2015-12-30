@@ -7,20 +7,26 @@ public class Territory {
     private String name;
     private Point capital;
     private ArrayList<Territory> neighbour = new ArrayList<Territory>();
-
     private ArrayList<Polygon> p = new ArrayList<Polygon>();
     private boolean newPatchData = false;
-
-
     private int army = 0; // counter for armys on this Territory the information
-    // which Army it is is in the Class Gamer
+
 
     public Territory() {
     }
+    // which Army it is is in the Class Gamer
 
     public Territory(String name, Point capital) {
         this.name = name;
         this.capital = capital;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Point getCapital() {
@@ -51,10 +57,6 @@ public class Territory {
         return this.army;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void addPatch(Patch data) {
         this.patch.add(data);
         newPatchData = true;
@@ -82,25 +84,28 @@ public class Territory {
         }
     }
 
-    public void printTerritory(Graphics g, String argument) {
+    public void printTerritory(Graphics g, String printStyle, String currentlySelectedName) {
         /* check if there are new Data for this Territory
          * if this is true we need to rebuild the Polygon ArrayList
 		 */
         if (newPatchData) {
             createPolygon();
             newPatchData = false;
+            System.out.println("created new polygons");
         }
-        if (argument == "fill") {
+
+        if (printStyle == "fill") {
             g.setColor(Color.lightGray);
 
+
             for (int i = 0; i < this.p.size(); i++) {
-                System.out.println(i);
+                if (currentlySelectedName == this.name) {
+                    g.setColor(Color.green);
+                }
                 g.fillPolygon(p.get(i));
-
-
             }
 
-        } else if (argument == "outline") {
+        } else if (printStyle == "outline") {
             g.setColor(Color.black);
             for (int i = 0; i < this.p.size(); i++) {
 
@@ -144,8 +149,5 @@ public class Territory {
         return ret;
     }
 
-    public void printMyPolygon(Graphics g, String fill, int i) {
 
-        g.drawPolygon(this.p.get(i));
-    }
 }
