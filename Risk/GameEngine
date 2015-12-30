@@ -1,0 +1,115 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+/*
+ *
+ *
+ *
+ */
+
+
+public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
+
+
+    Timer timer = new Timer(16, this);
+
+    PlayField gameData;
+
+    Polygon currentlySelected = null;
+
+
+    public GameEngine() {
+
+        gameData = new PlayField();
+
+        try {
+            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
+            gameData.loadData(mapData);
+            System.out.println(gameData.continent.get(0));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("[Dev] Done loading gamedata");
+
+
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
+        timer.start();
+
+
+    }
+
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // needs a polygon array.
+
+        g.setColor(Color.black);
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            gameData.territory.get(i).printTerritory(g);
+            // Polygon[] countriesPoly = gameData.
+        }
+
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == timer) {
+            repaint();
+        }
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        int x = e.getX();
+        int y = e.getY();
+
+
+        System.out.println("Click:" + x + "," + y);
+
+        // if currentlyselected == null
+        // if click polygon -> currentlyselected
+
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+}
