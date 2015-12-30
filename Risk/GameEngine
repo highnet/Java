@@ -14,11 +14,10 @@ import java.io.FileNotFoundException;
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
 
 
+    public Territory currentlySelected = null;
+    public String currentlySelectedName = "";
     Timer timer = new Timer(16, this);
-
     PlayField gameData;
-
-    Polygon currentlySelected = null;
 
 
     public GameEngine() {
@@ -28,7 +27,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         try {
             File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
             gameData.loadData(mapData);
-            System.out.println(gameData.continent.get(0));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -55,17 +53,20 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "fill");
-      //      gameData.territory.get(i).printMyPolygon(g,"fill",i);
-            // Polygon[] countriesPoly = gameData.
+            gameData.territory.get(i).printTerritory(g, "fill", currentlySelectedName);
+
         }
         for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "outline");
-            // Polygon[] countriesPoly = gameData.
+            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName);
         }
 
         for (int i = 0; i < gameData.territory.size(); i++) {
             gameData.territory.get(i).printTerritoryCapital(g);
+        }
+
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            g.setColor(Color.BLACK);
+            g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
 
 
         }
@@ -96,7 +97,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         // if click polygon -> currentlyselected
 
 
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
+                System.out.println("Clicked on " + gameData.territory.get(i).getName());
+                currentlySelected = gameData.territory.get(i);
+                currentlySelectedName = currentlySelected.getName();
+                currentlySelected.addArmy(1);
+                break;
+            }
+        }
+
+
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
