@@ -23,6 +23,13 @@ public class Territory {
         this.capital = capital;
     }
 
+    public Point getCapital() {
+        return capital;
+    }
+
+    public void setCapital(Point capital) {
+        this.capital = capital;
+    }
 
     /**
      * this will be used on the first stage of the game where the capture of the territory is the business
@@ -46,10 +53,6 @@ public class Territory {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setCapital(Point capital) {
-        this.capital = capital;
     }
 
     public void addPatch(Patch data) {
@@ -88,14 +91,31 @@ public class Territory {
             newPatchData = false;
         }
         if (argument == "fill") {
+            g.setColor(Color.lightGray);
+
             for (int i = 0; i < this.p.size(); i++) {
+                System.out.println(i);
                 g.fillPolygon(p.get(i));
+
+
             }
+
         } else if (argument == "outline") {
+            g.setColor(Color.black);
             for (int i = 0; i < this.p.size(); i++) {
+
                 g.drawPolygon(p.get(i));
             }
         }
+    }
+
+    public void printTerritoryCapital(Graphics g) {
+        g.setColor(Color.black);
+
+        // Determines the size of the capital cities(oval).
+        final int capitalCityDimension = 8;
+
+        g.fillOval((int) this.capital.getX(), (int) this.capital.getY(), capitalCityDimension, capitalCityDimension);
     }
 
 
@@ -122,5 +142,10 @@ public class Territory {
         }
         ret += "\n";
         return ret;
+    }
+
+    public void printMyPolygon(Graphics g, String fill, int i) {
+
+        g.drawPolygon(this.p.get(i));
     }
 }
