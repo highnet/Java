@@ -4,11 +4,12 @@ import java.util.ArrayList;
 /**
  * this class is for the controlling of the informations of the Army and the Reinforcements
  *
- * @author Claudia
+ * 
  */
 public class Gamer {
     public Color color;
     public ArrayList<Territory> myTerritory = new ArrayList<Territory>();
+    String playerName;
     private boolean isHuman = false;
     private int reinforcements = 0;
 
@@ -17,9 +18,10 @@ public class Gamer {
      * if the player is human so it will be set in the constructor to true and blue;
      */
 
-    public Gamer(Color color, boolean isHuman) {
+    public Gamer(Color color, boolean isHuman, String playerName) {
         this.isHuman = isHuman;
         this.color = color;
+        this.playerName = playerName;
 
     }
 
