@@ -7,25 +7,30 @@ import java.util.ArrayList;
  * @author Claudia
  */
 public class Gamer {
+    public Color color;
+    public ArrayList<Territory> myTerritory = new ArrayList<Territory>();
+    private boolean isHuman = false;
+    private int reinforcements = 0;
+
     /**
      * base information for a non player charakter
      * if the player is human so it will be set in the constructor to true and blue;
      */
-    private boolean isHuman = false;
-    private Color c = Color.red;
 
-    private ArrayList<Territory> myTerritory = new ArrayList<Territory>();
-    private int reinforcements = 0;
+    public Gamer(Color color, boolean isHuman) {
+        this.isHuman = isHuman;
+        this.color = color;
 
-    public void printGamerTerritory(Graphics g) {
-        g.setColor(c);
-        for (int i = 0; i < this.myTerritory.size(); i++) {
-            this.myTerritory.get(i).printTerritory(g);
-        }
-        g.setColor(Color.black);
     }
 
-    public void captureForComputerPlayerAfterStartTerritoryIsSet() {
+    public void captureTerritory(Territory toCapture) {
+        myTerritory.add(toCapture);
+        toCapture.addArmy(1);
+        System.out.println("succesfully captured: " + toCapture.getName());
+    }
+
+
+ /*   public void captureForComputerPlayerAfterStartTerritoryIsSet() {
         if (this.myTerritory.size() > 0) {
             while (true) {
                 int randTerritory = 0 + (int) (Math.random() * this.myTerritory.size());
@@ -39,7 +44,7 @@ public class Gamer {
                 }
             }
         }
-    }
+    }*/
 
     public boolean init(Territory area) {
         if (this.myTerritory.size() == 0) {
@@ -88,18 +93,13 @@ public class Gamer {
         this.myTerritory.remove(t);
     }
 
-    public void setPlayerHuman(Color c) {
-        this.isHuman = true;
-        this.c = c;
-    }
-
     public void createNewArmy(Territory t) {
         if (this.myTerritory.contains(t)) {
             t.addArmy(1);
         }
     }
 
-    public void createNewReinforcements() {
+/*    public void createNewReinforcements() {
         this.reinforcements++;
     }
 
@@ -168,6 +168,6 @@ public class Gamer {
 
     public int getAnzPossibleReinforcementsAvialable() {
         return this.reinforcements;
-    }
+    }*/
 
 }
