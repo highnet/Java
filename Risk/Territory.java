@@ -40,9 +40,7 @@ public class Territory {
     /**
      * this will be used on the first stage of the game where the capture of the territory is the business
      */
-    public void captureTerritory() {
-        army = 1;
-    }
+
 
     public void addArmy(int count) {
         army += count;
@@ -99,9 +97,9 @@ public class Territory {
 
             for (Polygon poly : this.polygonArrayList) {
                 g.setColor(col);
-                if (currentlySelectedName == this.name) {
+                /*if (currentlySelectedName == this.name) {
                     g.setColor(Color.green);
-                }
+                }*/
                 g.fillPolygon(poly);
             }
 
@@ -151,4 +149,26 @@ public class Territory {
     }
 
 
+    public boolean alreadyOccupied(Gamer humanPlayer1, Gamer computerPlayer1) {
+
+
+        if (this == null) {
+            return false;
+        }
+        // check if humanplayer1 already owns territory to capture
+        for (int i = 0; i < humanPlayer1.myTerritory.size(); i++){
+            if (this.getName() == humanPlayer1.myTerritory.get(i).getName()){
+                return true;
+            }
+        }
+
+        // check if computerplayer1 already owns territory to capture
+        for (int i = 0; i < computerPlayer1.myTerritory.size(); i++){
+            if (this.getName() == computerPlayer1.myTerritory.get(i).getName()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
