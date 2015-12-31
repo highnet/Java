@@ -4,14 +4,15 @@ import java.util.ArrayList;
 /**
  * this class is for the controlling of the informations of the Army and the Reinforcements
  *
- * 
+ *
  */
 public class Gamer {
     public Color color;
     public ArrayList<Territory> myTerritory = new ArrayList<Territory>();
     String playerName;
     private boolean isHuman = false;
-    private int reinforcements = 0;
+    public int reinforcements = 0;
+    public int reinforcementsPlacedThisTurn = 1; //// FIXME: 31/12/15 
 
     /**
      * base information for a non player charakter
@@ -99,6 +100,11 @@ public class Gamer {
         if (this.myTerritory.contains(t)) {
             t.addArmy(1);
         }
+    }
+
+    public void calculateReinforcements() {
+
+        this.reinforcements = 10;
     }
 
 /*    public void createNewReinforcements() {
