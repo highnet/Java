@@ -23,13 +23,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     Font currentlySelectedLabelFont = new Font("Consola", Font.BOLD, 23);
     Font territoryArmyCountLabelFont = new Font("Consola", Font.ITALIC, 18);
     Font turnNumberLabelFont = new Font("Consola", Font.BOLD, 22);
-    Font newTurnBoxInfoLabelFont = new Font ("Consola", Font.BOLD, 36);
+    Font newTurnBoxInfoLabelFont = new Font("Consola", Font.BOLD, 36);
 
-    Gamer humanPlayer1 = new Gamer(Color.blue, true);
-    Gamer computerPlayer1 = new Gamer(Color.red, false);
+    Gamer humanPlayer1 = new Gamer(Color.blue, true, "Human Player 1");
+    Gamer computerPlayer1 = new Gamer(Color.red, false, "CPU Player 1");
+
+    Gamer currentActivePlayerTurn = humanPlayer1;
 
 
     int turnNumber = 0;
+
+    boolean displayWelcomeSplashBox = true;
+    int welcomeSplashBoxTickTimer = 0;
+
     boolean newTurn = false;
     boolean paintNewTurnBox = false;
     int newTurnBoxTickTimer = 0;
@@ -115,12 +121,47 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         paintCurrentlySelectedLabel(g);
 
-        paintTurnNumberLabel(g);
+        paintTurnPhaseLabels(g);
+
+        if (turnNumber != 0) {
+            paintTurnNumberLabel(g);
+        }
+
         if (newTurn) {
             paintGraphicsNewTurnBox(g);
         }
 
+        if (displayWelcomeSplashBox) {
+            paintDisplayWelcomeSplashBox(g);
+        }
 
+
+    }
+
+    private void paintDisplayWelcomeSplashBox(Graphics g) {
+        if (welcomeSplashBoxTickTimer < 100) {
+            g.setColor(Color.lightGray);
+            g.fillRect(0, 0, 1650, 650);
+            g.setFont(newTurnBoxInfoLabelFont);
+            g.setColor(Color.white);
+            g.drawString("Welcome. Setup Phase. Capture territories.", 100, 160);
+
+        }
+        if (welcomeSplashBoxTickTimer == 100) {
+            displayWelcomeSplashBox = false;
+        }
+
+    }
+
+    private void paintTurnPhaseLabels(Graphics g) {
+        g.setFont(currentlySelectedLabelFont);
+
+        if (reinforceMentPhase) {
+            g.drawString("Reinforcement Phase", 360, 600);
+        }
+        if (attackPhase) {
+            g.drawString("Attack Phase", 360, 600);
+        }
     }
 
     private void paintGraphicsNewTurnBox(Graphics g) {
@@ -130,21 +171,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.fillRect(0, 0, 1650, 650);
             g.setFont(newTurnBoxInfoLabelFont);
             g.setColor(Color.white);
-            g.drawString("computerplayer 1 - Your Turn", 100, 160);
+            g.drawString(currentActivePlayerTurn.playerName + " - Your Turn", 100, 160);
 
         }
-        if (newTurnBoxTickTimer == 101) {
+        if (newTurnBoxTickTimer == 100) {
             newTurnBoxTickTimer = 0;
             paintNewTurnBox = false;
             newTurn = false;
         }
+
 
     }
 
     private void paintTurnNumberLabel(Graphics g) {
 
         g.setFont(turnNumberLabelFont);
-        g.drawString("Turn: " + turnNumber, 910, 25);
+        g.drawString(currentActivePlayerTurn.playerName + " - Turn: " + turnNumber, 910, 25);
     }
 
     private void paintCurrentlySelectedCapitalContourHighlighted(Graphics g) {
@@ -210,6 +252,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (e.getSource() == timer) {
 
+            if (displayWelcomeSplashBox) {
+                welcomeSplashBoxTickTimer++;
+            }
+
             checkIfNewTurn();
             if (paintNewTurnBox) {
                 newTurnBoxTickTimer++;
@@ -223,6 +269,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void checkIfNewTurn() {
         if (newTurn) {
             paintNewTurnBox = true;
+            attackPhase = false;
+            reinforceMentPhase = true;
+
         }
     }
 
@@ -280,6 +329,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (!unclaimedTerritoriesExist) {
                 turnNumber++;
                 newTurn = true;
+
             }
 
 
