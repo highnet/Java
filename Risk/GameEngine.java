@@ -15,16 +15,14 @@ import java.util.ArrayList;
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
 
 
+    private final Font currentlySelectedLabelFont = new Font("Consola", Font.BOLD, 23);
+    private final Font territoryArmyCountLabelFont = new Font("Consola", Font.ITALIC, 18);
+    private final Font turnNumberLabelFont = new Font("Consola", Font.BOLD, 22);
+    private final Font newTurnBoxInfoLabelFont = new Font("Consola", Font.BOLD, 36);
     public Territory currentlySelected = null;
     public String currentlySelectedName = "";
-    Timer timer = new Timer(16, this);
+    private final Timer timer = new Timer(16, this);
     PlayField gameData;
-
-    Font currentlySelectedLabelFont = new Font("Consola", Font.BOLD, 23);
-    Font territoryArmyCountLabelFont = new Font("Consola", Font.ITALIC, 18);
-    Font turnNumberLabelFont = new Font("Consola", Font.BOLD, 22);
-    Font newTurnBoxInfoLabelFont = new Font("Consola", Font.BOLD, 36);
-
     Gamer humanPlayer1 = new Gamer(Color.blue, true, "Human Player 1");
     Gamer computerPlayer1 = new Gamer(Color.red, false, "CPU Player 1");
 
@@ -125,6 +123,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (turnNumber != 0) {
             paintTurnNumberLabel(g);
+        }
+
+        if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
+                int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn+1;
+            g.drawString("Reinforcements: " + reinforcementsLeftToPlace , 650, 590);
+
         }
 
         if (newTurn) {
@@ -252,6 +256,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (e.getSource() == timer) {
 
+
+            if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
+                currentActivePlayerTurn.calculateReinforcements();
+            }
+
+
             if (displayWelcomeSplashBox) {
                 welcomeSplashBoxTickTimer++;
             }
@@ -278,12 +288,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void mouseClicked(MouseEvent e) {
 
+        // Retrieves clicked coordinates.
         int x = e.getX();
         int y = e.getY();
 
 
         System.out.println("Click:" + x + "," + y);
 
+        // Changes the currentlySelected pointer.
         for (int i = 0; i < gameData.territory.size(); i++) {
             if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
                 System.out.println("Clicked on " + gameData.territory.get(i).getName());
@@ -294,21 +306,46 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
         }
 
+        placementLoop:
+        // Reinforcement Placement clean loop
+        if (turnNumber != 0 && reinforceMentPhase) { // Activates only during reinforcement phase
+            System.out.println("Total Re: " + currentActivePlayerTurn.reinforcements);
+            System.out.println("Re placed so far: " + currentActivePlayerTurn.reinforcementsPlacedThisTurn);
 
+            // End condition: whenever you run out of reinforcements to place.
+            if (currentActivePlayerTurn.reinforcements == currentActivePlayerTurn.reinforcementsPlacedThisTurn) {
+                reinforceMentPhase = false;
+                attackPhase = true;
+                break placementLoop;
+            }
+
+            //Adds an army to the territory that is clicked.
+            for (int i = 0; i < gameData.territory.size(); i++) {
+                if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
+                    System.out.println("Clicked on " + gameData.territory.get(i).getName() + " for reinforcement");
+                    gameData.territory.get(i).addArmy(1);
+                    currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
+                    break;
+                }
+            }
+
+        }
+
+        // Special case for turn 0. Territory Selection Phase.
         if (turnNumber == 0) {
 
-
+            // if player clicks on an unoccupied territory. Capture it.
             if (currentlySelected != null && !currentlySelected.alreadyOccupied(humanPlayer1, computerPlayer1)) {
                 humanPlayer1.captureTerritory(currentlySelected);
 
-                boolean reAttempt = true;
+                boolean reAttempt = true; // Boolean condition used for reattempting AI placement when the randomly generated territory is already occupied
 
                 while (reAttempt) {
-                    int randomTerritoryFinder = (int) (Math.random() * 41 - 1) + 1;
-                    Territory randomTerritory = gameData.territory.get(randomTerritoryFinder);
-                    if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) {
-                        computerPlayer1.captureTerritory(randomTerritory);
-                        reAttempt = false;
+                    int randomTerritoryFinder = (int) (Math.random() * 41 - 1) + 1; // Chose a random territory
+                    Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
+                    if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) { // if and only if the territory is unoccupied
+                        computerPlayer1.captureTerritory(randomTerritory); // capture the territory
+                        reAttempt = false; // once a capture is sucessful, do not reattempt to capture again.
 
 
                     }
@@ -318,7 +355,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             }
 
-            boolean unclaimedTerritoriesExist = false;
+            boolean unclaimedTerritoriesExist = false; // Assume there are no territories unclaimed and counterprove it.
             for (int i = 0; i < gameData.territory.size(); i++) { // iterate through all territories
                 // if any territory is still unclaimed, continue, if all territories are claimed. end turn 0.
                 if (!gameData.territory.get(i).alreadyOccupied(humanPlayer1, computerPlayer1)) {
@@ -326,14 +363,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             }
 
+            // If there are no unclaimed territories left. Begin turn 1.
             if (!unclaimedTerritoriesExist) {
-                turnNumber++;
-                newTurn = true;
+                turnNumber++; // Numerical count of turns.
+                newTurn = true; // Boolean condition used for events that are triggered only during new turn transitions.
 
             }
 
 
-        }
+        } // End of turn 0 placement phase.
 
 
     }
