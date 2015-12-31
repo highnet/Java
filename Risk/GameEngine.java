@@ -68,7 +68,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        paintBackgroundImage(g, Color.WHITE);
+        paintBackgroundImage(g, Color.white);
 
 
         // Prints all territory landmass as unclaimed.
@@ -101,10 +101,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
         }
 
-        // Prints the outline of all territories
-        for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
-        }
 
         // Changes the color of the capital city of the neighbours of currentlyselected to display to the user
         // the new possibilities of attack
@@ -114,6 +110,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintCurrentlySelectedCapitalContourHighlighted(g);
             paintNeighbours(g);
 
+        }
+
+        // Prints the outline of all territories
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
         }
 
 
