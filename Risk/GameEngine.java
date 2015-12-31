@@ -19,9 +19,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private final Font territoryArmyCountLabelFont = new Font("Consola", Font.ITALIC, 18);
     private final Font turnNumberLabelFont = new Font("Consola", Font.BOLD, 22);
     private final Font newTurnBoxInfoLabelFont = new Font("Consola", Font.BOLD, 36);
+    private final Timer timer = new Timer(16, this);
     public Territory currentlySelected = null;
     public String currentlySelectedName = "";
-    private final Timer timer = new Timer(16, this);
     PlayField gameData;
     Gamer humanPlayer1 = new Gamer(Color.blue, true, "Human Player 1");
     Gamer computerPlayer1 = new Gamer(Color.red, false, "CPU Player 1");
@@ -96,7 +96,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         // Draws the number of units of each territory.
         for (int i = 0; i < gameData.territory.size(); i++) {
-            g.setColor(Color.black);
+            g.setColor(Color.white);
             g.setFont(territoryArmyCountLabelFont);
             g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
         }
@@ -126,8 +126,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
-                int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn+1;
-            g.drawString("Reinforcements: " + reinforcementsLeftToPlace , 650, 590);
+            int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn + 1;
+            g.drawString("Reinforcements: " + reinforcementsLeftToPlace, 650, 590);
 
         }
 
@@ -306,8 +306,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
         }
 
+
         placementLoop:
-        // Reinforcement Placement clean loop
+        // Reinforcement Placement phase loop. Only active during reinforcement phase
         if (turnNumber != 0 && reinforceMentPhase) { // Activates only during reinforcement phase
             System.out.println("Total Re: " + currentActivePlayerTurn.reinforcements);
             System.out.println("Re placed so far: " + currentActivePlayerTurn.reinforcementsPlacedThisTurn);
@@ -320,15 +321,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             //Adds an army to the territory that is clicked.
-            for (int i = 0; i < gameData.territory.size(); i++) {
-                if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
-                    System.out.println("Clicked on " + gameData.territory.get(i).getName() + " for reinforcement");
-                    gameData.territory.get(i).addArmy(1);
-                    currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
-                    break;
-                }
+            if (currentlySelected.check_isInsideTerritory(x, y)) {
+                currentlySelected.addArmy(1);
+                currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
             }
-
         }
 
         // Special case for turn 0. Territory Selection Phase.
