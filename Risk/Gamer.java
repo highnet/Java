@@ -39,7 +39,7 @@ public class Gamer {
             }
         }
 
-        return null;
+        return new Gamer(Color.BLACK, false, "dummy");
     }
 
 
