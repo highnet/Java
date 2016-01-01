@@ -107,6 +107,24 @@ public class Gamer {
         this.reinforcements = 10;
     }
 
+    //getOwner returns which gamer controls a given territory. Iterative check.
+    public static Gamer getOwner(Territory currentlySelected, Gamer computerPlayer1, Gamer humanPlayer1) {
+
+        for (Territory t: computerPlayer1.myTerritory){
+            if (t.equals(currentlySelected)){
+                return computerPlayer1;
+            }
+        }
+
+        for (Territory t: humanPlayer1.myTerritory){
+            if (t.equals(currentlySelected)){
+                return humanPlayer1;
+            }
+        }
+
+        return null;
+    }
+
 /*    public void createNewReinforcements() {
         this.reinforcements++;
     }
