@@ -94,13 +94,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             gameData.territory.get(i).printTerritoryCapital(g, Color.black);
         }
 
-        // Draws the number of units of each territory.
-        for (int i = 0; i < gameData.territory.size(); i++) {
-            g.setColor(Color.white);
-            g.setFont(territoryArmyCountLabelFont);
-            g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
-        }
-
 
         // Changes the color of the capital city of the neighbours of currentlyselected to display to the user
         // the new possibilities of attack
@@ -115,6 +108,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         // Prints the outline of all territories
         for (int i = 0; i < gameData.territory.size(); i++) {
             gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
+        }
+
+        // Draws the number of units of each territory.
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            g.setColor(Color.white);
+            g.setFont(territoryArmyCountLabelFont);
+            g.drawString(" " + gameData.territory.get(i).getArmyCount(), (int) gameData.territory.get(i).getCapital().getX(), (int) gameData.territory.get(i).getCapital().getY());
         }
 
 
@@ -338,7 +338,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 boolean reAttempt = true; // Boolean condition used for reattempting AI placement when the randomly generated territory is already occupied
 
                 while (reAttempt) {
-                    int randomTerritoryFinder = (int) (Math.random() * 41 - 1) + 1; // Chose a random territory
+                    int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random territory
                     Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                     if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) { // if and only if the territory is unoccupied
                         computerPlayer1.captureTerritory(randomTerritory); // capture the territory
