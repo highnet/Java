@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 
-public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
+public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
 
 
     private final Font currentlySelectedLabelFont = new Font("Consola", Font.BOLD, 23);
@@ -23,6 +23,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private final Timer timer = new Timer(16, this);
     public Territory currentlySelected = null;
+    public Territory shiftSelected = null;
     public String currentlySelectedName = "";
     PlayField gameData;
     Gamer humanPlayer1 = new Gamer(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)), true, "Human Player 1");
@@ -33,7 +34,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     int turnNumber = 0;
 
-    boolean displayWelcomeSplashBox = true;
+    boolean displayWelcomeSplashBox = false;
     int welcomeSplashBoxTickTimer = 0;
 
     boolean newTurn = false;
@@ -44,6 +45,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     boolean attackPhase = false;
 
     boolean humanIsDoneReinforcing = false;
+
+    boolean shiftKeyIsPressed = false;
 
 
     public GameEngine() {
@@ -62,6 +65,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         addMouseListener(this);
         addMouseMotionListener(this);
+        setFocusable(true); // Setting requires for keyboard listener.
+        addKeyListener(this); // Adds keyboard listener.
 
         timer.start();
 
@@ -110,8 +115,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (currentlySelected != null) {
             paintCurrentlySelectedCapitalHighlighted(g);
             paintCurrentlySelectedCapitalContourHighlighted(g);
-
             paintNeighbours(g);
+
+        }
+
+        if (shiftSelected != null) {
+            paintShiftSelectedCapitalHighlighted(g);
+            paintShiftSelectedCapitalContourHighlighted(g);
 
         }
 
@@ -125,6 +135,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         paintCurrentlySelectedLabel(g);
+        paintshiftSelectedLabel(g);
 
         paintTurnPhaseLabels(g);
 
@@ -148,6 +159,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintDisplayWelcomeSplashBox(g);
         }
 
+
+    }
+
+    private void paintshiftSelectedLabel(Graphics g) {
+        g.setColor(Color.BLACK);
+        if (currentActivePlayerTurn != null && currentlySelected != null && !currentActivePlayerTurn.myTerritory.isEmpty() && shiftSelected != null) {
+            for (Territory t : gameData.territory) {
+                if (shiftSelected == t) {
+                    g.setColor(Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1).color); // set the color of the currentlyselected String label to that of the owner of currentlyselected territory
+                }
+            }
+
+            g.setFont(currentlySelectedLabelFont);
+            g.drawString("> " + shiftSelected.getName(), 600, 545);
+        }
+    }
+
+
+    private void paintShiftSelectedCapitalHighlighted(Graphics g) {
+
+        int index = 0; // Iterate through all territories until we reach currentlySelected.
+        while (index < gameData.territory.size()) {
+            if (gameData.territory.get(index).getName().equals(shiftSelected.getName())) { // if we find a match
+                gameData.territory.get(index).printTerritoryCapital(g, Color.orange);
+            }
+
+            index++;
+
+        }
+    }
+
+    private void paintShiftSelectedCapitalContourHighlighted(Graphics g) {
+        int index = 0; // Iterate through all territories until we reach currentlySelected.
+        while (index < gameData.territory.size()) {
+            if (gameData.territory.get(index).getName().equals(shiftSelected.getName())) { // if we find a match
+
+                gameData.territory.get(index).printTerritory(g, "outline", shiftSelected.getName(), Color.ORANGE);
+            }
+
+            index++;
+
+        }
 
     }
 
@@ -199,9 +252,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintTurnNumberLabel(Graphics g) {
 
-        g.setFont(turnNumberLabelFont);
-        g.setColor(currentActivePlayerTurn.color);
-        g.drawString(currentActivePlayerTurn.playerName + " - Turn: " + turnNumber, 910, 25);
+        g.setFont(turnNumberLabelFont); // set font
+        g.setColor(currentActivePlayerTurn.color); // set color of string to that of the currently active player
+        g.drawString(currentActivePlayerTurn.playerName + " - Turn: " + turnNumber, 910, 25); // draw the string
     }
 
     private void paintCurrentlySelectedCapitalContourHighlighted(Graphics g) {
@@ -238,12 +291,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (currentActivePlayerTurn != null && currentlySelected != null && !currentActivePlayerTurn.myTerritory.isEmpty()) {
             for (Territory t : gameData.territory) {
                 if (currentlySelected == t) {
-                    g.setColor(Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).color);
+                    g.setColor(Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).color); // set the color of the currentlyselected String label to that of the owner of currentlyselected territory
                 }
             }
 
             g.setFont(currentlySelectedLabelFont);
-            g.drawString(currentlySelectedName + "   > ", 415, 545);
+            g.drawString(currentlySelectedName, 415, 545);
         }
     }
 
@@ -265,9 +318,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintBackgroundImage(Graphics g, Color col) {
 
-        g.setColor(col);
-        g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
-
+        //   g.setColor(col);
+        //g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT); //alternative empty background
+        // load the png background image
         Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
         g.drawImage(i, 0, 0, this);
     }
@@ -278,12 +331,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (e.getSource() == timer) {
 
-
+            // @trigger computer-only reinforcing.
             if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing btu computer is still not done reinforcing. CPU spams reinforcements until done.
                 while (computerPlayer1.reinforcements >= computerPlayer1.reinforcementsPlacedThisTurn) {
-                    System.out.println("R:" + computerPlayer1.reinforcements + "/" + computerPlayer1.reinforcementsPlacedThisTurn);
+                    System.out.println("[Dev] CPU Reinforcements:" + computerPlayer1.reinforcements + "/" + computerPlayer1.reinforcementsPlacedThisTurn);
 
-                    // Computer Reinforcement.
+                    // Computer Reinforcement inner trigger
                     boolean reAttempt = true;
 
                     while (reAttempt) {
@@ -291,7 +344,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                         if (Gamer.getOwner(randomTerritory, computerPlayer1, humanPlayer1) == computerPlayer1) { // if and only if the territory is owned by the computer
                             randomTerritory.addArmy(1); // reinforce the territory
-                            computerPlayer1.reinforcementsPlacedThisTurn++;
+                            computerPlayer1.reinforcementsPlacedThisTurn++; // increment the number of reinforcements placed this turn by the computer
                             reAttempt = false; // once a reinforcement, do not reattempt to capture again
                         }
 
@@ -299,22 +352,28 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     }
                 }
 
+                // @endof reinforcement phase
                 reinforceMentPhase = false;
+                // @startof attack phase
                 attackPhase = true;
+                // @endoftrigger computer-only-reinforcement
                 humanIsDoneReinforcing = false;
 
             }
 
-
-            if (displayWelcomeSplashBox) {
-                welcomeSplashBoxTickTimer++;
+            //@trigger welcome screen splash screen
+            if (displayWelcomeSplashBox) { // check if welcome screen splash screen trigger is active
+                welcomeSplashBoxTickTimer++; // begin ticker for the trigger
             }
 
-            checkIfNewTurn();
-            if (paintNewTurnBox) {
-                newTurnBoxTickTimer++;
+            //@trigger new turn
+            checkIfNewTurn(); // check if new turn trigger is active
+            //@trigger new turn splash screen
+            if (paintNewTurnBox) { // check if paint new turn splash screen trigger is active
+                newTurnBoxTickTimer++; // begin ticker for the trigger
             }
 
+            // Repaint screen
             repaint();
         }
 
@@ -341,15 +400,38 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         System.out.println("Click:" + x + "," + y);
 
-        // Changes the currentlySelected pointer.
-        for (int i = 0; i < gameData.territory.size(); i++) {
-            if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
-                System.out.println("Clicked on " + gameData.territory.get(i).getName());
-                currentlySelected = gameData.territory.get(i);
-                currentlySelectedName = currentlySelected.getName();
+        //  @onclick Make primary selection
+        if (!shiftKeyIsPressed) {
+            // Sets/Changes the currentlySelected pointer.
+            shiftSelected = null; // resets secondary selection
+            for (int i = 0; i < gameData.territory.size(); i++) {
+                if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
+                    System.out.println("Clicked on " + gameData.territory.get(i).getName());
+                    currentlySelected = gameData.territory.get(i);
+                    currentlySelectedName = currentlySelected.getName(); //
 
-                break;
+                    break;
+                }
             }
+        }
+
+
+        // @onclick Make secondary Selection
+        if (shiftKeyIsPressed && currentlySelected != null) {
+
+            for (int i = 0; i < gameData.territory.size(); i++) {
+                if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
+                    System.out.println("Shift-Clicked on " + gameData.territory.get(i).getName());
+                    shiftSelected = gameData.territory.get(i);
+                    break;
+                }
+
+            }
+            // does not allow 2 selections of same territory
+            if (shiftSelected == currentlySelected) {
+                shiftSelected = null;
+            }
+
         }
 
 
@@ -361,6 +443,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (humanPlayer1.reinforcements == humanPlayer1.reinforcementsPlacedThisTurn && computerPlayer1.reinforcements != computerPlayer1.reinforcementsPlacedThisTurn) {
                 System.out.println("human is done reinforcing");
+                // @triggers computer-only reinforcement
                 humanIsDoneReinforcing = true;
             }
 
@@ -373,8 +456,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             //Adds an army to the territory that is clicked.
-
-
             if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
                 currentlySelected.addArmy(1);
                 humanPlayer1.reinforcementsPlacedThisTurn++;
@@ -474,6 +555,40 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            System.out.println("Escape Typed");
+            currentlySelected = null;
+            shiftSelected = null;
+        }
+
+
+        if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+            System.out.println("Shift Pressed");
+            shiftKeyIsPressed = true;
+        }
+
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+        if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+            System.out.println("Shift Released");
+            shiftKeyIsPressed = false;
+        }
 
     }
 }
