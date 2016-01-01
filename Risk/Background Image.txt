@@ -1,0 +1,11 @@
+http://imgur.com/qsAlcay
+
+Download this image. 
+Place it in the src forlder.
+Change the path file as required for your computer.
+
+ private void paintBackgroundImage(Graphics g, Color col) {
+      ...
+        Image i = Toolkit.getDefaultToolkit().getImage("IMAGE PATH FILE");
+      ...
+      }
