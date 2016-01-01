@@ -342,7 +342,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             //Adds an army to the territory that is clicked.
-            if (currentlySelected.check_isInsideTerritory(x, y)) {
+            if (currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected,computerPlayer1,humanPlayer1) == currentActivePlayerTurn) {
                 currentlySelected.addArmy(1);
                 currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
             }
