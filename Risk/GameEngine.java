@@ -144,7 +144,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
-            int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn + 1;
+            int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn;
             g.setFont(turnPhaseLabelFont);
             g.setColor(Color.black);
             g.drawString("Reinforcements: " + reinforcementsLeftToPlace, 609, 580);
@@ -486,6 +486,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             System.out.println("Total Re: " + currentActivePlayerTurn.reinforcements);
             System.out.println("Re placed so far: " + currentActivePlayerTurn.reinforcementsPlacedThisTurn);
 
+            //Adds an army to the territory that is clicked.
+            if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
+                currentlySelected.addArmy(1);
+                humanPlayer1.reinforcementsPlacedThisTurn++;
+                System.out.println("triggering humancapturedsuccesfully");
+                humanCapturedSuccesfully = true;
+            }
+
 
             // When you are done reinforcing but the computer is not done reinforcing let the computer finish @triggers computer-only-reinforcing
             if (humanPlayer1.reinforcements == humanPlayer1.reinforcementsPlacedThisTurn && computerPlayer1.reinforcements != computerPlayer1.reinforcementsPlacedThisTurn) {
@@ -502,12 +510,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break placementLoop;
             }
 
-            //Adds an army to the territory that is clicked.
-            if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
-                currentlySelected.addArmy(1);
-                humanPlayer1.reinforcementsPlacedThisTurn++;
-                humanCapturedSuccesfully = true;
-            }
 
             if (humanCapturedSuccesfully && computerPlayer1.reinforcements != computerPlayer1.reinforcementsPlacedThisTurn) { // Computer Reinforcement after human click.
                 boolean reAttempt = true;
