@@ -3,16 +3,14 @@ import java.util.ArrayList;
 
 /**
  * this class is for the controlling of the informations of the Army and the Reinforcements
- *
- *
  */
 public class Gamer {
     public Color color;
     public ArrayList<Territory> myTerritory = new ArrayList<Territory>();
+    public int reinforcements = 0;
+    public int reinforcementsPlacedThisTurn = 1; //// FIXME: 31/12/15
     String playerName;
     private boolean isHuman = false;
-    public int reinforcements = 0;
-    public int reinforcementsPlacedThisTurn = 1; //// FIXME: 31/12/15 
 
     /**
      * base information for a non player charakter
@@ -26,10 +24,22 @@ public class Gamer {
 
     }
 
-    public void captureTerritory(Territory toCapture) {
-        myTerritory.add(toCapture);
-        toCapture.addArmy(1);
-        System.out.println("succesfully captured: " + toCapture.getName());
+    //getOwner returns which gamer controls a given territory. Iterative check.
+    public static Gamer getOwner(Territory currentlySelected, Gamer computerPlayer1, Gamer humanPlayer1) {
+
+        for (Territory t : computerPlayer1.myTerritory) {
+            if (t.equals(currentlySelected)) {
+                return computerPlayer1;
+            }
+        }
+
+        for (Territory t : humanPlayer1.myTerritory) {
+            if (t.equals(currentlySelected)) {
+                return humanPlayer1;
+            }
+        }
+
+        return null;
     }
 
 
@@ -48,6 +58,12 @@ public class Gamer {
             }
         }
     }*/
+
+    public void captureTerritory(Territory toCapture) {
+        myTerritory.add(toCapture);
+        toCapture.addArmy(1);
+        System.out.println("succesfully captured: " + toCapture.getName());
+    }
 
     public boolean init(Territory area) {
         if (this.myTerritory.size() == 0) {
@@ -104,25 +120,12 @@ public class Gamer {
 
     public void calculateReinforcements() {
 
-        this.reinforcements = 10;
-    }
-
-    //getOwner returns which gamer controls a given territory. Iterative check.
-    public static Gamer getOwner(Territory currentlySelected, Gamer computerPlayer1, Gamer humanPlayer1) {
-
-        for (Territory t: computerPlayer1.myTerritory){
-            if (t.equals(currentlySelected)){
-                return computerPlayer1;
-            }
+        if (this.playerName == "Human Player 1") {
+            this.reinforcements = 10;
         }
-
-        for (Territory t: humanPlayer1.myTerritory){
-            if (t.equals(currentlySelected)){
-                return humanPlayer1;
-            }
+        if (this.playerName == "CPU Player 1") {
+            this.reinforcements = 2000;
         }
-
-        return null;
     }
 
 /*    public void createNewReinforcements() {
