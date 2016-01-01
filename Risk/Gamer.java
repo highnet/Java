@@ -8,7 +8,7 @@ public class Gamer {
     public Color color;
     public ArrayList<Territory> myTerritory = new ArrayList<Territory>();
     public int reinforcements = 0;
-    public int reinforcementsPlacedThisTurn = 1; //// FIXME: 31/12/15
+    public int reinforcementsPlacedThisTurn = 0; //// FIXME: 31/12/15
     String playerName;
     private boolean isHuman = false;
 
