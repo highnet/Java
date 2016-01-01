@@ -26,8 +26,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public Territory currentlySelected = null;
     public String currentlySelectedName = "";
     PlayField gameData;
-    Gamer humanPlayer1 = new Gamer(Color.blue, true, "Human Player 1");
-    Gamer computerPlayer1 = new Gamer(Color.red, false, "CPU Player 1");
+    Gamer humanPlayer1 = new Gamer(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)), true, "Human Player 1");
+    Gamer computerPlayer1 = new Gamer(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)), false, "CPU Player 1");
 
     Gamer currentActivePlayerTurn = humanPlayer1;
 
@@ -342,7 +342,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             //Adds an army to the territory that is clicked.
-            if (currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected,computerPlayer1,humanPlayer1) == currentActivePlayerTurn) {
+            if (currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
                 currentlySelected.addArmy(1);
                 currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
             }
