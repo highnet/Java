@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.ArrayList;
 
 /*
@@ -43,6 +42,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     boolean reinforceMentPhase = false;
     boolean attackPhase = false;
+
+    boolean humanIsDoneReinforcing = false;
 
 
     public GameEngine() {
@@ -278,8 +279,33 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (e.getSource() == timer) {
 
 
-            if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
-                currentActivePlayerTurn.calculateReinforcements();
+
+
+            if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing btu computer is still not done reinforcing. CPU spams reinforcements until done.
+                while (computerPlayer1.reinforcements >= computerPlayer1.reinforcementsPlacedThisTurn) {
+                    System.out.println("R:" + computerPlayer1.reinforcements + "/" + computerPlayer1.reinforcementsPlacedThisTurn);
+
+                    // Computer Reinforcement.
+                    boolean reAttempt = true;
+
+                    while (reAttempt) {
+                        int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                        Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
+                        if (Gamer.getOwner(randomTerritory, computerPlayer1, humanPlayer1) == computerPlayer1) { // if and only if the territory is owned by the computer
+                            randomTerritory.addArmy(1); // reinforce the territory
+                            computerPlayer1.reinforcementsPlacedThisTurn++;
+                            reAttempt = false; // once a reinforcement, do not reattempt to capture again
+                            this.repaint();
+                        }
+
+
+                    }
+                }
+
+                reinforceMentPhase = false;
+                attackPhase = true;
+                humanIsDoneReinforcing = false;
+
             }
 
 
@@ -302,6 +328,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintNewTurnBox = true;
             attackPhase = false;
             reinforceMentPhase = true;
+            humanPlayer1.calculateReinforcements();
+            computerPlayer1.calculateReinforcements();
 
         }
     }
@@ -334,18 +362,46 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             System.out.println("Total Re: " + currentActivePlayerTurn.reinforcements);
             System.out.println("Re placed so far: " + currentActivePlayerTurn.reinforcementsPlacedThisTurn);
 
+            if (humanPlayer1.reinforcements == humanPlayer1.reinforcementsPlacedThisTurn && computerPlayer1.reinforcements != computerPlayer1.reinforcementsPlacedThisTurn) {
+                System.out.println("human is done reinforcing");
+                humanIsDoneReinforcing = true;
+            }
+
             // End condition: whenever you run out of reinforcements to place.
-            if (currentActivePlayerTurn.reinforcements == currentActivePlayerTurn.reinforcementsPlacedThisTurn) {
+            if (humanPlayer1.reinforcements == humanPlayer1.reinforcementsPlacedThisTurn && computerPlayer1.reinforcements == computerPlayer1.reinforcementsPlacedThisTurn) {
                 reinforceMentPhase = false;
                 attackPhase = true;
+                humanIsDoneReinforcing = false;
                 break placementLoop;
             }
 
             //Adds an army to the territory that is clicked.
-            if (currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
+
+
+            if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
                 currentlySelected.addArmy(1);
-                currentActivePlayerTurn.reinforcementsPlacedThisTurn++;
+                humanPlayer1.reinforcementsPlacedThisTurn++;
             }
+
+            if (computerPlayer1.reinforcements != computerPlayer1.reinforcementsPlacedThisTurn) { // Computer Reinforcement.
+                boolean reAttempt = true;
+
+                while (reAttempt) {
+                    int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                    Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
+                    if (Gamer.getOwner(randomTerritory, computerPlayer1, humanPlayer1) == computerPlayer1) { // if and only if the territory is owned by the computer
+                        randomTerritory.addArmy(1); // reinforce the territory
+                        computerPlayer1.reinforcementsPlacedThisTurn++;
+                        reAttempt = false; // once a reinforcement, do not reattempt to capture again.
+
+
+                    }
+
+
+                }
+            }
+
+
         }
 
         // Special case for turn 0. Territory Selection Phase.
