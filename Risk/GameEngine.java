@@ -279,8 +279,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (e.getSource() == timer) {
 
 
-
-
             if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing btu computer is still not done reinforcing. CPU spams reinforcements until done.
                 while (computerPlayer1.reinforcements >= computerPlayer1.reinforcementsPlacedThisTurn) {
                     System.out.println("R:" + computerPlayer1.reinforcements + "/" + computerPlayer1.reinforcementsPlacedThisTurn);
@@ -295,7 +293,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             randomTerritory.addArmy(1); // reinforce the territory
                             computerPlayer1.reinforcementsPlacedThisTurn++;
                             reAttempt = false; // once a reinforcement, do not reattempt to capture again
-                            this.repaint();
                         }
 
 
