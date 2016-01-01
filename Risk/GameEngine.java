@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /*
@@ -19,6 +20,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private final Font territoryArmyCountLabelFont = new Font("Consola", Font.ITALIC, 18);
     private final Font turnNumberLabelFont = new Font("Consola", Font.BOLD, 22);
     private final Font newTurnBoxInfoLabelFont = new Font("Consola", Font.BOLD, 36);
+    private final Font turnPhaseLabelFont = new Font("Consola", Font.BOLD, 14);
+
     private final Timer timer = new Timer(16, this);
     public Territory currentlySelected = null;
     public String currentlySelectedName = "";
@@ -95,20 +98,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
+        // Prints the outline of all territories
+
+        for (int i = 0; i < gameData.territory.size(); i++) {
+            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
+        }
+
         // Changes the color of the capital city of the neighbours of currentlyselected to display to the user
         // the new possibilities of attack
-
         if (currentlySelected != null) {
             paintCurrentlySelectedCapitalHighlighted(g);
             paintCurrentlySelectedCapitalContourHighlighted(g);
+
             paintNeighbours(g);
 
         }
 
-        // Prints the outline of all territories
-        for (int i = 0; i < gameData.territory.size(); i++) {
-            gameData.territory.get(i).printTerritory(g, "outline", currentlySelectedName, Color.black);
-        }
 
         // Draws the number of units of each territory.
         for (int i = 0; i < gameData.territory.size(); i++) {
@@ -128,7 +133,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
             int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn + 1;
-            g.drawString("Reinforcements: " + reinforcementsLeftToPlace, 650, 590);
+            g.setFont(turnPhaseLabelFont);
+            g.setColor(Color.black);
+            g.drawString("Reinforcements: " + reinforcementsLeftToPlace, 609, 580);
 
         }
 
@@ -159,13 +166,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void paintTurnPhaseLabels(Graphics g) {
-        g.setFont(currentlySelectedLabelFont);
+        g.setFont(turnPhaseLabelFont);
+        g.setColor(Color.black);
 
         if (reinforceMentPhase) {
-            g.drawString("Reinforcement Phase", 360, 600);
+            g.drawString("Reinforcement Phase", 416, 580);
         }
         if (attackPhase) {
-            g.drawString("Attack Phase", 360, 600);
+            g.drawString("Attack Phase", 416, 580);
         }
     }
 
@@ -191,6 +199,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintTurnNumberLabel(Graphics g) {
 
         g.setFont(turnNumberLabelFont);
+        g.setColor(currentActivePlayerTurn.color);
         g.drawString(currentActivePlayerTurn.playerName + " - Turn: " + turnNumber, 910, 25);
     }
 
@@ -225,8 +234,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintCurrentlySelectedLabel(Graphics g) {
         g.setColor(Color.BLACK);
-        g.setFont(currentlySelectedLabelFont);
-        g.drawString(currentlySelectedName + "   > ", 435, 565);
+        if (currentActivePlayerTurn != null && currentlySelected != null && !currentActivePlayerTurn.myTerritory.isEmpty()) {
+            for (Territory t : gameData.territory) {
+                if (currentlySelected == t) {
+                    g.setColor(Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).color);
+                }
+            }
+
+            g.setFont(currentlySelectedLabelFont);
+            g.drawString(currentlySelectedName + "   > ", 415, 545);
+        }
     }
 
     private void paintNeighbours(Graphics g) {
@@ -249,6 +266,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         g.setColor(col);
         g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
+
+        Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
+        g.drawImage(i, 0, 0, this);
     }
 
 
