@@ -60,14 +60,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         gameData = new PlayField();
 
         try {
-            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
-         //   File mapData = new File(fileArgument1);
+            File mapData = new File("C:/Users/bokense/IdeaProjects/Risk/src/world.map");
+            //   File mapData = new File(fileArgument1);
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-      //  this.pngFileLocation = fileArgument2;
+        //  this.pngFileLocation = fileArgument2;
 
         System.out.println("[Dev] Done loading all gamedata...");
 
@@ -403,8 +403,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         //   g.setColor(col);
         //g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT); //alternative empty background
         // load the png background image
-           Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
-       // Image i = Toolkit.getDefaultToolkit().getImage(pngFileLocation);
+        Image i = Toolkit.getDefaultToolkit().getImage("C:/Users/bokense/IdeaProjects/Risk/src/backgroundimg.png");
+        // Image i = Toolkit.getDefaultToolkit().getImage(pngFileLocation);
         g.drawImage(i, 0, 0, this);
     }
 
@@ -572,7 +572,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         String str = JOptionPane.showInputDialog(this, "How many units to reinforce? (1-" + (currentlySelected.army - 1) + ")", 0);
 
-        int input = (str == null ? 0 : Integer.parseInt(str));
+        int input = (str == null ? 0 : Integer.parseInt(str) < 0 ? 0 : Integer.parseInt(str));
 
 
         if (input != 0 && currentlySelected.army > input) {
