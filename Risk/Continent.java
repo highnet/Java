@@ -1,6 +1,4 @@
-import java.awt.*;
 import java.util.ArrayList;
-
 
 public class Continent {
     private ArrayList<Territory> territory = new ArrayList<Territory>();
@@ -19,13 +17,6 @@ public class Continent {
 
     public void addTerritory(Territory data) {
         this.territory.add(data);
-    }
-
-
-    public void printContinent(Graphics g) {
-        for (int i = 0; i < this.territory.size(); i++) {
-            this.territory.get(i).printTerritory(g);
-        }
     }
 
 
