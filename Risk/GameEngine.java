@@ -29,26 +29,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     Gamer humanPlayer1 = new Gamer(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)), true, "Human Player 1");
     Gamer computerPlayer1 = new Gamer(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)), false, "CPU Player 1");
 
-    Gamer currentActivePlayerTurn = humanPlayer1;
-
 
     int turnNumber = 0;
 
-    boolean displayWelcomeSplashBox = false;
+    boolean displayWelcomeSplashBox = true;
     int welcomeSplashBoxTickTimer = 0;
 
-    boolean newTurn = false;
     boolean paintNewTurnBox = false;
     int newTurnBoxTickTimer = 0;
 
+    boolean newTurn = false;
+
     boolean reinforceMentPhase = false;
     boolean attackPhase = false;
+
+    boolean computerAttackPhase = false;
 
     boolean humanIsDoneReinforcing = false;
 
     boolean shiftKeyIsPressed = false;
 
-    JButton attackBttn = new JButton("ATTACK");
+    JButton attackBttn = new JButton("Attack/Reinforce");
     JButton endTurnBttn = new JButton("End Turn");
 
 
@@ -83,7 +84,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         endTurnBttn.setFocusable(true);
 
 
-
         setFocusable(true); // Setting required for keyboard listener.
 
         timer.start();
@@ -91,11 +91,49 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void fight(Territory currentlySelected, Territory shiftSelected) {
+        String str = JOptionPane.showInputDialog(this, "How many units to attack with? (1-" + (currentlySelected.army - 1) + ")", null);
+        int numberOfAttackers = str == null ? 0 : Integer.parseInt(str);
+
+        if (numberOfAttackers != 0 && numberOfAttackers < currentlySelected.getArmyCount()) {
+
+            if (numberOfAttackers > shiftSelected.getArmyCount()) {
+                System.out.println(currentlySelected.getName() + " wins");
+
+                String inputStr = null;
+                int numberOfTransfer = -1;
+
+                // Prompts the user until they make a valid post-combat-victory transfer.
+                while (numberOfTransfer < 0 || numberOfTransfer > numberOfAttackers) {
+                    inputStr = JOptionPane.showInputDialog(this, "How many units to take transfer with? (1-" + (numberOfAttackers - 1) + ")", null);
+                    numberOfTransfer = inputStr == null ? 0 : Integer.parseInt(inputStr);
+                }
+
+                Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).captureTerritory(shiftSelected, true, numberOfTransfer);
+                currentlySelected.army -= numberOfTransfer;
+                Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1).removeTerritory(shiftSelected);
+                System.out.println(shiftSelected.getName() + " loses");
+
+            } else if (numberOfAttackers <= shiftSelected.getArmyCount()) {
+                System.out.println(shiftSelected.getName() + " wins");
+                Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).removeTerritory(currentlySelected);
+                Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1).captureTerritory(currentlySelected, true);
+                int randomTransfer = (int) (Math.random() * shiftSelected.army);
+                currentlySelected.army += randomTransfer;
+                shiftSelected.army -= randomTransfer;
+                System.out.println(currentlySelected.getName() + " loses");
+
+            }
+        }
+
+    }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         paintBackgroundImage(g, Color.white);
+
+        paintIndicatorLines(g);
 
 
         // Prints all territory landmass as unclaimed.
@@ -162,7 +200,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (currentlySelected != null && turnNumber != 0 && reinforceMentPhase) {
-            int reinforcementsLeftToPlace = currentActivePlayerTurn.reinforcements - currentActivePlayerTurn.reinforcementsPlacedThisTurn;
+            int reinforcementsLeftToPlace = humanPlayer1.reinforcements - humanPlayer1.reinforcementsPlacedThisTurn;
             g.setFont(turnPhaseLabelFont);
             g.setColor(Color.black);
             g.drawString("Reinforcements: " + reinforcementsLeftToPlace, 609, 580);
@@ -180,9 +218,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void paintIndicatorLines(Graphics g) {
+
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(5));
+        g2d.setColor(Color.lightGray);
+        g2d.drawLine(409, 393, 489, 309);
+        g2d.drawLine(414, 95, 355, 121);
+        g2d.drawLine(380, 31, 317, 61);
+        g2d.drawLine(498, 57, 504, 74);
+        g2d.drawLine(519, 75, 608, 75);
+        g2d.drawLine(511, 84, 543, 118);
+        g2d.drawLine(1156, 78, 1260, 76);
+        g2d.drawLine(46, 82, 0, 79);
+
+
+    }
+
     private void paintshiftSelectedLabel(Graphics g) {
         g.setColor(Color.BLACK);
-        if (currentActivePlayerTurn != null && currentlySelected != null && !currentActivePlayerTurn.myTerritory.isEmpty() && shiftSelected != null) {
+        if (humanPlayer1 != null && currentlySelected != null && !humanPlayer1.myTerritory.isEmpty() && shiftSelected != null) {
             for (Territory t : gameData.territory) {
                 if (shiftSelected == t) {
                     g.setColor(Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1).color); // set the color of the currentlyselected String label to that of the owner of currentlyselected territory
@@ -193,7 +249,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawString("> " + shiftSelected.getName(), 600, 545);
         }
     }
-
 
     private void paintShiftSelectedCapitalHighlighted(Graphics g) {
 
@@ -232,6 +287,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         }
         if (welcomeSplashBoxTickTimer == 100) {
+            welcomeSplashBoxTickTimer = 0;
             displayWelcomeSplashBox = false;
         }
 
@@ -251,18 +307,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintGraphicsNewTurnBox(Graphics g) {
 
+        System.out.println("[Dev]Painting new Turn Splash Screen");
+
         if (newTurnBoxTickTimer < 100) {
             g.setColor(Color.lightGray);
             g.fillRect(0, 0, 1650, 650);
             g.setFont(newTurnBoxInfoLabelFont);
             g.setColor(Color.white);
-            g.drawString(currentActivePlayerTurn.playerName + " - Your Turn", 100, 160);
+            g.drawString(humanPlayer1.playerName + " - Your Turn", 100, 160);
 
         }
         if (newTurnBoxTickTimer == 100) {
-            newTurnBoxTickTimer = 0;
             paintNewTurnBox = false;
+            newTurnBoxTickTimer = 0;
             newTurn = false;
+
         }
 
 
@@ -271,8 +330,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintTurnNumberLabel(Graphics g) {
 
         g.setFont(turnNumberLabelFont); // set font
-        g.setColor(currentActivePlayerTurn.color); // set color of string to that of the currently active player
-        g.drawString(currentActivePlayerTurn.playerName + " - Turn: " + turnNumber, 910, 25); // draw the string
+        g.setColor(humanPlayer1.color); // set color of string to that of the currently active player
+        g.drawString(humanPlayer1.playerName + " - Turn: " + turnNumber, 910, 25); // draw the string
     }
 
     private void paintCurrentlySelectedCapitalContourHighlighted(Graphics g) {
@@ -306,7 +365,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintCurrentlySelectedLabel(Graphics g) {
         g.setColor(Color.BLACK);
-        if (currentActivePlayerTurn != null && currentlySelected != null && !currentActivePlayerTurn.myTerritory.isEmpty()) {
+        if (humanPlayer1 != null && currentlySelected != null && !humanPlayer1.myTerritory.isEmpty()) {
             for (Territory t : gameData.territory) {
                 if (currentlySelected == t) {
                     g.setColor(Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1).color); // set the color of the currentlyselected String label to that of the owner of currentlyselected territory
@@ -343,39 +402,104 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawImage(i, 0, 0, this);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == attackBttn) {
             System.out.println("Attack Button Pressed");
 
+
             /* Instanciate combat within two territories
                 works if and only if: currentlySelected exist
                                       shiftselected exists
+                                       the owner of currentlyselected is the human player
                                       the owner of both territories are not the same
                                       both territories are neighbours of each other
              */
+
+            // FIGHT
             if (currentlySelected != null &&
                     shiftSelected != null &&
+                    currentlySelected.army > 1 &&
+                    Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == humanPlayer1 &&
                     Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) !=
                             Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1) &&
                     currentlySelected.checkNeighbour(shiftSelected)) {
 
                 System.out.println("[Dev] Fight Requested per Button");
 
+                fight(currentlySelected, shiftSelected);
+
+
             }
+
+              /* Instanciate REINFORCE within two territories
+                works if and only if: currentlySelected exist
+                                      shiftselected exists
+                                      the owner of currentlyselected is the human player
+                                      the owner of both territories are the same
+                                      both territories are neighbours of each other
+             */
+
+            // REINFORCE
+            else if (currentlySelected != null &&
+                    shiftSelected != null &&
+                    Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == humanPlayer1 &&
+                    Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) ==
+                            Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1) &&
+                    currentlySelected.checkNeighbour(shiftSelected)) {
+
+                System.out.println("[Dev] Reinforce Requested per Button");
+
+                reinforce(currentlySelected, shiftSelected);
+
+
+            }
+
+            attackBttn.setText("Attack/Reinforce");
+            currentlySelected = null;
+            shiftSelected = null;
 
 
         }
 
         if (e.getSource() == endTurnBttn) {
             System.out.println("End Turn Button Pressed");
+
+
+            attackPhase = false;
+            computerAttackPhase = true;
+
+
         }
 
         if (e.getSource() == timer) {
 
 
+            if (computerAttackPhase) {
+                newTurn = true;
+                System.out.println("COMPUTER ATTACK PHASE");
+                System.out.println("NEW TURN");
+
+
+                // COMPUTER ATTACKS
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+
+
+                turnNumber++; // Numerical count of turns.
+                reinforceMentPhase = true;
+                humanPlayer1.calculateReinforcements();
+                computerPlayer1.calculateReinforcements();
+                humanPlayer1.reinforcementsPlacedThisTurn = 0;
+                computerPlayer1.reinforcementsPlacedThisTurn = 0;
+                computerAttackPhase = false;
+
+
+            }
 
             if (attackPhase) {
                 attackBttn.setVisible(true);
@@ -386,7 +510,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             // @trigger computer-only reinforcing.
-            if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing btu computer is still not done reinforcing. CPU spams reinforcements until done.
+            if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing but computer is still not done reinforcing. CPU spams reinforcements until done.
+
                 while (computerPlayer1.reinforcements >= computerPlayer1.reinforcementsPlacedThisTurn) {
                     System.out.println("[Dev] CPU Reinforcements:" + computerPlayer1.reinforcements + "/" + computerPlayer1.reinforcementsPlacedThisTurn);
 
@@ -404,6 +529,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                     }
+
+
                 }
 
                 // @endof reinforcement phase
@@ -420,12 +547,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 welcomeSplashBoxTickTimer++; // begin ticker for the trigger
             }
 
-            //@trigger new turn
-            checkIfNewTurn(); // check if new turn trigger is active
             //@trigger new turn splash screen
             if (paintNewTurnBox) { // check if paint new turn splash screen trigger is active
                 newTurnBoxTickTimer++; // begin ticker for the trigger
             }
+
+            //@trigger new turn
+            checkIfNewTurn(); // check if new turn trigger is active
+
 
             // Repaint screen
             repaint();
@@ -433,14 +562,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void reinforce(Territory currentlySelected, Territory shiftSelected) {
+
+        String str = JOptionPane.showInputDialog(this, "How many units to reinforce? (1-" + (currentlySelected.army - 1) + ")", 0);
+
+        int input = (str == null ? 0 : Integer.parseInt(str));
+
+
+        if (input != 0 && currentlySelected.army > input) {
+            currentlySelected.army -= input;
+            shiftSelected.army += input;
+        } else {
+            System.out.println("INVALID REINFORCEMENT");
+        }
+
+    }
+
     private void checkIfNewTurn() {
         if (newTurn) {
             paintNewTurnBox = true;
-            attackPhase = false;
-            reinforceMentPhase = true;
-            humanPlayer1.calculateReinforcements();
-            computerPlayer1.calculateReinforcements();
-
         }
     }
 
@@ -489,6 +629,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         }
 
+        // Changes the text of the attack button to indicate what kind of action will take place on click.
+        if (attackPhase && currentlySelected != null && shiftSelected != null) {
+            if (Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == humanPlayer1 && Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1) == humanPlayer1) {
+                attackBttn.setText("REINFORCE");
+            } else if (Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == humanPlayer1 && Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1) != humanPlayer1) {
+                attackBttn.setText("ATTACK");
+            } else {
+                if (attackPhase) {
+                    attackBttn.setText("Attack/Reinforce");
+                }
+            }
+        }
+
         // Special case for turn 0. Territory Selection Phase.
         if (turnNumber == 0) {
 
@@ -523,8 +676,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             // If there are no unclaimed territories left. Begin turn 1.
             if (!unclaimedTerritoriesExist) {
-                turnNumber++; // Numerical count of turns.
                 newTurn = true; // Boolean condition used for events that are triggered only during new turn transitions.
+
+                System.out.println("NEW TURN");
+                turnNumber++; // Numerical count of turns.
+                attackPhase = false;
+                reinforceMentPhase = true;
+                humanPlayer1.calculateReinforcements();
+                computerPlayer1.calculateReinforcements();
+                humanPlayer1.reinforcementsPlacedThisTurn = 0;
+                computerPlayer1.reinforcementsPlacedThisTurn = 0;
 
             }
 
@@ -533,16 +694,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         placementLoop:
-        // Reinforcement Placement phase loop. Only active during reinforcement phase
+        // Capture Placement phase loop. Only active during reinforcement phase
         if (turnNumber != 0 && reinforceMentPhase) { // Activates only during reinforcement phase
             boolean humanCapturedSuccesfully = false;
 
 
-            System.out.println("Total Re: " + currentActivePlayerTurn.reinforcements);
-            System.out.println("Re placed so far: " + currentActivePlayerTurn.reinforcementsPlacedThisTurn);
+            System.out.println("Total Re: " + humanPlayer1.reinforcements);
+            System.out.println("Re placed so far: " + humanPlayer1.reinforcementsPlacedThisTurn);
 
             //Adds an army to the territory that is clicked.
-            if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == currentActivePlayerTurn) {
+            if (humanPlayer1.reinforcements != humanPlayer1.reinforcementsPlacedThisTurn && currentlySelected.check_isInsideTerritory(x, y) && Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) == humanPlayer1) {
                 currentlySelected.addArmy(1);
                 humanPlayer1.reinforcementsPlacedThisTurn++;
                 System.out.println("triggering humancapturedsuccesfully");
@@ -635,6 +796,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             System.out.println("Escape Typed");
             currentlySelected = null;
             shiftSelected = null;
+            if (attackPhase) {
+                attackBttn.setText("Attack/Reinforce");
+            }
         }
 
 
