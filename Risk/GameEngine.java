@@ -65,10 +65,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         System.out.println("[Dev] Done loading all gamedata...");
 
-
         addMouseListener(this);
         addMouseMotionListener(this);
-        setFocusable(true); // Setting requires for keyboard listener.
         addKeyListener(this); // Adds keyboard listener.
 
         this.add(attackBttn);
@@ -77,9 +75,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         attackBttn.setVisible(false);
         attackBttn.setVisible(false);
 
+
         attackBttn.addActionListener(this);
         endTurnBttn.addActionListener(this);
 
+        attackBttn.setFocusable(true);
+        endTurnBttn.setFocusable(true);
+
+
+
+        setFocusable(true); // Setting required for keyboard listener.
 
         timer.start();
 
@@ -344,6 +349,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (e.getSource() == attackBttn) {
             System.out.println("Attack Button Pressed");
+
+            /* Instanciate combat within two territories
+                works if and only if: currentlySelected exist
+                                      shiftselected exists
+                                      the owner of both territories are not the same
+                                      both territories are neighbours of each other
+             */
+            if (currentlySelected != null &&
+                    shiftSelected != null &&
+                    Gamer.getOwner(currentlySelected, computerPlayer1, humanPlayer1) !=
+                            Gamer.getOwner(shiftSelected, computerPlayer1, humanPlayer1) &&
+                    currentlySelected.checkNeighbour(shiftSelected)) {
+
+                System.out.println("[Dev] Fight Requested per Button");
+
+            }
+
+
         }
 
         if (e.getSource() == endTurnBttn) {
@@ -351,6 +374,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (e.getSource() == timer) {
+
+
 
             if (attackPhase) {
                 attackBttn.setVisible(true);
@@ -422,10 +447,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void mouseClicked(MouseEvent e) {
 
+        requestFocusInWindow();
+
         // Retrieves clicked coordinates.
         int x = e.getX();
         int y = e.getY();
-
 
         System.out.println("Click:" + x + "," + y);
 
