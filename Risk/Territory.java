@@ -9,7 +9,7 @@ public class Territory {
     private ArrayList<Territory> neighbour = new ArrayList<Territory>();
     private ArrayList<Polygon> polygonArrayList = new ArrayList<Polygon>();
     private boolean newPatchData = false;
-    private int army = 0; // counter for armys on this Territory the information
+    public int army = 0; // counter for armys on this Territory the information
 
 
     public Territory() {
@@ -151,10 +151,6 @@ public class Territory {
 
     public boolean alreadyOccupied(Gamer humanPlayer1, Gamer computerPlayer1) {
 
-
-        if (this == null) {
-            return false;
-        }
         // check if humanplayer1 already owns territory to capture
         for (int i = 0; i < humanPlayer1.myTerritory.size(); i++){
             if (this.getName() == humanPlayer1.myTerritory.get(i).getName()){
@@ -171,4 +167,7 @@ public class Territory {
 
         return false;
     }
+
+
+
 }
