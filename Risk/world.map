@@ -126,43 +126,45 @@ capital-of Middle East 753 213
 capital-of New Guinea 1129 378
 capital-of Indonesia 1031 360
 neighbors-of Alaska : North West Territory - Alberta - Kamchatka
-neighbors-of North West Territory : Alberta - Ontario - Greenland
-neighbors-of Alberta : Western United States - Ontario
-neighbors-of Ontario : Greenland - Quebec - Eastern United States
-neighbors-of Quebec : Greenland - Eastern United States
-neighbors-of Western United States : Eastern United States - Central America
-neighbors-of Eastern United States : Central America
-neighbors-of Central America : Venezuela
-neighbors-of Venezuela : Peru - Brazil
-neighbors-of Peru : Brazil - Argentina
-neighbors-of Brazil : Argentina - North Africa
-neighbors-of Greenland : Iceland
-neighbors-of Iceland : Great Britain - Scandinavia
-neighbors-of Great Britain : Western Europe - Northern Europe - Scandinavia
-neighbors-of Western Europe : Southern Europe - Northern Europe - North Africa
-neighbors-of Northern Europe : Southern Europe - Ukraine - Scandinavia
-neighbors-of Southern Europe : Ukraine - North Africa - Egypt - Middle East
-neighbors-of Scandinavia : Ukraine
-neighbors-of Ukraine : Middle East - Afghanistan - Ural
-neighbors-of Ural : Siberia - China - Afghanistan
-neighbors-of Afghanistan : China - India - Middle East
-neighbors-of Middle East : Egypt - East Africa - India
-neighbors-of India : Siam - China
-neighbors-of China : Siam - Mongolia
-neighbors-of Mongolia : Japan - Irkutsk - Kamchatka - Siberia
-neighbors-of Siberia : Irkutsk - Yakutsk
-neighbors-of Irkutsk : Yakutsk - Kamchatka
-neighbors-of Yakutsk : Kamchatka
-neighbors-of Kamchatka : Japan
-neighbors-of Siam : Indonesia
-neighbors-of Indonesia : New Guinea
-neighbors-of New Guinea : Eastern Australia - Western Australia
-neighbors-of Eastern Australia : Western Australia
-neighbors-of North Africa : Congo - Egypt - East Africa
-neighbors-of Egypt : East Africa
-neighbors-of East Africa : Madagascar - Congo - South Africa - Middle East
-neighbors-of Congo : South Africa
-neighbors-of South Africa : Madagascar
+neighbors-of North West Territory : Alberta - Ontario - Greenland - Alaska
+neighbors-of Alberta : Western United States - Ontario - Alaska - North West Territory
+neighbors-of Ontario : Western United States - Quebec - Eastern United States - Albert - North West Territory - Alberta
+neighbors-of Quebec : Greenland - Eastern United States - Ontario
+neighbors-of Western United States : Eastern United States - Central America - Alberta - Ontario
+neighbors-of Eastern United States : Central America - Western United States - Quebec - Ontario -
+neighbors-of Central America : Venezuela - Western United States - Eastern United States
+neighbors-of Venezuela : Peru - Brazil - Central America
+neighbors-of Peru : Brazil - Argentina - Venezuela
+neighbors-of Brazil : Argentina - North Africa - Peru - Venezuela
+neighbors-of Greenland : Iceland - Quebec - North West Territory
+neighbors-of Iceland : Great Britain - Scandinavia - Greenland
+neighbors-of Great Britain : Western Europe - Northern Europe - Scandinavia - Iceland
+neighbors-of Western Europe : Southern Europe - Northern Europe - North Africa - Great Britain
+neighbors-of Northern Europe : Southern Europe - Ukraine - Scandinavia - Western Europe - Great Britain
+neighbors-of Southern Europe : Ukraine - North Africa - Egypt - Middle East - Northern Europe - Western Europe
+neighbors-of Scandinavia : Ukraine - Great Britain - Northern Europe - Iceland
+neighbors-of Ukraine : Middle East - Afghanistan - Ural - Southern Europe - Northern Europe - Scandinavia
+neighbors-of Ural : Siberia - China - Afghanistan - Ukraine
+neighbors-of Afghanistan : China - India - Middle East - Ukraine - Ural
+neighbors-of Middle East : Egypt - East Africa - India - Afghanistan - Ukraine - Southern Europe
+neighbors-of India : Siam - China - Middle East - Afghanistan
+neighbors-of China : Siam - Mongolia - India - Afghanistan - Japan
+neighbors-of Mongolia : Japan - Irkutsk - Kamchatka - Siberia - China
+neighbors-of Siberia : Irkutsk - Yakutsk - Ural -
+neighbors-of Irkutsk : Yakutsk - Kamchatka - Siberia - Mongolia
+neighbors-of Yakutsk : Kamchatka - Irkutsk - Siberia
+neighbors-of Kamchatka : Japan - Mongolia - Yakutsk - Irkutsk
+neighbors-of Siam : Indonesia - India - China
+neighbors-of Indonesia : New Guinea - Siam - Eastern Australia - Western Australia
+neighbors-of New Guinea : Eastern Australia - Western Australia - Indonesia
+neighbors-of Eastern Australia : Western Australia - New Guinea - Indonesia
+neighbors-of North Africa : Congo - Egypt - East Africa - Western Europe - Brazil - Southern Europe
+neighbors-of Egypt : East Africa - North Africa - Middle East - Southern Europe -
+neighbors-of East Africa : Madagascar - Congo - South Africa - Middle East - North Africa - Egypt
+neighbors-of Congo : South Africa - East Africa - North Africa
+neighbors-of South Africa : Madagascar - Congo - East Africa
+neighbors-of Madagascar: East Africa - South Africa
+neighbors-of Argentina: Peru - Brazil
 continent North America 5 : Alaska - North West Territory - Greenland - Alberta - Ontario - Quebec - Western United States - Eastern United States - Central America
 continent South America 2 : Venezuela - Peru - Brazil - Argentina
 continent Europe 5 : Iceland - Scandinavia - Ukraine - Northern Europe - Southern Europe - Western Europe - Great Britain
