@@ -15,20 +15,18 @@ public class Main extends JFrame {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        EventQueue.invokeLater(() -> {
 
 
-                Main window = new Main();
+            Main window = new Main();
 
-                window.setSize(WIDTH, HEIGHT);
+            window.setSize(WIDTH, HEIGHT);
 
-                GameEngine worldMap = new GameEngine();
+            GameEngine worldMap = new GameEngine();
 
-                window.add(worldMap);
+            window.add(worldMap);
 
 
-            }
         });
 
 
@@ -37,10 +35,10 @@ public class Main extends JFrame {
     private void initialize() {
 
         this.setSize(WIDTH, HEIGHT);
-        this.setTitle("Risk");
+        this.setTitle("Risk v 0.1");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(1, 4)); // Sucks D.
+        setLayout(new GridLayout(1, 1));
         this.setVisible(true);
 
     }
