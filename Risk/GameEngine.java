@@ -48,6 +48,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     boolean shiftKeyIsPressed = false;
 
+    JButton attackBttn = new JButton("ATTACK");
+    JButton endTurnBttn = new JButton("End Turn");
+
 
     public GameEngine() {
 
@@ -67,6 +70,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         addMouseMotionListener(this);
         setFocusable(true); // Setting requires for keyboard listener.
         addKeyListener(this); // Adds keyboard listener.
+
+        this.add(attackBttn);
+        this.add(endTurnBttn);
+
+        attackBttn.setVisible(false);
+        attackBttn.setVisible(false);
+
+        attackBttn.addActionListener(this);
+        endTurnBttn.addActionListener(this);
+
 
         timer.start();
 
@@ -329,7 +342,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        if (e.getSource() == attackBttn) {
+            System.out.println("Attack Button Pressed");
+        }
+
+        if (e.getSource() == endTurnBttn) {
+            System.out.println("End Turn Button Pressed");
+        }
+
         if (e.getSource() == timer) {
+
+            if (attackPhase) {
+                attackBttn.setVisible(true);
+                endTurnBttn.setVisible(true);
+            } else {
+                attackBttn.setVisible(false);
+                endTurnBttn.setVisible(false);
+            }
 
             // @trigger computer-only reinforcing.
             if (reinforceMentPhase && humanIsDoneReinforcing) { // if human is done reinforcing btu computer is still not done reinforcing. CPU spams reinforcements until done.
