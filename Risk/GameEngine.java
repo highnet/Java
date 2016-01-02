@@ -52,6 +52,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     JButton attackBttn = new JButton("Attack/Reinforce");
     JButton endTurnBttn = new JButton("End Turn");
 
+    String pngFileLocation;
+
 
     public GameEngine() {
 
@@ -59,10 +61,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         try {
             File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
+         //   File mapData = new File(fileArgument1);
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+      //  this.pngFileLocation = fileArgument2;
 
         System.out.println("[Dev] Done loading all gamedata...");
 
@@ -398,7 +403,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         //   g.setColor(col);
         //g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT); //alternative empty background
         // load the png background image
-        Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
+           Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
+       // Image i = Toolkit.getDefaultToolkit().getImage(pngFileLocation);
         g.drawImage(i, 0, 0, this);
     }
 
