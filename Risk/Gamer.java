@@ -10,7 +10,7 @@ public class Gamer {
     public int reinforcements = 0;
     public int reinforcementsPlacedThisTurn = 0; //// FIXME: 31/12/15
     String playerName;
-    private boolean isHuman = false;
+      private boolean isHuman = false;
 
     /**
      * base information for a non player charakter
@@ -65,6 +65,17 @@ public class Gamer {
         System.out.println("succesfully captured: " + toCapture.getName());
     }
 
+    public void captureTerritory(Territory toCapture, boolean isATakeOver) {
+
+        if (isATakeOver) {
+            myTerritory.add(toCapture);
+            toCapture.army = 0;
+            System.out.println("succesfully captured: " + toCapture.getName());
+        } else {
+            captureTerritory(toCapture);
+        }
+    }
+
     public boolean init(Territory area) {
         if (this.myTerritory.size() == 0) {
             this.createNewArmy(area);
@@ -108,7 +119,7 @@ public class Gamer {
 
     }
 
-    private void removeTerritory(Territory t) {
+    public void removeTerritory(Territory t) {
         this.myTerritory.remove(t);
     }
 
@@ -121,10 +132,21 @@ public class Gamer {
     public void calculateReinforcements() {
 
         if (this.playerName == "Human Player 1") {
-            this.reinforcements = 10;
+            this.reinforcements = 11;
         }
         if (this.playerName == "CPU Player 1") {
             this.reinforcements = 2000;
+        }
+    }
+
+    public void captureTerritory(Territory toCapture, boolean isATakeOver, int numberOfTransfer) {
+
+        if (isATakeOver) {
+            myTerritory.add(toCapture);
+            toCapture.army = numberOfTransfer;
+            System.out.println("succesfully captured: " + toCapture.getName());
+        } else {
+            captureTerritory(toCapture);
         }
     }
 
