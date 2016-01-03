@@ -1,0 +1,137 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+/*
+ *
+ *
+ *
+ */
+
+
+public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
+
+
+
+    private final Timer timer = new Timer(1, this);
+
+    Image i = Toolkit.getDefaultToolkit().getImage("C:/Users/bokense/IdeaProjects/RiskCoordinateMapGenerator/src/img190177.png");
+
+    ArrayList<Integer> X = new ArrayList<>();
+    ArrayList<Integer> Y = new ArrayList<>();
+
+    public GameEngine() {
+
+        //  this.pngFileLocation = fileArgument2;
+
+        System.out.println("[Dev] Done loading all gamedata...");
+
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        addKeyListener(this); // Adds keyboard listener.
+
+        setFocusable(true); // Setting required for keyboard listener.
+
+        timer.start();
+
+
+
+    }
+
+
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.drawImage(i,0,0,this);
+
+    }
+
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+
+        if (e.getSource() == timer) {
+
+            repaint();
+        }
+
+    }
+
+
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        // Retrieves clicked coordinates.
+        int x = e.getX();
+        int y = e.getY();
+
+        X.add(x);
+        Y.add(y);
+
+        System.out.println("Click:" + x + "," + y);
+
+
+    }
+
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        if (e.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+          for(int i = 0; i < X.size(); i++){
+              System.out.print("" + X.get(i) + " "+ Y.get(i) + " ");
+          }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+
+
+    }
+}
