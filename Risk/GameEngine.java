@@ -52,6 +52,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     JButton attackBttn = new JButton("Attack/Reinforce");
     JButton endTurnBttn = new JButton("End Turn");
 
+    String loadedMap;
+
     String pngFileLocation;
 
 
@@ -60,14 +62,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         gameData = new PlayField();
 
         try {
-            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
-         //   File mapData = new File(fileArgument1);
+            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/azeroth.map");
+            loadedMap = "azeroth";
+            //loadedMap = "world";
+            //   File mapData = new File(fileArgument1);
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-      //  this.pngFileLocation = fileArgument2;
+        //  this.pngFileLocation = fileArgument2;
 
         System.out.println("[Dev] Done loading all gamedata...");
 
@@ -138,7 +142,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         paintBackgroundImage(g, Color.white);
 
-        paintIndicatorLines(g);
+        if (loadedMap == "world") {
+            paintIndicatorLines(g);
+        }
 
 
         // Prints all territory landmass as unclaimed.
@@ -403,8 +409,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         //   g.setColor(col);
         //g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT); //alternative empty background
         // load the png background image
-           Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
-       // Image i = Toolkit.getDefaultToolkit().getImage(pngFileLocation);
+        Image i = Toolkit.getDefaultToolkit().getImage("/Users/bokense1/Desktop/Risk 2/src/JT-1 3.png");
+        // Image i = Toolkit.getDefaultToolkit().getImage(pngFileLocation);
         g.drawImage(i, 0, 0, this);
     }
 
@@ -525,7 +531,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     boolean reAttempt = true;
 
                     while (reAttempt) {
-                        int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                        int randomTerritoryFinder = 0;
+                        if (loadedMap == "world") {
+                            randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                        } else if (loadedMap == "azeroth") {
+                            randomTerritoryFinder = (int) (Math.random() * 2);
+                        }
+
                         Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                         if (Gamer.getOwner(randomTerritory, computerPlayer1, humanPlayer1) == computerPlayer1) { // if and only if the territory is owned by the computer
                             randomTerritory.addArmy(1); // reinforce the territory
@@ -658,7 +670,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 boolean reAttempt = true; // Boolean condition used for reattempting AI placement when the randomly generated territory is already occupied
 
                 while (reAttempt) {
-                    int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random territory
+                    int randomTerritoryFinder = 0;
+                    if (loadedMap == "world") {
+                        randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                    } else if (loadedMap == "azeroth") {
+                        randomTerritoryFinder = (int) (Math.random() * 2);
+                    } // Chose a random territory
                     Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                     if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) { // if and only if the territory is unoccupied
                         computerPlayer1.captureTerritory(randomTerritory); // capture the territory
@@ -737,7 +754,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 boolean reAttempt = true;
 
                 while (reAttempt) {
-                    int randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                    int randomTerritoryFinder = 0;
+                    if (loadedMap == "world") {
+                        randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
+                    } else if (loadedMap == "azeroth") {
+                        randomTerritoryFinder = (int) (Math.random() * 2);
+                    } // Chose a random number for a territory
                     Territory randomTerritory; // Make a pointer to the territory
                     randomTerritory = gameData.territory.get(randomTerritoryFinder);
                     if (Gamer.getOwner(randomTerritory, computerPlayer1, humanPlayer1) == computerPlayer1) { // if and only if the territory is owned by the computer
