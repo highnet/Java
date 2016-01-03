@@ -53,6 +53,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     JButton endTurnBttn = new JButton("End Turn");
 
     String pngFileLocation;
+    String loadedMap;
 
 
     public GameEngine() {
@@ -60,8 +61,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         gameData = new PlayField();
 
         try {
-            File mapData = new File("C:/Users/bokense/IdeaProjects/Risk/src/world.map");
-            //   File mapData = new File(fileArgument1);
+            File mapData = new File("C:/Users/bokense/IdeaProjects/Risk/src/azeroth.map");
+            loadedMap = "azeroth";
+            //    loadedMap = "world";
+
+            //   File mapData = new File(args1);
+
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -138,7 +143,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         paintBackgroundImage(g, Color.white);
 
-        paintIndicatorLines(g);
+        // Paints indicator lines for
+        if (loadedMap == "world") {
+            paintIndicatorLines(g);
+        }
+
 
 
         // Prints all territory landmass as unclaimed.
