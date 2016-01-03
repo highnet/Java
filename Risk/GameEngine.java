@@ -32,7 +32,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     int turnNumber = 0;
 
-    boolean displayWelcomeSplashBox = true;
+    boolean displayWelcomeSplashBox = false;
     int welcomeSplashBoxTickTimer = 0;
 
     boolean paintNewTurnBox = false;
@@ -62,9 +62,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         gameData = new PlayField();
 
         try {
-            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/azeroth.map");
-            loadedMap = "azeroth";
-            //loadedMap = "world";
+            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
+            //loadedMap = "azeroth";
+            loadedMap = "world";
             //   File mapData = new File(fileArgument1);
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
@@ -535,7 +535,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         if (loadedMap == "world") {
                             randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                         } else if (loadedMap == "azeroth") {
-                            randomTerritoryFinder = (int) (Math.random() * 2);
+                            randomTerritoryFinder = (int) (Math.random() * 25);
                         }
 
                         Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
@@ -635,8 +635,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             for (int i = 0; i < gameData.territory.size(); i++) {
                 if (gameData.territory.get(i).check_isInsideTerritory(x, y)) {
                     System.out.println("Shift-Clicked on " + gameData.territory.get(i).getName());
-                    shiftSelected = gameData.territory.get(i);
-                    break;
+                    if (currentlySelected.getNeighbours().contains(gameData.territory.get(i))) {
+                        shiftSelected = gameData.territory.get(i);
+                        break;
+                    }
                 }
 
             }
@@ -674,7 +676,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (loadedMap == "world") {
                         randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                     } else if (loadedMap == "azeroth") {
-                        randomTerritoryFinder = (int) (Math.random() * 2);
+                        randomTerritoryFinder = (int) (Math.random() * 25);
                     } // Chose a random territory
                     Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                     if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) { // if and only if the territory is unoccupied
@@ -758,7 +760,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (loadedMap == "world") {
                         randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                     } else if (loadedMap == "azeroth") {
-                        randomTerritoryFinder = (int) (Math.random() * 2);
+                        randomTerritoryFinder = (int) (Math.random() * 25);
                     } // Chose a random number for a territory
                     Territory randomTerritory; // Make a pointer to the territory
                     randomTerritory = gameData.territory.get(randomTerritoryFinder);
