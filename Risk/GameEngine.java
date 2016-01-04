@@ -62,9 +62,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         gameData = new PlayField();
 
         try {
-            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/world.map");
-            //loadedMap = "azeroth";
-            loadedMap = "world";
+            File mapData = new File("/Users/bokense1/Desktop/Risk 2/src/azeroth.map");
+            loadedMap = "azeroth";
+            //loadedMap = "world";
             //   File mapData = new File(fileArgument1);
             gameData.loadData(mapData);
         } catch (FileNotFoundException e) {
@@ -144,6 +144,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (loadedMap == "world") {
             paintIndicatorLines(g);
+        }
+        else if (loadedMap == "azeroth"){
+            paintAzerothIndicatorLines(g);
         }
 
 
@@ -225,6 +228,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (displayWelcomeSplashBox) {
             paintDisplayWelcomeSplashBox(g);
         }
+
+
+    }
+
+    private void paintAzerothIndicatorLines(Graphics g) {
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(5));
+        g2d.setColor(Color.lightGray);
+
+        g2d.drawLine(208, 175, 159, 123);
+        g2d.drawLine(142, 116, 87, 164);
+        g2d.drawLine(137, 194, 207, 175);
+        g2d.drawLine(502, 209, 514, 163);
+        g2d.drawLine(893, 181, 930, 204);
+        g2d.drawLine(1013, 320, 381, 383);
+        g2d.drawLine(998, 545, 1195, 634);
+        g2d.drawLine(0, 0, 133, 91);
+
+
+
+
+
+
 
 
     }
@@ -535,7 +562,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         if (loadedMap == "world") {
                             randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                         } else if (loadedMap == "azeroth") {
-                            randomTerritoryFinder = (int) (Math.random() * 25);
+                            randomTerritoryFinder = (int) (Math.random() * 52);
                         }
 
                         Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
@@ -676,7 +703,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (loadedMap == "world") {
                         randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                     } else if (loadedMap == "azeroth") {
-                        randomTerritoryFinder = (int) (Math.random() * 25);
+                        randomTerritoryFinder = (int) (Math.random() * 52);
                     } // Chose a random territory
                     Territory randomTerritory = gameData.territory.get(randomTerritoryFinder); // Make a pointer to the territory
                     if (!randomTerritory.alreadyOccupied(humanPlayer1, computerPlayer1)) { // if and only if the territory is unoccupied
@@ -760,7 +787,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (loadedMap == "world") {
                         randomTerritoryFinder = (int) (Math.random() * 42); // Chose a random number for a territory
                     } else if (loadedMap == "azeroth") {
-                        randomTerritoryFinder = (int) (Math.random() * 25);
+                        randomTerritoryFinder = (int) (Math.random() * 52);
                     } // Chose a random number for a territory
                     Territory randomTerritory; // Make a pointer to the territory
                     randomTerritory = gameData.territory.get(randomTerritoryFinder);
