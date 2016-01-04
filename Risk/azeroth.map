@@ -29,31 +29,135 @@ patch-of Sholozar Basin 531 128 528 111 533 103 545 94 574 81 575 89 594 102 603
 patch-of Icecrown Glacier 573 77 574 89 595 101 601 104 616 99 652 113 667 110 703 106 708 95 714 71 699 59 671 54 649 54 631 51 608 55 590 64 579 73
 patch-of Dragonblight 605 103 615 99 634 108 660 112 667 109 698 108 725 116 745 115 755 121 753 131 751 161 742 154 736 154 729 163 685 159 682 163 665 168 646 163 646 156 614 151 617 143 586 129 584 122
 patch-of Storm Peaks 701 108 710 91 712 71 703 58 723 57 722 47 728 37 742 35 757 35 769 41 777 44 777 49 788 52 803 55 814 62 821 67 826 79 818 82 811 88 796 89 785 90 777 90 765 96 754 99 748 105 745 112 738 114 730 116 720 115 709 110
-capital-of Winterspring 0 0
-capital-of Aszshara 0 0
-capital-of Mount Hyjal 0 0
-capital-of Ashenvale 0 0
-capital-of Felwood 0 0
-capital-of Darkshore 0 0
-capital-of Durotar 0 0
-capital-of The Barrens 1 1
-capital-of Stonetalon Mountains 0 0
-capital-of Mulgore 0 0
-capital-of Desolace 0 0
-capital-of Dustwallow Marsh 0 0
-capital-of Feralas 0 0
-capital-of Thousand Needles 0 0
-capital-of Un'goro Crater 0 0
-capital-of Tanaris 0 0
-capital-of Silithus 0 0
-capital-of Teldrassil 0 0
-capital-of Azuremyst Isle 0 0
-capital-of Bloodmyst Isle 0 0
-capital-of Borean Tundra 0 0
-capital-of Sholozar Basin 0 0
-capital-of Icecrown Glacier 0 0
-capital-of Dragonblight 0 0
-capital-of Storm Peaks 0 0
-neighbors-of Winterspring : Aszshara : Felwood
-neighbors-of Aszshara : Winterspring
+patch-of Zul'Drak 745 115 747 102 778 90 796 90 812 86 822 79 836 82 845 73 870 87 851 99 855 108 828 120 797 121 769 123 755 131 757 121 746 115
+patch-of Howling Fjord 753 131 766 128 793 127 807 124 826 122 862 110 857 130 867 129 861 133 876 144 877 149 887 157 879 166 889 168 894 178 884 186 890 194 863 206 853 205 845 203 840 201 833 198 826 194 819 190 813 184 807 178 799 171 792 160 776 157 764 159 755 159 756 155 760 149 758 142 758 138
+patch-of Tirisfal Glades 875 214 904 204 929 203 935 194 954 190 980 195 1014 191 1021 202 1015 231 991 236 974 231 948 230 933 233 909 234 895 233 880 230 880 223
+patch-of Western Plaguelands 1015 194 1028 189 1036 189 1050 190 1068 198 1076 223 1091 235 1069 238 1055 253 1054 258 1046 259 1039 259 1032 250 1024 241 1011 232 1021 219 1023 203
+patch-of Eastern Plaguelands 1048 192 1062 180 1088 179 1111 186 1142 185 1170 185 1200 187 1225 194 1227 206 1214 215 1217 234 1208 239 1183 244 1158 247 1144 237 1106 235 1093 235 1078 224 1070 198
+patch-of Silverpine Forest 910 235 938 233 946 232 969 234 992 231 987 242 969 248 964 259 958 283 941 295 938 301 939 307 935 318 920 325 906 317 890 300 888 290 924 270 911 262 907 236
+patch-of Alterac Mountain 986 243 992 232 1014 234 1026 240 1031 250 1021 255 1006 259 989 257 986 245
+patch-of Hillsbrad Foothills 988 243 988 255 1003 260 1018 259 1031 249 1039 256 1045 260 1040 273 1021 287 1016 288 1005 282 989 285 957 283 962 271 962 260 969 247
+patch-of The Hinterlands 1055 258 1072 238 1111 237 1144 236 1160 248 1149 281 1126 273 1101 272 1077 268 1062 263 1054 256
+patch-of Arathi Highlands 1046 260 1060 263 1081 269 1127 274 1148 280 1139 284 1139 298 1126 308 1119 303 1062 299 1045 305 1024 298 1020 289
+patch-of Ghostlands 1105 185 1096 180 1090 161 1102 145 1142 152 1171 149 1183 145 1190 145 1202 157 1213 158 1218 173 1208 187 1184 186 1161 185 1125 182 1110 181
+patch-of Eversong Wood 1098 144 1092 138 1098 125 1117 109 1104 109 1095 98 1108 90 1124 91 1133 98 1142 98 1160 97 1203 108 1182 111 1192 145 1185 143 1169 149 1143 152
+patch-of Loch Modan 1128 310 1144 319 1155 341 1176 348 1183 364 1156 393 1128 383 1073 390 1075 384 1069 361 1077 357 1079 336 1104 332 1122 323
+patch-of Wetlands 1131 313 1117 300 1059 299 1012 317 1011 329 1028 336 1058 331 1076 331 1084 333 1109 329
+patch-of Dun Morogh 1027 336 1045 335 1065 333 1076 333 1084 338 1084 346 1077 362 1075 377 1073 385 1058 388 1054 383 1041 380 1027 381 1004 385 998 396 1006 409 996 417 966 417 945 421 929 425 924 425 918 415 929 400 929 389 920 367 905 362 906 355 917 348 944 348 974 344 993 344 1016 339
+patch-of Searing Gorge 1003 388 1028 384 1050 384 1059 391 1061 411 1039 411 1017 410 1007 408 1000 398 1003 389
+patch-of Badlands 1058 387 1072 387 1096 384 1126 382 1157 393 1167 413 1159 440 1172 446 1164 462 1123 455 1123 447 1100 435 1103 411 1075 409 1058 411 1058 392
+patch-of Burning Steppes 997 418 1007 407 1035 412 1060 413 1103 414 1103 437 1086 437 1069 435 1050 432 1031 439 1014 436 1005 434 997 420 1007 411
+patch-of Elwynn Forest 995 418 1000 425 1007 436 1030 437 1040 468 1031 465 983 461 953 468 940 458 927 425 964 417 982 417
+patch-of Redridge Mountains 1031 439 1042 433 1061 435 1081 439 1100 436 1115 441 1124 449 1124 459 1109 459 1067 461 1063 465 1045 466 1039 466 1038 453
+patch-of Swamp of Sorrows 1062 466 1068 461 1120 463 1125 457 1136 464 1138 487 1123 490 1111 482 1089 479 1072 478 1066 470
+patch-of Deadwind Pass 1045 469 1064 466 1067 478 1053 488 1043 491 1041 483 1041 472
+patch-of Blasted Lands 1069 477 1083 480 1109 483 1123 492 1127 498 1127 509 1116 516 1083 526 1060 532 1034 536 1031 527 1025 510 1020 499 1040 490 1062 488
+patch-of Stranglethorn Vale 1021 499 1032 531 1032 539 1003 539 984 560 961 567 963 560 950 543 981 541 952 535 966 519 972 517 986 522 972 513 953 505 940 500 955 493 972 494 998 498 1012 499
+patch-of Duskwood 1040 489 1038 478 1038 468 1029 463 1009 463 985 463 970 463 953 467 953 476 955 487 960 495 975 495 998 495 1011 497
+patch-of Westfall 959 491 953 479 954 468 945 461 941 457 931 456 914 458 905 467 901 475 901 483 907 492 922 498 933 500 941 499
+patch-of Isle of Quel'Dalas 1139 85 1156 84 1162 76 1163 62 1173 53 1166 45 1152 42 1152 46 1146 47 1145 40 1129 43 1121 46 1109 47 1110 61 1127 67 1139 85
+
+capital-of Winterspring 401 167
+capital-of Aszshara 409 251
+capital-of Mount Hyjal 334 207
+capital-of Ashenvale 292 268
+capital-of Felwood 258 205
+capital-of Darkshore 221 162
+capital-of Durotar 387 291
+capital-of The Barrens 310 329
+capital-of Stonetalon Mountains 149 264
+capital-of Mulgore 241 347
+capital-of Desolace 177 331
+capital-of Dustwallow Marsh 389 398
+capital-of Feralas 109 419
+capital-of Thousand Needles 316 441
+capital-of Un'goro Crater 265 453
+capital-of Tanaris 377 488
+capital-of Silithus 215 464
+capital-of Teldrassil 145 101
+capital-of Azuremyst Isle 63 186
+capital-of Bloodmyst Isle 40 137
+capital-of Borean Tundra 523 177
+capital-of Sholozar Basin 540 115
+capital-of Icecrown Glacier 692 94
+capital-of Dragonblight 665 165
+capital-of Storm Peaks 731 82
+capital-of Zul'Drak 803 107
+capital-of Howling Fjord 862 204
+capital-of Tirisfal Glades 977 224
+capital-of Western Plaguelands 1035 234
+capital-of Eastern Plaguelands 1200 228
+capital-of Silverpine Forest 935 257
+capital-of Alterac Mountain 1006 251
+capital-of Hillsbrad Foothills 993 284
+capital-of The Hinterlands 1092 251
+capital-of Arathi Highlands 1097 285
+capital-of Ghostlands 1154 166
+capital-of Eversong Wood 1162 107
+capital-of Loch Modan 1127 349
+capital-of Wetlands 1014 322
+capital-of Dun Morogh 977 356
+capital-of Searing Gorge 1019 396
+capital-of Badlands 1133 408
+capital-of Burning Steppes 1027 422
+capital-of Elwynn Forest 944 437
+capital-of Redridge Mountains 1072 449
+capital-of Swamp of Sorrows 1113 475
+capital-of Deadwind Pass 1047 480
+capital-of Blasted Lands 1074 512
+capital-of Stranglethorn Vale 967 559
+capital-of Duskwood 1011 479
+capital-of Westfall 926 481
+capital-of Isle of Quel'Dalas 1140 63
+neighbors-of Winterspring : Aszshara - Felwood - Mount Hyjal
+neighbors-of Aszshara : Winterspring - Mount Hyjal - Ashenvale - Durotar - Borean Tundra
+neighbors-of Mount Hyjal : Aszshara - Winterspring - Felwood - Ashenvale
+neighbors-of Ashenvale : Mount Hyjal - Aszshara - The Barrens - Stonetalon Mountains - Darkshore - Felwood
+neighbors-of Felwood : Ashenvale - Winterspring - Mount Hyjal - Darkshore
+neighbors-of Darkshore : Teldrassil - Azuremyst Isle - Felwood - Ashenvale
+neighbors-of Azuremyst Isle : Bloodmyst Isle - Darkshore - Teldrassil
+neighbors-of Bloodmyst Isle : Azuremyst Isle
+neighbors-of The Barrens : Durotar - Dustwallow Marsh - Thousand Needles - Mulgore - Stonetalon Mountains - Ashenvale
+neighbors-of Stonetalon Mountains : Ashenvale - The Barrens - Mulgore - Desolace
+neighbors-of Mulgore : The Barrens - Thousand Needles - Feralas - Desolace - Stonetalon Mountains
+neighbors-of Desolace : Mulgore - Stonetalon Mountains - Feralas
+neighbors-of Feralas : Desolace - Thousand Needles - Un'goro Crater - Silithus - Mulgore
+neighbors-of Silithus : Un'goro Crater - Feralas
+neighbors-of Un'goro Crater : Tanaris - Thousand Needles - Feralas - Silithus
+neighbors-of Tanaris : Thousand Needles - Un'goro Crater
+neighbors-of Thousand Needles : Tanaris - Un'goro Crater - Feralas - Mulgore - The Barrens - Dustwallow Marsh
+neighbors-of Dustwallow Marsh : Thousand Needles - The Barrens - Wetlands
+neighbors-of Borean Tundra : Sholozar Basin - Dragonblight - Aszshhara
+neighbors-of Sholozar Basin : Icecrown Glacier - Borean Tundra - Dragonblight
+neighbors-of Dragonblight: Borean Tundra - Icecrown Glacier - Sholozar Basin - Storm Peaks - Zul'Drak - Howling Fjord
+neighbors-of Storm Peaks : Zul'Drak - Icecrown Glacier - Dragonblight
+neighbors-of Zul'Drak : Howling Fjord - Storm Peaks - Dragonblight
+neighbors-of Howling Fjord : Dragonblight - Zul'Drak - Tirisfal Glades
+neighbors-of Icecrown Glacier : Sholozar Basin - Dragonblight - Storm Peaks
+neighbors-of Stranglethorn Vale : Westfall - Blasted Lands - Duskwood - Teldrassil
+neighbors-of Westfall : Elwynn Forest - Stranglethorn Vale - Duskwood
+neighbors-of Duskwood : Blasted Lands - Westfall - Stranglethorn Vale - Deadwind Pass - Elwynn Forest
+neighbors-of Deadwind Pass : Blasted Lands - Swamp of Sorrows - Redridge Mountains - Duskwood
+neighbors-of Blasted Lands : Stranglethorn Vale - Deadwind Pass - Swamp of Sorrows - Duskwood
+neighbors-of Swamp of Sorrows : Redridge Mountains - Deadwind Pass - Blasted Lands
+neighbors-of Elwynn Forest : Westfall - Duskwood - Redridge Mountains - Burning Steppes - Dun Morogh
+neighbors-of Redridge Mountains : Swamp of Sorrows - Deadwind Pass - Elwynn Forest - Burning Steppes - Badlands
+neighbors-of Burning Steppes : Redridge Mountains - Elwynn Forest - Searing Gorge - Badlands - Dun Morogh
+neighbors-of Badlands : Redridge Mountains - Burning Steppes - Searing Gorge - Loch Modan - Dun Morogh
+neighbors-of Dun Morogh : Elwynn Forest - Burning Steppes - Searing Gorge - Badlands - Loch Modan - Wetlands
+neighbors-of Searing Gorge : Burning Steppes - Dun Morogh - Badlands
+neighbors-of Loch Modan : Badlands - Wetlands - Dun Morogh
+neighbors-of Wetlands : Dun Morogh - Loch Modan - Arathi Highlands - Dustwallow Marsh
+neighbors-of Arathi Highlands : Wetlands - Hillsbrad Foothills - Western Plaguelands - The Hinterlands
+neighbors-of Hillsbrad Foothills : Arathi Highlands - Western Plaguelands - Alterac Mountain - Silverpine Forest
+neighbors-of The Hinterlands : Arathi Highlands - Western Plaguelands - Eastern Plaguelands
+neighbors-of Western Plaguelands : Tirisfal Glades - Eastern Plaguelands - Alterac Mountain - The Hinterlands - Arathi Highlands
+neighbors-of Silverpine Forest : Hillsbrad Foothills - Alterac Mountain - Tirisfal Glades
+neighbors-of Tirisfal Glades : Silverpine Forest - Alterac Mountain - Western Plaguelands - Howling Fjord
+neighbors-of Alterac Mountain : Hillsbrad Foothills - Silverpine Forest - Tirisfal Glades - Western Plaguelands
+neighbors-of Eastern Plaguelands : Western Plaguelands - The Hinterlands - Ghostlands
+neighbors-of Ghostlands : Eversong Wood - Eastern Plaguelands
+neighbors-of Eversong Wood :  Ghostlands - Isle of Quel'Dalas
+neighbors-of Isle of Quel'Dalas : Eversong Wood
+neighbors-of Teldrassil : Darkshore - Azuremyst Isle - Stranglethorn Vale
 continent North Kalimdor 5 : Winterspring - Aszshara
