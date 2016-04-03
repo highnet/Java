@@ -36,7 +36,7 @@ Current WOLDGEN function is almost purely random.  must add some conditional gen
 
 BUGS INTRODUCED!!!!:    
 
-"occupied" tiles don't become unnocupied when a resource ( Eg; wood, wall) is harvested.  must modify harvesting function to refresh tile to unnocupied if necessary.
+Unkown.
 
 
 
