@@ -53,11 +53,44 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
         }
 
+        for (int i = 0; i < 32; i++) {
+            for (int j = 0; j < 24; j++) {
+
+                //_________________________________WorldGen____________________________________________
+
+                int r = (int) (Math.random() * (100 - 1)) + 1;    // RNG function.
+
+                if (r > 80) {                                     // Dirt spawn rate.
+                    tilemap[i][j].type = "rakedDirt";
+                }
+
+                r = (int) (Math.random() * (100 - 1)) + 1;
+
+                if (tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
+                    tilemap[i][j].type = "wood";
+                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 95 )){ // sand spawn rate/condition.
+                    tilemap[i][j].type = "sand";
+                }
+
+                //______________________________Resource Generation____________________________________
+
+                r = (int) (Math.random() * (100 - 1)) + 1;
+
+                if (r > 98)
+                {
+                    tilemap[i][j].type = "wall";
+                }
+
+                if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable.
+                    tilemap[i][j].farmable = true;}
+            }
+        }
+
+        //______________________________TEST PALLETE___________________________________
         tilemap[0][0].type = "wall";
-        tilemap[1][1].type = "rakedDirt";
-        tilemap[1][1].farmable = true;
-
-
+        tilemap[0][1].type = "grass";
+        tilemap[1][0].type = "rakedDirt";
+        tilemap[1][1].type = "sand";
     }
 
     private void generatePlayer() {
