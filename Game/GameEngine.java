@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Vector;
 
 /**
  * Created by bokense on 25-Mar-16.
@@ -13,19 +14,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
+    private int actionTick = 0;
+
     private final Timer timer = new Timer(gameSpeed, this);
 
 
     private Player player1;
 
-    private Npc npc;
+
+    private Vector<Npc> npcList = new Vector<>();
 
     private boolean debugMenuVisible = true;
 
     private boolean inventoryMenuVisible = true;
 
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
-    private Font font2 = new Font("Coinsola", Font.BOLD, 16);
+    private Font font2 = new Font("Consola", Font.BOLD, 16);
     private Font font3 = new Font("Consola", Font.BOLD,24);
 
     Tile[][] tilemap = new Tile[32][24];
@@ -33,10 +37,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     public GameEngine() {
 
-   //     generateWorld();
+
         genereateWorldImproved();
         generatePlayer();
-        generateNpc();
+        generateNpc(1,20,5,50,Color.lightGray);
+        generateNpc(2,1,3,20,Color.BLUE);
+
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -61,7 +67,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 //_________________________________WorldGen____________________________________________
 
-                int r = (int) (Math.random() * (100 - 1)) + 1;    // RNG function.
+                int r;
+                r = (int) (Math.random() * (100 - 1)) + 1;    // RNG function.
 
                 if (r > 80) {                                     // Dirt spawn rate.
                     tilemap[i][j].type = "rakedDirt";
@@ -77,45 +84,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 //______________________________Resource Generation____________________________________
 
-                r = (int) (Math.random() * (100 - 1)) + 1;
+
 
                 if (r > 98)
                 {
                     tilemap[i][j].type = "wall";
                 }
 
-                if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable.
+                if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
                     tilemap[i][j].farmable = true;}
 
-                if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes all rakedDirt farmable.
+                if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes occupied terrain unwalkable
                     tilemap[i][j].occupied = true;}
             }
         }
-
-        //______________________________TEST PALLETE___________________________________
-        tilemap[0][0].type = "wall";
-        tilemap[0][1].type = "grass";
-        tilemap[1][0].type = "rakedDirt";
-        tilemap[1][1].type = "sand";
     }
 
     private void generatePlayer() {
 
-        player1 = new Player(0, 14, 9, 66, 100);
+        player1 = new Player(0, 14, 9, 66, 100,Color.RED);
 
         System.out.println("Created new player1 - ID: " + player1.ID + " - X: " + player1.xPos + " - Y: " + player1.yPos + " Empty Inventory Slots: " + player1.playerInventory.itemArray.length);
 
     }
 
-    private void generateNpc() {
-
-        npc = new Npc(1, 3, 2,100);
-
-        System.out.println("Created new npc1 - ID: " + npc.ID + " - X: " + npc.xPos + " - Y: " + npc.yPos);
+    private void generateNpc(int setID,int setxPos, int setyPos, float setHP, Color setColor) {
 
 
-        tilemap[npc.xPos / 25 ][npc.yPos / 25 ].occupied = true;
 
+        Npc n = new Npc(setID, setxPos, setyPos,setHP,setColor);
+
+        System.out.println("Created new npc1 - ID: " + n.ID + " - X: " + n.xPos + " - Y: " + n.yPos);
+
+
+        tilemap[n.xPos / 25 ][n.yPos / 25 ].occupied = true;
+
+       appendNpc(n);
+
+
+    }
+
+    private void appendNpc(Npc npc) {
+        npcList.add(npc);
     }
 
 
@@ -141,7 +151,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         paintPlayer(g);           // player painter
         paintOrientationArrow(g);
 
-        paintEntity(g,npc.xPos,npc.yPos);
+        paintEntity(g);
 
     }
 
@@ -218,22 +228,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawString("player1 TileCoords: (" + (player1.xPos / 25) + ", " + (player1.yPos / 25) + ")", 37, 490);
 
 
+
         int player1_TileCoordinated_xPos = (player1.xPos / 25);
         int player1_TileCoordinated_yPos = (player1.yPos / 25);
         g.drawString("player1 standing on tile: " + tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].type, 37, 515);
         g.drawString("Farmable? "+ (tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].farmable ? "yes" : "no"),88,532);
 
+
+        g.drawString("action ticker: (" + actionTick  + ")", 39, 556);
+
     }
 
-    private void paintEntity(Graphics g, int xPos, int yPos) {
+    private void paintEntity(Graphics g) {
 
-        g.setColor(Color.blue);
-        g.fillOval(xPos, yPos, 20, 20);
+
+       for (Npc n :npcList ) {
+           g.setColor(n.pallete);
+           g.fillOval(n.xPos, n.yPos, 20, 20);
+       }
     }
 
     private void paintPlayer(Graphics g) {
 
-        g.setColor(Color.red);
+        g.setColor(player1.pallete);
         g.fillOval(player1.xPos, player1.yPos, 20, 20);
     }
 
@@ -409,7 +426,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     }
                     if (player1.orientation.equals("EAST") && tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
+                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
@@ -424,7 +441,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     }
                     if (player1.orientation.equals("WEST") && tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
+                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
@@ -437,7 +454,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedItem = "lumber";
                     }
                     if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "rakedDirt";
                         tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
                         harvestedSuccessfully = true;
                         harvestedItem = "cobblestone";
@@ -449,7 +466,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedSuccessfully = true;
                     }
                     if (player1.orientation.equals("SOUTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
                         harvestedSuccessfully = true;
@@ -468,6 +485,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 }
                             }
                         }
+                        actionTick++;
                     }
                 }
                 break;
@@ -484,7 +502,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 System.out.println("Inventory is full: " + player1.playerInventory.isFull());
 
         }
-
+            if( e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
+            actionTick++;
+        }
     }
 
     @Override
