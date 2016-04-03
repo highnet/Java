@@ -78,7 +78,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (r > 98)
                 {
-                    tilemap[i][j].type = "wall";                               // Gatherable stone spawn rate.
+                    tilemap[i][j].type = "wall";
                 }
 
                 if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable.
@@ -95,9 +95,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void generatePlayer() {
 
-        player1 = new Player(0, 14, 9, 66);
+        player1 = new Player(0, 14, 9, 66, 100);
 
         System.out.println("Created new player1 - ID: " + player1.ID + " - X: " + player1.xPos + " - Y: " + player1.yPos + " Empty Inventory Slots: " + player1.playerInventory.itemArray.length);
+
     }
 
 
@@ -119,8 +120,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintInventory(g);
         }
 
-        paintEntities(g);
+        paintEntities(g, player1.xPos, player1.yPos);
         paintOrientationArrow(g);
+
 
 
 
@@ -208,12 +210,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void paintEntities(Graphics g) {
+    private void paintEntities(Graphics g, int xPos, int yPos) {
 
-        int player1xPos = player1.xPos;
-        int player1yPos = player1.yPos;
         g.setColor(Color.red);
-        g.fillOval(player1xPos, player1yPos, 20, 20);
+        g.fillOval(xPos, yPos, 20, 20);
     }
 
     private void paintTileCoordinates(Graphics g) {
