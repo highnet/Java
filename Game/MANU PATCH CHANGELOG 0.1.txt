@@ -26,4 +26,4 @@ CHANGELOG
 
 10) MODIFIED PLAYER MOVEMENT COLLISION DETECTION TO CHECK FOR "occupied" BOOLEAN INSTEAD OF CHECKING EVERY TILE TYPE.
 
-TODO: Make every tile currently occupied by an npc "occupied" 
+TODO: Tile occupied by npc is made "occupied" at npc generation.  would need to be updated for every npc movement !! . 
