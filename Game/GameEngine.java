@@ -18,7 +18,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private Player player1;
 
-    private Npc npc1;
+    private Npc npc;
 
     private boolean debugMenuVisible = true;
 
@@ -109,9 +109,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void generateNpc() {
 
-        npc1 = new Npc(1, 3, 2,100);
+        npc = new Npc(1, 3, 2,100);
 
-        System.out.println("Created new npc1 - ID: " + npc1.ID + " - X: " + npc1.xPos + " - Y: " + npc1.yPos);
+        System.out.println("Created new npc1 - ID: " + npc.ID + " - X: " + npc.xPos + " - Y: " + npc.yPos);
+
+
+        tilemap[npc.xPos / 25 ][npc.yPos / 25 ].occupied = true;
 
     }
 
@@ -138,7 +141,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         paintPlayer(g);           // player painter
         paintOrientationArrow(g);
 
-        paintEntity(g,npc1.xPos,npc1.yPos);
+        paintEntity(g,npc.xPos,npc.yPos);
 
     }
 
