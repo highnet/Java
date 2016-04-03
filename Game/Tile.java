@@ -5,15 +5,16 @@ public class Tile {
 
     String type;
     boolean farmable;
+    boolean occupied;
 
-    public Tile(String type, boolean farmable
-    ) { // Constructor for a custom tile type
+    public Tile(String type, boolean farmable, boolean occupied) { // Constructor for a custom tile type
         this.type = type;
         this.farmable = farmable;
+        this.occupied = occupied;
     }
 
     public Tile() {
-        this("grass",false);
+        this("grass",false,false);
     } // Constructor for default tiles of tiletype grass
 
 }

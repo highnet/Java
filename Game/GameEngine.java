@@ -86,6 +86,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable.
                     tilemap[i][j].farmable = true;}
+
+                if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes all rakedDirt farmable.
+                    tilemap[i][j].occupied = true;}
             }
         }
 
@@ -335,9 +338,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
-                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].type.equals("wood") && // check if the tile belongs to one of the "impassable" tiles
-                        !tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].type.equals("water") &&
-                        !tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].type.equals("wall")) {
+                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
                     player1.yPos -= movementSpeed; //update ypos
                 }
                 break;
@@ -345,9 +346,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 player1.orientation = "SOUTH";
 
-                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].type.equals("wood") && // check if the tile belongs to one of the "impassable" tiles
-                        !tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].type.equals("water") &&
-                        !tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].type.equals("wall")) {
+                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
                     player1.yPos += movementSpeed; //update ypos
                 }
                 break;
@@ -355,18 +354,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 player1.orientation = "WEST";
 
-                if (!tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wood") && // check if the tile belongs to one of the "impassable" tiles
-                        !tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("water") &&
-                        !tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
+                if (!tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
                     player1.xPos -= movementSpeed; //update ypos
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
                 player1.orientation = "EAST";
 
-                if (!tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wood") && // check if the tile belongs to one of the "impassable" tiles
-                        !tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("water") &&
-                        !tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
+                if (!tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
                     player1.xPos += movementSpeed; //update ypos
                 }
                 break;
