@@ -18,6 +18,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private Player player1;
 
+    private Npc npc1;
+
     private boolean debugMenuVisible = true;
 
     private boolean inventoryMenuVisible = true;
@@ -34,6 +36,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
    //     generateWorld();
         genereateWorldImproved();
         generatePlayer();
+        generateNpc();
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -101,6 +104,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void generateNpc() {
+
+        npc1 = new Npc(1, 3, 2,100);
+
+        System.out.println("Created new npc1 - ID: " + npc1.ID + " - X: " + npc1.xPos + " - Y: " + npc1.yPos);
+
+    }
+
+
 
 
     @Override
@@ -120,13 +132,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintInventory(g);
         }
 
-        paintEntities(g, player1.xPos, player1.yPos);
+        paintPlayer(g);           // player painter
         paintOrientationArrow(g);
 
-
-
-
-
+        paintEntity(g,npc1.xPos,npc1.yPos);
 
     }
 
@@ -210,10 +219,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void paintEntities(Graphics g, int xPos, int yPos) {
+    private void paintEntity(Graphics g, int xPos, int yPos) {
+
+        g.setColor(Color.blue);
+        g.fillOval(xPos, yPos, 20, 20);
+    }
+
+    private void paintPlayer(Graphics g) {
 
         g.setColor(Color.red);
-        g.fillOval(xPos, yPos, 20, 20);
+        g.fillOval(player1.xPos, player1.yPos, 20, 20);
     }
 
     private void paintTileCoordinates(Graphics g) {
