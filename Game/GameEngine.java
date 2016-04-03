@@ -404,11 +404,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (player1.orientation.equals("EAST") && tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wood")) {
                         tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "lumber";
+                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
+
                     }
                     if (player1.orientation.equals("EAST") && tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
                         tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "cobblestone";
+                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
                     }
 
@@ -416,33 +419,39 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (player1.orientation.equals("WEST") && tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wood")) {
                         tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "lumber";
+                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
 
                     }
                     if (player1.orientation.equals("WEST") && tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
                         tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "cobblestone";
+                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
 
                     }
                     if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wood")) {
                         tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
                         harvestedSuccessfully = true;
                         harvestedItem = "lumber";
                     }
                     if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
                         tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
                         harvestedSuccessfully = true;
                         harvestedItem = "cobblestone";
                     }
                     if (player1.orientation.equals("SOUTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wood")) {
                         tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
                         harvestedItem = "lumber";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
                         harvestedSuccessfully = true;
                     }
                     if (player1.orientation.equals("SOUTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wall")) {
                         tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
                         harvestedItem = "cobblestone";
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
                         harvestedSuccessfully = true;
                     }
 
