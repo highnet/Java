@@ -4,8 +4,6 @@ MANU PATCH 0.1
 CHANGELOG 
 
 
-
-
 1) ADDED SUPER CLASS “Entity”
 
 2) MADE CLASS “Player” SUBCLASS OF  “Entity”
@@ -34,7 +32,9 @@ Tile occupied by npc is made "occupied" at npc generation.  would need to be upd
 
 Currently only one Npc test case is generated at start.   how would i generate X number of npc's for a given map, each with different position and each individualy interactable and with it's own movement/attributes.
 
-BUGS INTRODUCED!!!!:     "occupied" tiles don't become unnocupied when a resource ( Eg; wood, wall) is harvested.  must modify harvesting function to refresh tile to unnocupied if necessary.
+BUGS INTRODUCED!!!!:    
+
+"occupied" tiles don't become unnocupied when a resource ( Eg; wood, wall) is harvested.  must modify harvesting function to refresh tile to unnocupied if necessary.
 
 
 
