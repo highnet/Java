@@ -78,7 +78,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (r > 98)
                 {
-                    tilemap[i][j].type = "wall";
+                    tilemap[i][j].type = "wall";                               // Gatherable stone spawn rate.
                 }
 
                 if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable.
