@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
+import java.util.Scanner;
+import java.io.*;
 
 /**
  * Created by bokense on 25-Mar-16.
@@ -11,6 +13,8 @@ import java.util.Vector;
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
 
     private int movementSpeed = 25;
+
+    private Vector<Integer> rnglist;
 
     private int gameSpeed = 1;
 
@@ -38,6 +42,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public GameEngine() {
 
 
+        rnglist = rngSeeder();
+
         genereateWorldImproved();
         generatePlayer();
         generateNpc(1,20,5,50,Color.lightGray);
@@ -55,6 +61,50 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private Vector<Integer> rngSeeder(){
+
+
+        FileReader file = null;
+        try {
+            file = new FileReader("Data/RNG.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        int rng;
+
+        Vector<Integer> rnglist = new Vector<>();
+
+        try {
+            Scanner input = new Scanner(file);
+            while(input.hasNext())
+            {
+                rng = input.nextInt();
+
+                rnglist.add(rng);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+            return rnglist;
+        }
+
+    private int rotateRng(){
+
+         int r = rnglist.firstElement();
+
+        rnglist.remove(0);
+        rnglist.addElement(r);
+
+        return r;
+    }
+
+
+
+
+
     private void genereateWorldImproved() {
         for (int i = 0; i < 32; i++) {
             for (int j = 0; j < 24; j++) {
@@ -67,14 +117,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 //_________________________________WorldGen____________________________________________
 
-                int r;
-                r = (int) (Math.random() * (100 - 1)) + 1;    // RNG function.
+               int r = rotateRng();
+                
 
                 if (r > 80) {                                     // Dirt spawn rate.
                     tilemap[i][j].type = "rakedDirt";
                 }
 
-                r = (int) (Math.random() * (100 - 1)) + 1;
+                r = rotateRng();
 
                 if (tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
                     tilemap[i][j].type = "wood";
@@ -83,6 +133,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
                 //______________________________Resource Generation____________________________________
+
+                r = rotateRng();
 
 
 
