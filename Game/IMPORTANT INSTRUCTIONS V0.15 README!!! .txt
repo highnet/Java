@@ -8,6 +8,8 @@ Create a folder called Data inside your main project folder. same folder where t
 
 place the files WORLD.txt WORLD2.txt RNG.txt inside the Data folder.
 
+compile will fail if these files do not exist. ?? (i think)
+
 
 Changes:
 
