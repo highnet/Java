@@ -18,6 +18,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
+    private int worldSize = 5;
+
+    private int currentMap = 0;
+
     private int actionTick = 0;
 
     private final Timer timer = new Timer(gameSpeed, this);
@@ -42,7 +46,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     Tile[][] tilemap = new Tile[32][24];
 
-    Tile[][] tilemaptest = new Tile[32][24];
+
 
 
     public GameEngine() {
@@ -53,11 +57,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         genereateWorldImproved();
 
-        tilemaptest = writeWorld();
-
-        System.out.println(printTileSet(tilemap));
-
-        System.out.println(printTileSet(tilemaptest));
+        fillWord();
 
 
         generatePlayer();
@@ -160,13 +160,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             }
         }
-        saveWorld();
+        saveWorld(0);
     }
 
-    private void saveWorld() {
+    private void fillWord(){
+
+        int size = 5;
+        int i = 0;
+
+        for (i= 0; i < size;i++) {
+
+            saveWorld(i);
+
+            genereateWorldImproved();
+        }
+        tilemap = readWorld(0);
+    }
+
+    private void saveWorld(int id) {
 
         try {
-            FileOutputStream fout = new FileOutputStream("Data/WORLD.txt");
+            PrintWriter writer = new PrintWriter("Data/WORLD" + id +".txt", "UTF-8");
+            writer.close();
+
+            FileOutputStream fout = new FileOutputStream("Data/WORLD" + id +".txt");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(tilemap);
             oos.close();
@@ -176,11 +193,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private Tile[][] writeWorld() {
+    private Tile[][] readWorld(int id) {
         Tile[][] world;
         FileInputStream fis = null;
         try {
-            fis = new FileInputStream("Data/WORLD2.txt");
+            fis = new FileInputStream("Data/WORLD" + id +".txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -547,8 +564,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             case KeyEvent.VK_9:
 
+
+
                 if (!mapVisible) {
-                    tilemap = writeWorld();
+                    tilemap = readWorld(currentMap);
+                    currentMap++;
+                    if (currentMap == worldSize)
+                    {
+                        currentMap = 0;
+                    }
                     System.out.println("World Loaded.");
                 }
                 break;
