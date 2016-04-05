@@ -455,13 +455,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         int counter = (actionTick % 5);
         int r = rotateRng();
-        int s = 0;
+        int index = 0;
 
         for (Npc n : npcList) {
 
-            s = n.ID;
+            index = n.ID;
 
-            switch (npcList.elementAt(s).ai) {
+            switch (npcList.elementAt(index).ai) {
 
                 case 0:
 
