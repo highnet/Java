@@ -38,6 +38,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     Tile[][] tilemap = new Tile[32][24];
 
+    Tile[][] tilemaptest = new Tile[32][24];
+
 
     public GameEngine() {
 
@@ -45,8 +47,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         rnglist = rngSeeder();
 
         genereateWorldImproved();
+
+        tilemaptest = writeWorld();
+
+        System.out.println(printTileSet(tilemap));
+
+        System.out.println(printTileSet(tilemaptest));
+
+
         generatePlayer();
-        generateNpc(1,20,5,50,Color.lightGray);
         generateNpc(2,1,3,20,Color.BLUE);
 
 
@@ -83,6 +92,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 rnglist.add(rng);
             }
+
         }
         catch(Exception e)
         {
@@ -148,6 +158,53 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes occupied terrain unwalkable
                     tilemap[i][j].occupied = true;}
+            }
+        }
+        saveWorld();
+    }
+
+    private void saveWorld(){
+
+        try {
+            FileOutputStream fout = new FileOutputStream("Data/WORLD.txt");
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(tilemap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Tile[][] writeWorld(){
+        Tile[][] world = new Tile[32][24];
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream("Data/WORLD.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            while (true) {
+                try {
+                    world = (Tile[][]) ois.readObject();
+                    return world;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }  finally {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
