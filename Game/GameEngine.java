@@ -61,7 +61,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         generatePlayer();
-        generateNpc(1, 14, 7, 20, Color.yellow);
+        generateNpc(0, 14, 7, 20, Color.yellow);
+        generateNpc(1, 20, 10, 20, Color.black);
 
 
         addMouseListener(this);
@@ -450,39 +451,47 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
-    private void npcBehaviour(int ai) {
+    private void npcBehaviour() {
 
         int counter = (actionTick % 5);
         int r = rotateRng();
+        int s = 0;
 
-        switch (ai) {
+        for (Npc n : npcList) {
 
-            case 0:
+            s = n.ID;
 
-                if (counter == 0) {
+            switch (npcList.elementAt(s).ai) {
 
-                    tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = false;
+                case 0:
 
-                    if (r <= 25) {
-                        if (!tilemap[npcList.firstElement().xPos / 25 - 1][(npcList.firstElement().yPos / 25)].occupied) {
-                            npcList.firstElement().xPos -= movementSpeed; //update ypos
+                    if (counter == 0) {
+
+                        tilemap[n.xPos / 25][n.yPos / 25].occupied = false;
+
+                        r = rotateRng();
+
+                        if (r <= 25) {
+                            if (!tilemap[npcList.firstElement().xPos / 25 - 1][(n.yPos / 25)].occupied) {
+                                n.xPos -= movementSpeed; //update ypos
+                            }
+                        } else if (r > 25 && r < 50) {
+                            if (!tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied) {
+                                n.xPos += movementSpeed; //update ypos
+                            }
+                        } else if (r > 50 && r < 75) {
+                            if (!tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied) {
+                                n.yPos -= movementSpeed; //update ypos
+                            }
+                        } else if (r >= 75) {
+                            if (!tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied) {
+                                n.yPos += movementSpeed; //update ypos
+                            }
+
                         }
-                    } else if (r > 25 && r < 50) {
-                        if (!tilemap[npcList.firstElement().xPos / 25 + 1][(npcList.firstElement().yPos / 25)].occupied) {
-                            npcList.firstElement().xPos += movementSpeed; //update ypos
-                        }
-                    } else if (r > 50 && r < 75) {
-                        if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 - 1)].occupied) {
-                            npcList.firstElement().yPos -= movementSpeed; //update ypos
-                        }
-                    } else if (r >= 75) {
-                        if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 + 1)].occupied) {
-                            npcList.firstElement().yPos += movementSpeed; //update ypos
-                        }
-
+                        tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
                     }
-                    tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = true;
-                }
+            }
         }
     }
 
@@ -490,7 +499,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void tick() {
         actionTick++;
 
-        npcBehaviour(npcList.firstElement().ai);
+        npcBehaviour();
 
     }
 
