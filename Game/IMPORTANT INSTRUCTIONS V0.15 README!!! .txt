@@ -6,7 +6,7 @@ IMPORTANT !!! HOW TO RUN:
 
 Create a folder called Data inside your main project folder. same folder where the src folder is located.
 
-place the files WORLD.txt WORLD2.xtx RNG.txt inside the Data folder.
+place the files WORLD.txt WORLD2.txt RNG.txt inside the Data folder.
 
 
 Changes:
