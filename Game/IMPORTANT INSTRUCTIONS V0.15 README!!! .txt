@@ -11,7 +11,7 @@ place the files WORLD.txt WORLD2.txt RNG.txt inside the Data folder.
 
 Changes:
 
-Pre generated RNG number list reader. Read a whitespace separated list of numbers from a file.
+Pre generated RNG number list reader. Read a whitespace separated list of pre-generated rng numbers from a file.
 
 Map save to file function.
 
