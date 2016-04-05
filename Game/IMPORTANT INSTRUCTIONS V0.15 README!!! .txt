@@ -20,8 +20,7 @@ Map save to file function.
 Map read from file function.
 
 Npc Ai;  Movement and collision detection. Ai random walks every X action ticks.  
-(NOTE: CURRENTLY SUPPORTS ONLY ONE NPC, i think, must investigate. would probably have to make the method run in a for each
-loop that iterates through each npc in the npcList list.)
+(NOTE: works for multiple npc's with the possibilty of adding different ai's per npc)
 
 Main menu:
 
