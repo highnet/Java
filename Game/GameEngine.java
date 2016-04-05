@@ -92,12 +92,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 rnglist.add(rng);
             }
+            input.close();
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
+
             return rnglist;
         }
 
@@ -195,7 +197,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             while (true) {
                 try {
                     world = (Tile[][]) ois.readObject();
-                    ois.close();
                     return world;
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
