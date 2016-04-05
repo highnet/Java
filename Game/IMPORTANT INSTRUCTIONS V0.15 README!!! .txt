@@ -21,7 +21,7 @@ Npc Ai;  Movement and collision detection. Ai random walks every X action ticks.
 
 Main menu:
 
-the 0 key reveals the map or reopens the main menu.
+the 0 key reveals the map or reopens the main menu. ( note: currently a new map is generated only once at runtime. pressing 0 only hides or reveals the main menu)
 
 the 9 key loads a pre generated map contained in the WORLD2.txt file as long as the main menu is open.
 
