@@ -28,9 +28,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private Vector<Npc> npcList = new Vector<>();
 
-    private boolean debugMenuVisible = true;
+    private boolean debugMenuVisible = false;
 
-    private boolean inventoryMenuVisible = true;
+    private boolean inventoryMenuVisible = false;
+
+    private boolean startMenuVisible = true;
+
+    private boolean mapVisible = false;
 
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
     private Font font2 = new Font("Consola", Font.BOLD, 16);
@@ -46,6 +50,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         rnglist = rngSeeder();
 
+
         genereateWorldImproved();
 
         tilemaptest = writeWorld();
@@ -56,7 +61,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         generatePlayer();
-        generateNpc(2,1,3,20,Color.BLUE);
+        generateNpc(10,10,3,20,Color.BLUE);
+
 
 
         addMouseListener(this);
@@ -66,8 +72,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         setFocusable(true); // Setting required for keyboard listener.
 
         timer.start();
-
-
     }
 
     private Vector<Integer> rngSeeder(){
@@ -112,9 +116,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         return r;
     }
-
-
-
 
 
     private void genereateWorldImproved() {
@@ -182,7 +183,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         Tile[][] world;
         FileInputStream fis = null;
         try {
-            fis = new FileInputStream("Data/WORLD.txt");
+            fis = new FileInputStream("Data/WORLD2.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -241,13 +242,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
 
-
     @Override
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
-        paintTileSet(g);
+
+        if (startMenuVisible){
+            paintStartMenu(g);
+        }
+        if (mapVisible) {
+            paintTileSet(g);
+
+            paintPlayer(g);           // player painter
+            paintOrientationArrow(g);
+
+            paintEntity(g);
+        }
 
         if (debugMenuVisible) {
             paintTileCoordinates(g);
@@ -259,10 +270,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintInventory(g);
         }
 
-        paintPlayer(g);           // player painter
-        paintOrientationArrow(g);
 
-        paintEntity(g);
 
     }
 
@@ -348,6 +356,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         g.drawString("action ticker: (" + actionTick  + ")", 39, 556);
 
+    }
+
+    private void paintStartMenu(Graphics g) {
+        g.setColor(Color.gray);
+        g.fillRect(24, 1, 750, 600);
+        g.setColor(Color.black);
+        g.setFont(font2);
+        g.drawString("AWESOME GAME PRE-ALPHA", 246, 41);
+        g.drawString("0 : Start New Game", 87, 88);
+        g.drawString("9 : Load Map", 87, 157);
+        g.drawString("Options", 87, 254);
     }
 
     private void paintEntity(Graphics g) {
@@ -465,6 +484,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             /*
             MOVEMENT AND ORIENTATION
             */
+
+            case KeyEvent.VK_0:
+
+                if (startMenuVisible) {
+                    startMenuVisible = false;
+                    mapVisible = true;
+
+                    break;
+                } else {
+                    startMenuVisible = true;
+
+                    mapVisible = false;
+                    inventoryMenuVisible = false;
+                    debugMenuVisible = false;
+
+                    break;
+                }
+            case KeyEvent.VK_9:
+
+                if (!mapVisible)
+                {
+                    tilemap = writeWorld();
+                    System.out.println("World Loaded.");
+                }
+                break;
+
             case KeyEvent.VK_UP: // User presses the up key
 
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
@@ -502,9 +547,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             Open all debug menus and indicators
              */
             case KeyEvent.VK_X: // keyboard press X -> Shows debug menu
-                debugMenuVisible = !debugMenuVisible; // reverse the debug menu boolean state
-                System.out.println("Debug Menu Visible: " + debugMenuVisible); // print to console the boolean state of "debugmenuVisible"
-                System.out.println(printTileSet(tilemap));
+
+                if(!startMenuVisible) {
+                    debugMenuVisible = !debugMenuVisible; // reverse the debug menu boolean state
+                    System.out.println("Debug Menu Visible: " + debugMenuVisible); // print to console the boolean state of "debugmenuVisible"
+                    System.out.println(printTileSet(tilemap));
+                }
                 break;
             /*
             Player Actions
@@ -596,7 +644,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 }
                             }
                         }
-                        actionTick++;
+                       tick();
                     }
                 }
                 break;
@@ -608,13 +656,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
              */
 
             case KeyEvent.VK_I:
-                inventoryMenuVisible = !inventoryMenuVisible;
-                System.out.println(player1.playerInventory);
-                System.out.println("Inventory is full: " + player1.playerInventory.isFull());
+
+                if (!startMenuVisible) {
+                    inventoryMenuVisible = !inventoryMenuVisible;
+                    System.out.println(player1.playerInventory);
+                    System.out.println("Inventory is full: " + player1.playerInventory.isFull());
+                }
 
         }
             if( e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
-            actionTick++;
+            tick();
         }
     }
 
@@ -678,4 +729,49 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
+    private void npcBehaviour(int ai){
+
+            int counter = (actionTick % 5);
+            int r = rotateRng();
+
+            switch (ai) {
+
+                case 0:
+
+                    if (counter == 0) {
+
+                        tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = false;
+
+                        if (r <= 25) {
+                            if (!tilemap[npcList.firstElement().xPos / 25 - 1][(npcList.firstElement().yPos / 25)].occupied) {
+                                npcList.firstElement().xPos -= movementSpeed; //update ypos
+                            }
+                        } else if (r > 25 && r < 50) {
+                            if (!tilemap[npcList.firstElement().xPos / 25 + 1][(npcList.firstElement().yPos / 25)].occupied) {
+                                npcList.firstElement().xPos += movementSpeed; //update ypos
+                            }
+                        } else if (r > 50 && r < 75) {
+                            if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 - 1)].occupied) {
+                                npcList.firstElement().yPos -= movementSpeed; //update ypos
+                            }
+                        } else if (r >= 75) {
+                            if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 + 1)].occupied) {
+                                npcList.firstElement().yPos += movementSpeed; //update ypos
+                            }
+
+                        }
+                        tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25 ].occupied = true;
+                    }
+            }
+    }
+
+
+    private void tick(){
+        actionTick++;
+
+        npcBehaviour(npcList.firstElement().ai);
+
+    }
 }
+
+
