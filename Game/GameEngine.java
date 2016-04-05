@@ -169,9 +169,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             FileOutputStream fout = new FileOutputStream("Data/WORLD.txt");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(tilemap);
+            oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private Tile[][] writeWorld(){
@@ -193,6 +195,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             while (true) {
                 try {
                     world = (Tile[][]) ois.readObject();
+                    ois.close();
                     return world;
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
