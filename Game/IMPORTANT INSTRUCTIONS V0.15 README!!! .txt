@@ -6,12 +6,14 @@ IMPORTANT !!! HOW TO RUN:
 
 Create a folder called Data inside your main project folder. same folder where the src folder is located.
 
-place the files WORLD.txt WORLD2.txt RNG.txt inside the Data folder.
+place the file RNG.txt inside the Data folder.
 
-compile will fail if these files do not exist. ?? (i think)
+compile will fail if these file does not exist.
 
 
 Changes:
+
+
 
 Pre generated RNG number list reader. Read a whitespace separated list of pre-generated rng numbers from a file.
 
@@ -19,17 +21,18 @@ Map save to file function.
 
 Map read from file function.
 
+GAME now automatically generates 5 maps and stores them in 5 .txt files it automatically creates in the Data folder.
+
 Npc Ai;  Movement and collision detection. Ai random walks every X action ticks.  
 (NOTE: works for multiple npc's with the possibilty of adding different ai's per npc)
 
 Main menu:
 
 the 0 key reveals the map or reopens the main menu. 
-( note: currently a new map is generated only once at runtime. pressing 0 only hides or reveals the main menu)
+( note: currently new maps are generated only once at runtime. pressing 0 only hides or reveals the main menu)
 
-the 9 key loads a pre generated map contained in the WORLD2.txt file as long as the main menu is open.
-(NOTE: the map contained in WORLD2.txt is an example of what happens when the world is generated with a too short list of RNG
-numbers inside RNG.txt,  it might be an useful effect for constructing cities/forests/regular structures))
+the 9 key loads the next pre-generated map from the data folder only if the main menu is currently displayed.
+currently it cycles through each of the 5 maps generated at runtime.
 
 
 
