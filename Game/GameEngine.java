@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
-import java.util.Scanner;
 import java.io.*;
+import java.util.Scanner;
+import java.util.Vector;
 
 /**
  * Created by bokense on 25-Mar-16.
@@ -38,7 +38,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
     private Font font2 = new Font("Consola", Font.BOLD, 16);
-    private Font font3 = new Font("Consola", Font.BOLD,24);
+    private Font font3 = new Font("Consola", Font.BOLD, 24);
 
     Tile[][] tilemap = new Tile[32][24];
 
@@ -61,8 +61,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         generatePlayer();
-        generateNpc(10,10,3,20,Color.BLUE);
-
+        generateNpc(1, 14, 7, 20, Color.yellow);
 
 
         addMouseListener(this);
@@ -74,7 +73,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
     }
 
-    private Vector<Integer> rngSeeder(){
+    private Vector<Integer> rngSeeder() {
 
 
         FileReader file = null;
@@ -90,26 +89,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         try {
             Scanner input = new Scanner(file);
-            while(input.hasNext())
-            {
+            while (input.hasNext()) {
                 rng = input.nextInt();
 
                 rnglist.add(rng);
             }
             input.close();
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-            return rnglist;
-        }
+        return rnglist;
+    }
 
-    private int rotateRng(){
+    private int rotateRng() {
 
-         int r = rnglist.firstElement();
+        int r = rnglist.firstElement();
 
         rnglist.remove(0);
         rnglist.addElement(r);
@@ -130,8 +126,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 //_________________________________WorldGen____________________________________________
 
-               int r = rotateRng();
-                
+                int r = rotateRng();
+
 
                 if (r > 80) {                                     // Dirt spawn rate.
                     tilemap[i][j].type = "rakedDirt";
@@ -141,7 +137,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
                     tilemap[i][j].type = "wood";
-                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 95 )){ // sand spawn rate/condition.
+                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 95)) { // sand spawn rate/condition.
                     tilemap[i][j].type = "sand";
                 }
 
@@ -150,23 +146,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 r = rotateRng();
 
 
-
-                if (r > 98)
-                {
+                if (r > 98) {
                     tilemap[i][j].type = "wall";
                 }
 
                 if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
-                    tilemap[i][j].farmable = true;}
+                    tilemap[i][j].farmable = true;
+                }
 
                 if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes occupied terrain unwalkable
-                    tilemap[i][j].occupied = true;}
+                    tilemap[i][j].occupied = true;
+                }
             }
         }
         saveWorld();
     }
 
-    private void saveWorld(){
+    private void saveWorld() {
 
         try {
             FileOutputStream fout = new FileOutputStream("Data/WORLD.txt");
@@ -179,7 +175,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private Tile[][] writeWorld(){
+    private Tile[][] writeWorld() {
         Tile[][] world;
         FileInputStream fis = null;
         try {
@@ -203,7 +199,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     e.printStackTrace();
                 }
             }
-        }  finally {
+        } finally {
             try {
                 ois.close();
             } catch (IOException e) {
@@ -214,24 +210,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void generatePlayer() {
 
-        player1 = new Player(0, 14, 9, 66, 100,Color.RED);
+        player1 = new Player(0, 14, 9, 66, 100, Color.RED);
+
+        tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
 
         System.out.println("Created new player1 - ID: " + player1.ID + " - X: " + player1.xPos + " - Y: " + player1.yPos + " Empty Inventory Slots: " + player1.playerInventory.itemArray.length);
 
     }
 
-    private void generateNpc(int setID,int setxPos, int setyPos, float setHP, Color setColor) {
+    private void generateNpc(int setID, int setxPos, int setyPos, float setHP, Color setColor) {
 
 
-
-        Npc n = new Npc(setID, setxPos, setyPos,setHP,setColor);
+        Npc n = new Npc(setID, setxPos, setyPos, setHP, setColor);
 
         System.out.println("Created new npc1 - ID: " + n.ID + " - X: " + n.xPos + " - Y: " + n.yPos);
 
 
-        tilemap[n.xPos / 25 ][n.yPos / 25 ].occupied = true;
+        tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
 
-       appendNpc(n);
+        appendNpc(n);
 
 
     }
@@ -241,14 +238,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 
-
     @Override
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
 
-        if (startMenuVisible){
+        if (startMenuVisible) {
             paintStartMenu(g);
         }
         if (mapVisible) {
@@ -266,10 +262,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintDebugMenu(g);
         }
 
-        if (inventoryMenuVisible){
+        if (inventoryMenuVisible) {
             paintInventory(g);
         }
-
 
 
     }
@@ -277,42 +272,39 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintInventory(Graphics g) {
 
         g.setColor(Color.lightGray);
-        g.fillRect(575,149,200,400);
+        g.fillRect(575, 149, 200, 400);
         g.setFont(font3);
         g.setColor(Color.black);
-       g.drawString("Inventory",585,167);
-
-
-
+        g.drawString("Inventory", 585, 167);
 
 
         g.setColor(Color.white);
-        g.fillRect(588,176,180,329);
+        g.fillRect(588, 176, 180, 329);
 
 
         g.setColor(Color.black);
         int counter = 0;
         int row = 0;
 
-            for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
-                if (counter == 6){
-                    counter = 0;
-                    row++;
-                }
-                if (player1.playerInventory.itemArray[i].ID == 1){
-                    g.setColor(new Color(138, 69, 19));
-                    g.fillOval(593 + (counter*30),183 + (row * 30),20,20);
-
-                }
-
-                if (player1.playerInventory.itemArray[i].ID == 2){
-                    g.setColor(Color.gray);
-                    g.fillOval(593 + (counter*30),183 + (row * 30),20,20);
-                }
-                g.setColor(Color.black);
-                g.drawRect(587 + (counter*30), 176 + (row * 30), 30, 30);
-                counter++;
+        for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+            if (counter == 6) {
+                counter = 0;
+                row++;
             }
+            if (player1.playerInventory.itemArray[i].ID == 1) {
+                g.setColor(new Color(138, 69, 19));
+                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
+
+            }
+
+            if (player1.playerInventory.itemArray[i].ID == 2) {
+                g.setColor(Color.gray);
+                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
+            }
+            g.setColor(Color.black);
+            g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
+            counter++;
+        }
 
 
     }
@@ -347,14 +339,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawString("player1 TileCoords: (" + (player1.xPos / 25) + ", " + (player1.yPos / 25) + ")", 37, 490);
 
 
-
         int player1_TileCoordinated_xPos = (player1.xPos / 25);
         int player1_TileCoordinated_yPos = (player1.yPos / 25);
         g.drawString("player1 standing on tile: " + tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].type, 37, 515);
-        g.drawString("Farmable? "+ (tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].farmable ? "yes" : "no"),88,532);
+        g.drawString("Farmable? " + (tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].farmable ? "yes" : "no"), 88, 532);
 
 
-        g.drawString("action ticker: (" + actionTick  + ")", 39, 556);
+        g.drawString("action ticker: (" + actionTick + ")", 39, 556);
 
     }
 
@@ -372,10 +363,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintEntity(Graphics g) {
 
 
-       for (Npc n :npcList ) {
-           g.setColor(n.pallete);
-           g.fillOval(n.xPos, n.yPos, 20, 20);
-       }
+        for (Npc n : npcList) {
+            g.setColor(n.pallete);
+            g.fillOval(n.xPos, n.yPos, 20, 20);
+        }
     }
 
     private void paintPlayer(Graphics g) {
@@ -433,7 +424,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "wood":
                         g.setColor(new Color(138, 69, 19));
                         g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawString("Tree",i * 25, j * 25);
+                        g.drawString("Tree", i * 25, j * 25);
                         break;
                     case "wall":
                         g.setColor(Color.gray);
@@ -457,6 +448,50 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
         }
+    }
+
+    private void npcBehaviour(int ai) {
+
+        int counter = (actionTick % 5);
+        int r = rotateRng();
+
+        switch (ai) {
+
+            case 0:
+
+                if (counter == 0) {
+
+                    tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = false;
+
+                    if (r <= 25) {
+                        if (!tilemap[npcList.firstElement().xPos / 25 - 1][(npcList.firstElement().yPos / 25)].occupied) {
+                            npcList.firstElement().xPos -= movementSpeed; //update ypos
+                        }
+                    } else if (r > 25 && r < 50) {
+                        if (!tilemap[npcList.firstElement().xPos / 25 + 1][(npcList.firstElement().yPos / 25)].occupied) {
+                            npcList.firstElement().xPos += movementSpeed; //update ypos
+                        }
+                    } else if (r > 50 && r < 75) {
+                        if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 - 1)].occupied) {
+                            npcList.firstElement().yPos -= movementSpeed; //update ypos
+                        }
+                    } else if (r >= 75) {
+                        if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 + 1)].occupied) {
+                            npcList.firstElement().yPos += movementSpeed; //update ypos
+                        }
+
+                    }
+                    tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = true;
+                }
+        }
+    }
+
+
+    private void tick() {
+        actionTick++;
+
+        npcBehaviour(npcList.firstElement().ai);
+
     }
 
 
@@ -503,8 +538,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             case KeyEvent.VK_9:
 
-                if (!mapVisible)
-                {
+                if (!mapVisible) {
                     tilemap = writeWorld();
                     System.out.println("World Loaded.");
                 }
@@ -515,7 +549,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
                 if (!tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
+
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
                     player1.yPos -= movementSpeed; //update ypos
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+
                 }
                 break;
             case KeyEvent.VK_DOWN: // Tries to move down
@@ -523,7 +561,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 player1.orientation = "SOUTH";
 
                 if (!tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
                     player1.yPos += movementSpeed; //update ypos
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
                 }
                 break;
             case KeyEvent.VK_LEFT: // Tries to move left
@@ -531,14 +571,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 player1.orientation = "WEST";
 
                 if (!tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
                     player1.xPos -= movementSpeed; //update ypos
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
                 player1.orientation = "EAST";
 
                 if (!tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
                     player1.xPos += movementSpeed; //update ypos
+                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
                 }
                 break;
 
@@ -548,7 +592,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
              */
             case KeyEvent.VK_X: // keyboard press X -> Shows debug menu
 
-                if(!startMenuVisible) {
+                if (!startMenuVisible) {
                     debugMenuVisible = !debugMenuVisible; // reverse the debug menu boolean state
                     System.out.println("Debug Menu Visible: " + debugMenuVisible); // print to console the boolean state of "debugmenuVisible"
                     System.out.println(printTileSet(tilemap));
@@ -588,6 +632,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
+                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
                         harvestedSuccessfully = true;
                     }
 
@@ -603,6 +648,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
+                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
                         harvestedSuccessfully = true;
 
                     }
@@ -615,6 +661,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
                         tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "rakedDirt";
                         tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
                         harvestedSuccessfully = true;
                         harvestedItem = "cobblestone";
                     }
@@ -628,6 +675,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
                         tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
+                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
                         harvestedSuccessfully = true;
                     }
 
@@ -638,13 +686,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     player1.playerInventory.itemArray[i].ID = 1;
                                     break;
                                 }
-                                if (harvestedItem.equals("cobblestone")){
+                                if (harvestedItem.equals("cobblestone")) {
                                     player1.playerInventory.itemArray[i].ID = 2;
                                     break;
                                 }
                             }
                         }
-                       tick();
+                        tick();
                     }
                 }
                 break;
@@ -664,7 +712,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
         }
-            if( e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
+        if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             tick();
         }
     }
@@ -678,7 +726,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void mouseClicked(MouseEvent e) {
 
         requestFocusInWindow();
-
 
 
         System.out.println(e.getX() + ", " + e.getY());
@@ -715,62 +762,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    public static String printTileSet(Tile[][] tilemap){
-            String ans = "";
-            for (int i = 0; i < 32; i++) {
-                ans += "\n";
-                for (int j = 0; j < 24; j++) {
-                    ans +=  " - " + tilemap[i][j].type + " - ";
+    public static String printTileSet(Tile[][] tilemap) {
+        String ans = "";
+        for (int i = 0; i < 32; i++) {
+            ans += "\n";
+            for (int j = 0; j < 24; j++) {
+                ans += " - " + tilemap[i][j].type + " - ";
 
-                }
             }
-
-            return ans;
         }
 
-
-    private void npcBehaviour(int ai){
-
-            int counter = (actionTick % 5);
-            int r = rotateRng();
-
-            switch (ai) {
-
-                case 0:
-
-                    if (counter == 0) {
-
-                        tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25].occupied = false;
-
-                        if (r <= 25) {
-                            if (!tilemap[npcList.firstElement().xPos / 25 - 1][(npcList.firstElement().yPos / 25)].occupied) {
-                                npcList.firstElement().xPos -= movementSpeed; //update ypos
-                            }
-                        } else if (r > 25 && r < 50) {
-                            if (!tilemap[npcList.firstElement().xPos / 25 + 1][(npcList.firstElement().yPos / 25)].occupied) {
-                                npcList.firstElement().xPos += movementSpeed; //update ypos
-                            }
-                        } else if (r > 50 && r < 75) {
-                            if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 - 1)].occupied) {
-                                npcList.firstElement().yPos -= movementSpeed; //update ypos
-                            }
-                        } else if (r >= 75) {
-                            if (!tilemap[npcList.firstElement().xPos / 25][(npcList.firstElement().yPos / 25 + 1)].occupied) {
-                                npcList.firstElement().yPos += movementSpeed; //update ypos
-                            }
-
-                        }
-                        tilemap[npcList.firstElement().xPos / 25][npcList.firstElement().yPos / 25 ].occupied = true;
-                    }
-            }
-    }
-
-
-    private void tick(){
-        actionTick++;
-
-        npcBehaviour(npcList.firstElement().ai);
-
+        return ans;
     }
 }
 
