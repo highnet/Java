@@ -8,7 +8,9 @@ Create a folder called Data inside your main project folder. same folder where t
 
 place the file RNG.txt inside the Data folder.
 
-compile will fail if these file does not exist.
+Create a folder called GFX inside the Data folder you just created.  place the files Tree.png and Rock.gif in the GFX folder
+
+compile will fail if these files does not exist.
 
 
 Changes:
