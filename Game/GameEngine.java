@@ -265,6 +265,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         super.paintComponent(g);
 
+        try {
+            Thread.sleep(34);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         if (startMenuVisible) {
             paintStartMenu(g);
