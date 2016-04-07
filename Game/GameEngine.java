@@ -1,9 +1,12 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
 import java.util.Vector;
+
 
 /**
  * Created by bokense on 25-Mar-16.
@@ -18,7 +21,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 5;
+    private int worldSize = 10;
 
     private int currentMap = 0;
 
@@ -44,7 +47,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Font font2 = new Font("Consola", Font.BOLD, 16);
     private Font font3 = new Font("Consola", Font.BOLD, 24);
 
-    Tile[][] tilemap = new Tile[32][24];
+   private Tile[][] tilemap = new Tile[32][24];
 
 
 
@@ -52,24 +55,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public GameEngine() {
 
 
-        rnglist = rngSeeder();
-
-
-        genereateWorldImproved();
-
-        fillWord();
-
-
-        generatePlayer();
-        generateNpc(0, 14, 7, 20, Color.yellow);
-        generateNpc(1, 20, 10, 20, Color.black);
-
-
         addMouseListener(this);
         addMouseMotionListener(this);
         addKeyListener(this); // Adds keyboard listener.
 
         setFocusable(true); // Setting required for keyboard listener.
+
+
+        rnglist = rngSeeder();
+
+
+        fillWord();
+
+
+        generatePlayer();
+        generateNpc(0, 14, 7, 20, Color.yellow,"Sheep");
+        generateNpc(1, 20, 10, 20, Color.black,"Chaser");
+
+
 
         timer.start();
     }
@@ -130,7 +133,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 int r = rotateRng();
 
 
-                if (r > 80) {                                     // Dirt spawn rate.
+                if (r > 99) {                                     // Dirt spawn rate.
                     tilemap[i][j].type = "rakedDirt";
                 }
 
@@ -138,7 +141,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
                     tilemap[i][j].type = "wood";
-                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 95)) { // sand spawn rate/condition.
+                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 96)) { // sand spawn rate/condition.
                     tilemap[i][j].type = "sand";
                 }
 
@@ -165,7 +168,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void fillWord(){
 
-        int size = 5;
+        int size = worldSize;
         int i = 0;
 
         for (i= 0; i < size;i++) {
@@ -194,6 +197,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private Tile[][] readWorld(int id) {
+
         Tile[][] world;
         FileInputStream fis = null;
         try {
@@ -236,12 +240,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void generateNpc(int setID, int setxPos, int setyPos, float setHP, Color setColor) {
+    private void generateNpc(int setID, int setxPos, int setyPos, float setHP, Color setColor, String setAi) {
 
 
-        Npc n = new Npc(setID, setxPos, setyPos, setHP, setColor);
+        Npc n = new Npc(setID, setxPos, setyPos, setHP, setColor, setAi);
 
-        System.out.println("Created new npc1 - ID: " + n.ID + " - X: " + n.xPos + " - Y: " + n.yPos);
+        System.out.println("Created new "+ setAi + " - ID: " + n.ID + " - X: " + n.xPos + " - Y: " + n.yPos);
 
 
         tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
@@ -272,6 +276,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintOrientationArrow(g);
 
             paintEntity(g);
+
+            paintSprites(g);
         }
 
         if (debugMenuVisible) {
@@ -440,12 +446,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.fillRect(i * 25, j * 25, 25, 25);
                         break;
                     case "wood":
-                        g.setColor(new Color(138, 69, 19));
+                        g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawString("Tree", i * 25, j * 25);
                         break;
                     case "wall":
-                        g.setColor(Color.gray);
+                        g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         break;
                     case "sand":
@@ -468,19 +473,55 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    private void paintSprites(Graphics g){
+
+        BufferedImage tree;
+        BufferedImage stone;
+
+        try {
+            tree = ImageIO.read(new File("Data/GFX/Tree.png"));
+            stone = ImageIO.read(new File("Data/GFX/Rock.gif"));
+        } catch (IOException e) {
+            tree = null;
+            stone = null;
+        }
+
+        for (int j = 0; j < 24; j++) { // foreach tile outer loop
+            for (int i = 0; i < 32; i++) { // foreach tile inner loop
+                String tileTypeToPaint = tilemap[i][j].type; // store tile type as string
+                switch (tileTypeToPaint) { // Rendering unit for each tile type
+
+                    case "wood" :
+                        g.drawImage(tree,i * 25 - 28,j * 25 - 60,80,80,this);
+                        break;
+
+                    case "wall" :
+                        g.drawImage(stone,i * 25 - 10,j * 25 - 10 ,50,50,this);
+                        break;
+                }
+            }
+        }
+
+    }
+
     private void npcBehaviour() {
 
-        int counter = (actionTick % 5);
-        int r = rotateRng();
-        int index = 0;
+
+        int r;
+        int index;
 
         for (Npc n : npcList) {
 
             index = n.ID;
 
+            int counter;
+
             switch (npcList.elementAt(index).ai) {
 
-                case 0:
+
+                case "Sheep":
+
+                    counter = (actionTick % 5);
 
                     if (counter == 0) {
 
@@ -490,11 +531,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                         if (r <= 25) {
                             if (!tilemap[npcList.firstElement().xPos / 25 - 1][(n.yPos / 25)].occupied) {
-                                n.xPos -= movementSpeed; //update ypos
+                                n.xPos -= movementSpeed; //update xpos
                             }
                         } else if (r > 25 && r < 50) {
                             if (!tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied) {
-                                n.xPos += movementSpeed; //update ypos
+                                n.xPos += movementSpeed; //update xpos
                             }
                         } else if (r > 50 && r < 75) {
                             if (!tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied) {
@@ -508,6 +549,74 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         }
                         tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
                     }
+                    break;
+
+                case "Chaser":
+
+                    counter = (actionTick % 4);
+
+                    r = rotateRng();
+
+
+                    if (counter == 0) {
+
+                        tilemap[n.xPos / 25][n.yPos / 25].occupied = false;
+
+                        if (r < 50) {
+
+                            if ( ((player1.xPos / 25) < (n.xPos / 25)) && !tilemap[n.xPos / 25 - 1][(n.yPos / 25)].occupied ) {
+
+                                n.xPos -= movementSpeed;
+
+                            } else {
+
+                                if (((player1.xPos / 25) > (n.xPos / 25)) && !tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied ){
+                                    n.xPos += movementSpeed;
+                                }
+                            }
+
+                            if (((player1.yPos / 25) < (n.yPos / 25) && !tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied )) {
+
+                                n.yPos -= movementSpeed;
+
+                            } else {
+                                if (((player1.yPos / 25) > (n.yPos / 25)) && !tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied ){
+                                n.yPos += movementSpeed;
+                                }
+                            }
+
+
+                        } else {
+
+                            if (((player1.yPos / 25) < (n.yPos / 25) && !tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied )) {
+
+                                n.yPos -= movementSpeed;
+
+                            } else {
+                                if (((player1.yPos / 25) > (n.yPos / 25)) && !tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied ){
+                                    n.yPos += movementSpeed;
+                                }
+                            }
+
+                            if ( ((player1.xPos / 25) < (n.xPos / 25)) && !tilemap[n.xPos / 25 - 1][(n.yPos / 25)].occupied ) {
+
+                                n.xPos -= movementSpeed;
+
+                            } else {
+
+                                if (((player1.xPos / 25) > (n.xPos / 25)) && !tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied ){
+                                    n.xPos += movementSpeed;
+                                }
+                            }
+
+                        }
+
+
+                    }
+
+                    tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
+                    break;
+
             }
         }
     }
@@ -567,13 +676,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 if (!mapVisible) {
-                    tilemap = readWorld(currentMap);
+
                     currentMap++;
+
                     if (currentMap == worldSize)
                     {
                         currentMap = 0;
+                        tilemap = readWorld(currentMap);
+                    } else {
+                        tilemap = readWorld(currentMap);
                     }
-                    System.out.println("World Loaded.");
+
+                    System.out.println("World"+ " "+currentMap +" "+"Loaded.");
                 }
                 break;
 
@@ -743,6 +857,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     System.out.println(player1.playerInventory);
                     System.out.println("Inventory is full: " + player1.playerInventory.isFull());
                 }
+
+            case KeyEvent.VK_L:
+            {
+                npcList = new Vector<>();
+            }
 
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {

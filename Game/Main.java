@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
  * Created by bokense on 25-Mar-16.
  */
 public class Main extends JFrame {
-    final static int WIDTH = 807;
-    final static int HEIGHT = 630;
+    final private static int WIDTH = 807;
+    final private static int HEIGHT = 630;
 
     public Main() {
         this.initialize();
@@ -38,7 +38,7 @@ public class Main extends JFrame {
 
         this.setSize(WIDTH, HEIGHT);
         this.setTitle("v 0.1");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridLayout(1, 1));
         this.setVisible(true);
