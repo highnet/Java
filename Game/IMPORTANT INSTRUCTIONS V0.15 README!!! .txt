@@ -28,6 +28,8 @@ GAME now automatically generates 5 maps and stores them in 5 .txt files it autom
 Npc Ai;  Movement and collision detection. Ai random walks every X action ticks.  
 (NOTE: works for multiple npc's with the possibilty of adding different ai's per npc)
 
+Sprite draw engine
+
 Main menu:
 
 the 0 key reveals the map or reopens the main menu. 
