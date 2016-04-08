@@ -21,19 +21,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 10;
+    private int worldSize = 4;  // Defines Overworld dimensions.
 
-    private int currentMap = 0;
+    private Overworld currentOverWorld = null;
 
-    private int actionTick = 0;
+    private Tile currentTile = null;
+
+    private int actionTick = 0;  // Ticker for player actions.
 
     private final Timer timer = new Timer(gameSpeed, this);
 
-
     private Player player1;
-
-
-    private Vector<Npc> npcList = new Vector<>();
 
     private boolean debugMenuVisible = false;
 
@@ -47,7 +45,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Font font2 = new Font("Consola", Font.BOLD, 16);
     private Font font3 = new Font("Consola", Font.BOLD, 24);
 
-   private Tile[][] tilemap = new Tile[32][24];
+    private Overworld[][] overWorld = new Overworld[worldSize][worldSize];
 
 
 
@@ -62,15 +60,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         setFocusable(true); // Setting required for keyboard listener.
 
 
-        rnglist = rngSeeder();
+        rnglist = rngSeeder();          // Loads pre-generated RNG numbers from file to a  Vector.
+
+        generatePlayer();               // Player is created.
+
+        buildOverworld();               // adds worldSize x worldSize OverWorlds to the Overworld array.
+
+        currentOverWorld = overWorld[0][0];     // Points currentOverWorld pointer to start map.
 
 
-        fillWord();
+        dummyWorld();               // initializes currentOverWorld.tilemap list and fills it with an empty grass world.
+
+        currentTile = currentOverWorld.tilemap[0][0];   // points to the currently selected tile.
+
+        fillWord();                // generates an RNG world for every OverWorld in the OverWorld array and serializes them to files.
 
 
-        generatePlayer();
-        generateNpc(0, 14, 7, 20, Color.yellow,"Sheep");
-        generateNpc(1, 20, 10, 20, Color.black,"Chaser");
+
+
+
+
 
 
 
@@ -82,29 +91,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         FileReader file = null;
         try {
-            file = new FileReader("Data/RNG.txt");
+            file = new FileReader("Data/RNG.txt");          // creats a pointer to the the file Data/RNG.txt
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         int rng;
 
-        Vector<Integer> rnglist = new Vector<>();
+        Vector<Integer> rnglist = new Vector<>();         // creates a Vector of type int to store RNG values.
 
         try {
-            Scanner input = new Scanner(file);
-            while (input.hasNext()) {
-                rng = input.nextInt();
+            Scanner input = new Scanner(file);              // creates a scanning stream pointing to file.
+            while (input.hasNext()) {                               // loops until file has no more text numbers.
+                rng = input.nextInt();                              // loads next integer in list.
 
-                rnglist.add(rng);
+                rnglist.add(rng);                                           // adds the loaded integer to vector.
             }
-            input.close();
+            input.close();                                  // closes stream.
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return rnglist;
+        return rnglist;                     // Returns the int list.
     }
 
     private int rotateRng() {
@@ -112,37 +121,43 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         int r = rnglist.firstElement();
 
         rnglist.remove(0);
-        rnglist.addElement(r);
+        rnglist.addElement(r);                                                // Uses the rnglist vector as a circular buffer and rotates it.
 
-        return r;
+        return r;                                                             //returns rotated integer.
     }
 
+    private void dummyWorld(){
 
-    private void genereateWorldImproved() {
+
         for (int i = 0; i < 32; i++) {
             for (int j = 0; j < 24; j++) {
-                tilemap[i][j] = new Tile();
+                currentOverWorld.tilemap[i][j] = new Tile();                            // creates a default tile on every coordinate of the current Overworld.
             }
         }
+
+    }
+
+    private void generateWorldImproved() {
 
         for (int i = 0; i < 32; i++) {
             for (int j = 0; j < 24; j++) {
 
                 //_________________________________WorldGen____________________________________________
 
-                int r = rotateRng();
+                int r = rotateRng();                // sets r to a new rng value.
+
 
 
                 if (r > 99) {                                     // Dirt spawn rate.
-                    tilemap[i][j].type = "rakedDirt";
+                    currentOverWorld.tilemap[i][j].type = "rakedDirt";
                 }
 
                 r = rotateRng();
 
-                if (tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
-                    tilemap[i][j].type = "wood";
-                } else if ((tilemap[i][j].type.equals("rakedDirt") && r > 96)) { // sand spawn rate/condition.
-                    tilemap[i][j].type = "sand";
+                if (currentOverWorld.tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
+                    currentOverWorld.tilemap[i][j].type = "wood";
+                } else if ((currentOverWorld.tilemap[i][j].type.equals("rakedDirt") && r > 96)) { // sand spawn rate/condition.
+                    currentOverWorld.tilemap[i][j].type = "sand";
                 }
 
                 //______________________________Resource Generation____________________________________
@@ -151,90 +166,131 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 if (r > 98) {
-                    tilemap[i][j].type = "wall";
+                    currentOverWorld.tilemap[i][j].type = "wall";
                 }
 
-                if (tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
-                    tilemap[i][j].farmable = true;
-                }
-
-                if (tilemap[i][j].type.equals("wall") || tilemap[i][j].type.equals("water") || tilemap[i][j].type.equals("wood")) {                   // Makes occupied terrain unwalkable
-                    tilemap[i][j].occupied = true;
+                if (currentOverWorld.tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
+                    currentOverWorld.tilemap[i][j].farmable = true;
                 }
             }
+
+            collisionMeshGenerator();           // generates a collision mesh for the current Overworld.
+            saveWorld();                        // serializes the current Overworld to map.
         }
-        saveWorld(0);
+
     }
+
+    private void collisionMeshGenerator() {
+        int i;
+        int j;
+            for (i = 0; i < 32; i++) {                          // First, iterate through the entire tilemap of the current Overworld
+                for (j = 0; j < 24; j++) {                      // and flag any non passable tiles as occupied. flag every passable tile as !occupied.
+
+                    if ((currentOverWorld.tilemap[i][j].type.equals("wood")) || (currentOverWorld.tilemap[i][j].type.equals("wall")) || (currentOverWorld.tilemap[i][j].type.equals("water"))) {
+                        currentOverWorld.tilemap[i][j].occupied = true;
+                    } else {
+                        currentOverWorld.tilemap[i][j].occupied = false;
+                    }
+                }
+
+
+                currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // flags current player position as occupied.
+
+                    for (Npc n : currentOverWorld.npcList){                   // flags coordinate of every npc in the currentOverworld.npclist vector as occupied.
+                            currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 ].occupied = true;
+                        }
+
+
+                }
+            }
+
+
 
     private void fillWord(){
 
-        int size = worldSize;
-        int i = 0;
 
-        for (i= 0; i < size;i++) {
+        int x;
+        int y;
 
-            saveWorld(i);
 
-            genereateWorldImproved();
-        }
-        tilemap = readWorld(0);
-    }
 
-    private void saveWorld(int id) {
+        for (x = 0; x < worldSize;x++) {             // iterates through the entire overWorlds array.
+            for (y = 0; y < worldSize;y++) {
 
-        try {
-            PrintWriter writer = new PrintWriter("Data/WORLD" + id +".txt", "UTF-8");
-            writer.close();
-
-            FileOutputStream fout = new FileOutputStream("Data/WORLD" + id +".txt");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(tilemap);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private Tile[][] readWorld(int id) {
-
-        Tile[][] world;
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream("Data/WORLD" + id +".txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            while (true) {
-                try {
-                    world = (Tile[][]) ois.readObject();
-                    return world;
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
+                dummyWorld();                               // initializes current Overworld tilemap.
+                generateWorldImproved();                    // generates RNG world and serializes to file.
+                System.out.println("World"+currentOverWorld.idX+currentOverWorld.idY+" generated");
+                populateWorld();                        // initializes and populates currentOverWorld.npclist with RNG Npc's.
             }
-        } finally {
+
+        }
+        currentOverWorld = overWorld[0][0];  // resets currentOverWorld pointer.
+    }
+
+
+    private void saveWorld() {
             try {
-                ois.close();
+                Writer writer = new BufferedWriter(new OutputStreamWriter(                      // First create a new textfile.
+                    new FileOutputStream("Data/WORLD"+currentOverWorld.idX+currentOverWorld.idY+".ser"), "utf-8"));
+                writer.close();
+
+
             } catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
+        }
+
+        try
+        {                                                                                       // Then serialize an Overworld object to it.
+            FileOutputStream fileOut = new FileOutputStream("Data/WORLD"+currentOverWorld.idX+currentOverWorld.idY+".ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);           // creates output stream pointed to file.
+            out.writeObject(currentOverWorld);                                  // serialize currentOverWorld.
+            out.close();
+            fileOut.close();                                // closes stream and file pointers.
+        }catch(IOException i)
+        {
+            i.printStackTrace();
+        }
+    }
+
+
+    public void readWorld(int idX, int idY) {
+
+        try
+        {
+            FileInputStream fileIn = new FileInputStream("Data/WORLD"+idX+idY+".ser");      // point to file.
+            ObjectInputStream in = new ObjectInputStream(fileIn);                           // open stream.
+            currentOverWorld = (Overworld) in.readObject();                                 //read Overworld object from file and write to currentOverWorld pointer.
+            in.close();
+            fileIn.close();
+            System.out.println("World"+idX+idY+" loaded");
+        }catch(IOException i)
+        {
+            i.printStackTrace();
+            return;
+        }catch(ClassNotFoundException c)
+        {
+            c.printStackTrace();
+            return;
+        }
+
+    }
+
+    private void buildOverworld(){
+
+        for (int i = 0; i < worldSize;i++ ){
+            for (int j = 0; j < worldSize;j++){
+              overWorld[i][j] = new Overworld(i,j);             // iterates through Overworld array and intializes it.
+
             }
         }
+
     }
 
     private void generatePlayer() {
 
         player1 = new Player(0, 14, 9, 66, 100, Color.RED);
 
-        tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
 
         System.out.println("Created new player1 - ID: " + player1.ID + " - X: " + player1.xPos + " - Y: " + player1.yPos + " Empty Inventory Slots: " + player1.playerInventory.itemArray.length);
 
@@ -248,25 +304,58 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         System.out.println("Created new "+ setAi + " - ID: " + n.ID + " - X: " + n.xPos + " - Y: " + n.yPos);
 
 
-        tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
 
-        appendNpc(n);
+
+        currentOverWorld.npcList.addElement(n);             // works just like generate player but adds generated Npc to currentOverWorld.npclist.
+
 
 
     }
 
-    private void appendNpc(Npc npc) {
-        npcList.add(npc);
+    private void populateWorld() {
+        int r;
+        int counter;
+        int pop = 4;            // amount of npc's generated per Overworld.
+        int x;                  // position.
+        int y;                  // position
+        Color color;            // npc color.
+        String type;            // ai type.
+
+
+
+
+        for(counter = 0; counter < pop;counter++){      // run as many times as population allows.
+
+            r =rotateRng();
+            x = rotateRng()%29 + 1;     // generates RNG value between 1 and 30
+            y = rotateRng()%21 + 1;     // generates RNG value between 1 and 22.   ( edge protection. )
+
+            if (r < 50){            // cloin flip between Sheep and Chaser npc.
+                type = "Sheep";
+                color = Color.yellow;
+
+            } else {
+                type = "Chaser";
+                color = Color.black;
+            }
+
+
+
+            generateNpc(counter,x,y,50,color,type);         // creates npc with RNG generated values as attributes.
+
+        }
+
+
     }
 
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {            // paints and controls what is currently painted on screen.
 
         super.paintComponent(g);
 
         try {
-            Thread.sleep(34);
+            Thread.sleep(34);                               // LOCKS RENDERING AT AROUND 30 FPS. NEEDED NOT TO OVERLOAD PC. BUT MUST FIND BETTER WAY
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -283,7 +372,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             paintEntity(g);
 
-            paintSprites(g);
+            paintSprites(g);            // GFX sprite painter
         }
 
         if (debugMenuVisible) {
@@ -371,8 +460,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         int player1_TileCoordinated_xPos = (player1.xPos / 25);
         int player1_TileCoordinated_yPos = (player1.yPos / 25);
-        g.drawString("player1 standing on tile: " + tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].type, 37, 515);
-        g.drawString("Farmable? " + (tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].farmable ? "yes" : "no"), 88, 532);
+        g.drawString("player1 standing on tile: " + currentOverWorld.tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].type, 37, 515);
+        g.drawString("Farmable? " + (currentOverWorld.tilemap[player1_TileCoordinated_xPos][player1_TileCoordinated_yPos].farmable ? "yes" : "no"), 88, 532);
 
 
         g.drawString("action ticker: (" + actionTick + ")", 39, 556);
@@ -393,7 +482,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintEntity(Graphics g) {
 
 
-        for (Npc n : npcList) {
+        for (Npc n : currentOverWorld.npcList) {
             g.setColor(n.pallete);
             g.fillOval(n.xPos, n.yPos, 20, 20);
         }
@@ -441,7 +530,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         for (int i = 0; i < 32; i++) { // foreach tile outer loop
             for (int j = 0; j < 24; j++) { // foreach tile inner loop
 
-                String tileTypeToPaint = tilemap[i][j].type; // store tile type as string
+                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
                     case "grass":
                         g.setColor(Color.green);
@@ -481,12 +570,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintSprites(Graphics g){
 
-        BufferedImage tree;
+        BufferedImage tree;                 // loads image pointers. SHOULD BE LOADED SOMEWHERE ELSE PROBABLY
         BufferedImage stone;
 
         try {
-            tree = ImageIO.read(new File("Data/GFX/Tree.png"));
-            stone = ImageIO.read(new File("Data/GFX/Rock.gif"));
+            tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
+            stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
         } catch (IOException e) {
             tree = null;
             stone = null;
@@ -494,15 +583,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (int j = 0; j < 24; j++) { // foreach tile outer loop
             for (int i = 0; i < 32; i++) { // foreach tile inner loop
-                String tileTypeToPaint = tilemap[i][j].type; // store tile type as string
+                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
 
                     case "wood" :
-                        g.drawImage(tree,i * 25 - 28,j * 25 - 60,80,80,this);
+                        g.drawImage(tree,i * 25 - 28,j * 25 - 60,80,80,this);       // draws a tree on top of each "wood" tile.
                         break;
 
                     case "wall" :
-                        g.drawImage(stone,i * 25 - 10,j * 25 - 10 ,50,50,this);
+                        g.drawImage(stone,i * 25 - 10,j * 25 - 10 ,50,50,this);     // draws a stone on top of each "wall" tile.
                         break;
                 }
             }
@@ -514,124 +603,175 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         int r;
-        int index;
 
-        for (Npc n : npcList) {
 
-            index = n.ID;
+        for (Npc n : currentOverWorld.npcList) {   // iterater through current Overworld npc list.
+
+
 
             int counter;
 
-            switch (npcList.elementAt(index).ai) {
+            switch (n.ai) {         // reads ai type from each Npc.
 
 
-                case "Sheep":
+
+                case "Sheep":   // Sheep ai. moves every 5 actions. random walks through passable tiles. wont leave edge of map.
 
                     counter = (actionTick % 5);
 
                     if (counter == 0) {
 
-                        tilemap[n.xPos / 25][n.yPos / 25].occupied = false;
 
                         r = rotateRng();
 
                         if (r <= 25) {
-                            if (!tilemap[npcList.firstElement().xPos / 25 - 1][(n.yPos / 25)].occupied) {
-                                n.xPos -= movementSpeed; //update xpos
-                            }
-                        } else if (r > 25 && r < 50) {
-                            if (!tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied) {
-                                n.xPos += movementSpeed; //update xpos
-                            }
-                        } else if (r > 50 && r < 75) {
-                            if (!tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied) {
-                                n.yPos -= movementSpeed; //update ypos
-                            }
-                        } else if (r >= 75) {
-                            if (!tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied) {
-                                n.yPos += movementSpeed; //update ypos
+
+                            if (n.yPos / 25 != 22){
+                                if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos /25 + 1].occupied){
+                                    n.yPos += movementSpeed ;
+                                }
                             }
 
+                            } else if (r > 25 && r < 50) {
+                            if (n.yPos / 25 != 1){
+                                if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos /25 - 1].occupied){
+                                    n.yPos -= movementSpeed ;
+                                }
+                            }
+
+
+                        } else if (r > 50 && r < 75) {
+                            if (n.xPos / 25 != 31){
+                                if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos /25].occupied){
+                                    n.xPos += movementSpeed ;
+                                }
+                            }
+
+
+                        } else  if (r >= 75) {
+                            if (n.xPos / 25 != 1){
+                                if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos /25].occupied){
+                                    n.xPos -= movementSpeed ;
+                                }
+                            }
+
+
+
                         }
-                        tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
+
                     }
                     break;
 
-                case "Chaser":
+                case "Chaser":      // Chaser ai. moves every 4 actions. compares own position to player's and attempt to equalize y and x coordinates. Won't leave map.
 
                     counter = (actionTick % 4);
 
-                    r = rotateRng();
-
-
                     if (counter == 0) {
 
-                        tilemap[n.xPos / 25][n.yPos / 25].occupied = false;
+                        if (player1.yPos / 25 < n.yPos / 25){
 
-                        if (r < 50) {
-
-                            if ( ((player1.xPos / 25) < (n.xPos / 25)) && !tilemap[n.xPos / 25 - 1][(n.yPos / 25)].occupied ) {
-
-                                n.xPos -= movementSpeed;
-
-                            } else {
-
-                                if (((player1.xPos / 25) > (n.xPos / 25)) && !tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied ){
-                                    n.xPos += movementSpeed;
+                            if (n.yPos / 25 != 1){
+                                if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 - 1].occupied){
+                                    n.yPos -= movementSpeed;
                                 }
                             }
 
-                            if (((player1.yPos / 25) < (n.yPos / 25) && !tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied )) {
+                        } else if (player1.yPos / 25 > n.yPos / 25){
 
-                                n.yPos -= movementSpeed;
-
-                            } else {
-                                if (((player1.yPos / 25) > (n.yPos / 25)) && !tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied ){
-                                n.yPos += movementSpeed;
-                                }
-                            }
-
-
-                        } else {
-
-                            if (((player1.yPos / 25) < (n.yPos / 25) && !tilemap[n.xPos / 25][(n.yPos / 25 - 1)].occupied )) {
-
-                                n.yPos -= movementSpeed;
-
-                            } else {
-                                if (((player1.yPos / 25) > (n.yPos / 25)) && !tilemap[n.xPos / 25][(n.yPos / 25 + 1)].occupied ){
+                            if (n.yPos / 25 != 22){
+                                if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 + 1].occupied){
                                     n.yPos += movementSpeed;
                                 }
                             }
 
-                            if ( ((player1.xPos / 25) < (n.xPos / 25)) && !tilemap[n.xPos / 25 - 1][(n.yPos / 25)].occupied ) {
 
-                                n.xPos -= movementSpeed;
+                        }
 
-                            } else {
+                        if (player1.xPos / 25 < n.xPos / 25){
 
-                                if (((player1.xPos / 25) > (n.xPos / 25)) && !tilemap[n.xPos / 25 + 1][(n.yPos / 25)].occupied ){
+                            if (n.xPos / 25 != 1){
+                                if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied){
+                                    n.xPos -= movementSpeed;
+                                }
+                            }
+
+                        } else if (player1.xPos / 25 > n.xPos / 25){
+
+                            if (n.xPos / 25 != 22){
+                                if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos / 25].occupied){
                                     n.xPos += movementSpeed;
                                 }
                             }
 
+
                         }
-
-
                     }
 
-                    tilemap[n.xPos / 25][n.yPos / 25].occupied = true;
                     break;
 
             }
+            collisionMeshGenerator(); // Re-generates collision mesh after each Npc takes action.
         }
+    }
+
+    private void mapChange(int direction){      // controls the change of map as player reaches map edge.
+
+
+        if(direction == 0){                 // 0=up. 1=right 2=down 3=left
+
+            if (currentOverWorld.idY == worldSize - 1)      // checks for top edge of Overworld.
+            {
+                currentOverWorld = overWorld[currentOverWorld.idX][0];      // load bottom edge of Overworld. ( world is currently round. )
+                player1.yPos = 22 *25;                                      // sets player y coordinate to bottom edge of tilemap
+
+            } else {
+
+                player1.yPos = 22 * 25;
+                currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY + 1];  // Otherwise loads next Overworld up.
+            }
+
+        } else if (direction == 1){
+            if (currentOverWorld.idX == worldSize - 1)       // same concept for every direction.
+            {
+                currentOverWorld = overWorld[0][currentOverWorld.idY];
+                player1.xPos = 1 * 25;
+            } else {
+                player1.xPos = 1 * 25;
+                currentOverWorld = overWorld[currentOverWorld.idX + 1][currentOverWorld.idY];
+            }
+        } else if (direction == 2){
+            if (currentOverWorld.idY == 0)
+            {
+                player1.yPos = 1 * 25;
+                currentOverWorld = overWorld[currentOverWorld.idX][worldSize - 1];
+            } else {
+
+                player1.yPos = 1 * 25;
+                currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY - 1];
+            }
+        } else if (direction == 3){
+            if (currentOverWorld.idX == 0)
+            {
+                currentOverWorld = overWorld[worldSize -1][currentOverWorld.idY];
+                player1.xPos = 30 * 25;
+            } else {
+
+                player1.xPos = 30 * 25;
+                currentOverWorld = overWorld[currentOverWorld.idX - 1][currentOverWorld.idY];
+            }
+        }
+
+        System.out.println("Overworld"+ currentOverWorld.idX+ +currentOverWorld.idY + " loaded" );
     }
 
 
     private void tick() {
-        actionTick++;
+        actionTick++;               // ticks action counter and runs any subroutines that should run for each tick.
 
         npcBehaviour();
+        collisionMeshGenerator();
+
+
 
     }
 
@@ -664,7 +804,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_0:
 
                 if (startMenuVisible) {
-                    startMenuVisible = false;
+                    startMenuVisible = false;               // this is how the menu hides other windows.
                     mapVisible = true;
 
                     break;
@@ -679,33 +819,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             case KeyEvent.VK_9:
 
+                readWorld(1,1);    // loads world11.
+                System.out.println(currentOverWorld.idX + currentOverWorld.idY);
 
-
-                if (!mapVisible) {
-
-                    currentMap++;
-
-                    if (currentMap == worldSize)
-                    {
-                        currentMap = 0;
-                        tilemap = readWorld(currentMap);
-                    } else {
-                        tilemap = readWorld(currentMap);
-                    }
-
-                    System.out.println("World"+ " "+currentMap +" "+"Loaded.");
-                }
                 break;
 
             case KeyEvent.VK_UP: // User presses the up key
 
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
-                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
+                if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
 
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                    player1.yPos -= movementSpeed; //update ypos
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+
+                    if (player1.yPos / 25 != 1) {
+                        player1.yPos -= movementSpeed; //update ypos
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // set's player position to occupied.
+                                                                                                        // ( needed for npc actions that might occur before a new collision mesh is generated)
+                    } else {
+                        mapChange(0);       // edge detection and map scrolling.
+                    }
+
+
+
+
+
 
                 }
                 break;
@@ -713,29 +850,55 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 player1.orientation = "SOUTH";
 
-                if (!tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                    player1.yPos += movementSpeed; //update ypos
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
+
+
+
+
+                    if (player1.yPos / 25 != 22) {
+                        player1.yPos += movementSpeed; //update ypos
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                    } else {
+                        mapChange(2);       // edge detection.
+                    }
+
                 }
                 break;
             case KeyEvent.VK_LEFT: // Tries to move left
 
                 player1.orientation = "WEST";
 
-                if (!tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                    player1.xPos -= movementSpeed; //update ypos
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                if (!currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+
+
+
+
+
+                    if (player1.xPos / 25 != 1) {
+                        player1.xPos -= movementSpeed; //update ypos
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                    } else {
+                        mapChange(3);          // edge detection.
+                    }
+
+
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
                 player1.orientation = "EAST";
 
-                if (!tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                    player1.xPos += movementSpeed; //update ypos
-                    tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+
+
+
+                    if (player1.xPos / 25 != 30) {
+                        player1.xPos += movementSpeed; //update ypos
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                    } else {
+                        mapChange(1);
+                    }
+
+
                 }
                 break;
 
@@ -748,7 +911,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 if (!startMenuVisible) {
                     debugMenuVisible = !debugMenuVisible; // reverse the debug menu boolean state
                     System.out.println("Debug Menu Visible: " + debugMenuVisible); // print to console the boolean state of "debugmenuVisible"
-                    System.out.println(printTileSet(tilemap));
+                    System.out.println(printTileSet(currentOverWorld.tilemap));
                 }
                 break;
             /*
@@ -774,61 +937,54 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     boolean harvestedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
                     String harvestedItem = "";
-                    if (player1.orientation.equals("EAST") && tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wood")) {
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
+                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wood")) {
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "lumber";
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
+
                         harvestedSuccessfully = true;
 
                     }
-                    if (player1.orientation.equals("EAST") && tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "rakedDirt";
+                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied = false;
-                        tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
                         harvestedSuccessfully = true;
                     }
 
 
-                    if (player1.orientation.equals("WEST") && tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wood")) {
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
+                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wood")) {
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
                         harvestedItem = "lumber";
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
                         harvestedSuccessfully = true;
 
                     }
-                    if (player1.orientation.equals("WEST") && tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "rakedDirt";
+                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied = false;
-                        tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
                         harvestedSuccessfully = true;
 
                     }
-                    if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wood")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
+                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wood")) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
                         harvestedSuccessfully = true;
                         harvestedItem = "lumber";
                     }
-                    if (player1.orientation.equals("NORTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "rakedDirt";
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied = false;
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
+                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "rakedDirt";
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
                         harvestedSuccessfully = true;
                         harvestedItem = "cobblestone";
                     }
-                    if (player1.orientation.equals("SOUTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wood")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
+                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wood")) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
                         harvestedItem = "lumber";
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
                         harvestedSuccessfully = true;
                     }
-                    if (player1.orientation.equals("SOUTH") && tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wall")) {
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "rakedDirt";
+                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wall")) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "rakedDirt";
                         harvestedItem = "cobblestone";
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied = false;
-                        tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
                         harvestedSuccessfully = true;
                     }
 
@@ -866,7 +1022,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_L:
             {
-                npcList = new Vector<>();
+                currentOverWorld.npcList = new Vector<>();    // overwrites current Overworld npclist with an empty one.
             }
 
         }
