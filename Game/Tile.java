@@ -8,6 +8,7 @@ public class Tile implements Serializable {
     String type;
     boolean farmable;
     boolean occupied;
+    int growth;
 
     public Tile(String type, boolean farmable, boolean occupied) { // Constructor for a custom tile type
         this.type = type;

@@ -3,8 +3,9 @@
  */
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Npc extends Entity {
+public class Npc extends Entity implements Serializable{
 
         public String orientation = "EAST";
         public Float HP;
