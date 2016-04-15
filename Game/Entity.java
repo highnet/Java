@@ -19,4 +19,4 @@ public class Entity {
         this.pallete = setColor;
     }
 
-    }
+}

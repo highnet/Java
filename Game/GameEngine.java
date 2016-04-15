@@ -26,8 +26,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Overworld currentOverWorld = null;
 
     private Tile currentTile = null;
+    private int currentTileX = 0;
+    private int currentTileY = 0;
 
     private Item currentItem = null;
+    private int currentItemIndex = 0;
+    private int currentItemRow = 0;
+    private int currentItemColumn = 0;
+
+
 
     private int actionTick = 0;  // Ticker for player actions.
 
@@ -60,6 +67,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     double nextTime = (double) System.nanoTime() / 1000000000.0;
 
 
+
     public GameEngine() {
 
 
@@ -80,7 +88,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         generatePlayer();               // Player is created.
 
-        currentItem = player1.playerInventory.itemArray[0];
+     //   currentItem = player1.playerInventory.itemArray[0];
 
         buildOverworld();               // adds worldSize x worldSize OverWorlds to the Overworld array.
 
@@ -89,7 +97,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         dummyWorld();               // initializes currentOverWorld.tilemap list and fills it with an empty grass world.
 
-        currentTile = currentOverWorld.tilemap[0][0];   // points to the currently selected tile.
+        //  currentTile = currentOverWorld.tilemap[0][0];   // points to the currently selected tile.
 
         fillWord();
 
@@ -99,7 +107,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private boolean paint(){
+    private boolean paint() {
         // convert the time to seconds
         double currTime = (double) System.nanoTime() / 1000000000.0;
 
@@ -196,14 +204,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 if (r > 99) {                                     // Dirt spawn rate.
-                    currentOverWorld.tilemap[i][j].type = "rakedDirt";
+                    currentOverWorld.tilemap[i][j].type = "dirt";
                 }
 
                 r = rotateRng();
 
                 if (currentOverWorld.tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
                     currentOverWorld.tilemap[i][j].type = "wood";
-                } else if ((currentOverWorld.tilemap[i][j].type.equals("rakedDirt") && r > 96)) { // sand spawn rate/condition.
+                } else if ((currentOverWorld.tilemap[i][j].type.equals("dirt") && r > 96)) { // sand spawn rate/condition.
                     currentOverWorld.tilemap[i][j].type = "sand";
                 }
 
@@ -252,16 +260,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         int j;
 
 
-
         for (i = 0; i < 32; i++) {                          // First, iterate through the entire tilemap of the current Overworld
             for (j = 0; j < 24; j++) {
 
-                if (currentOverWorld.tilemap[i][j].type.equals("dirt") ){
+                if (currentOverWorld.tilemap[i][j].type.equals("dirt")) {
                     currentOverWorld.tilemap[i][j].growth++;
                 }
 
-                if (   currentOverWorld.tilemap[i][j].growth == 150){
-                    if (currentOverWorld.tilemap[i][j].type.equals("dirt")){
+                if (currentOverWorld.tilemap[i][j].growth == 150) {
+                    if (currentOverWorld.tilemap[i][j].type.equals("dirt")) {
                         currentOverWorld.tilemap[i][j].type = "grass";
                         currentOverWorld.tilemap[i][j].growth = 0;
                     }
@@ -369,15 +376,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void removeNpc(int ID){
+    private void removeNpc(int ID) {
 
         int i;
 
         currentOverWorld.npcList.removeElementAt(ID);   // deletes selected npc.
 
-        for (i = ID; i < currentOverWorld.npcList.size();i++){                  // fixes ID/index of remaining npc's in npclist.
+        for (i = ID; i < currentOverWorld.npcList.size(); i++) {                  // fixes ID/index of remaining npc's in npclist.
             currentNpc = currentOverWorld.npcList.elementAt(i);
-                    currentNpc.ID--;
+            currentNpc.ID--;
 
         }
 
@@ -429,13 +436,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
         if (mapVisible) {
             paintTileSet(g);
-
             paintPlayer(g);           // player painter
             paintOrientationArrow(g);
-
-            paintEntity(g);
-
+            paintNpcs(g);               //npc(list) printer
             paintSprites(g);            // GFX sprite painter
+
         }
 
         if (debugMenuVisible) {
@@ -447,8 +452,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (inventoryMenuVisible) {
             paintInventory(g);
         }
+        if (currentTile != null) {
+            paintCurrentlySelectedTileHighlights(g);
+        }
+        if(currentItem != null){
+            paintCurrentlySelectedItemHighlights(g);
+        }
+    }
+
+    private void paintCurrentlySelectedItemHighlights(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.red);
+        g2d.setStroke(new BasicStroke(2));
+
+       if(inventoryMenuVisible) {
+           g2d.drawRect(587 + ((currentItemColumn-1) *30), 176 +((currentItemRow-1)*30), 30, 30);
+       }
+
+    }
+
+    private void paintCurrentlySelectedTileHighlights(Graphics g) {
 
 
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.black);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRect(currentTileX * 25, currentTileY * 25, 25, 25);
     }
 
     private void paintInventory(Graphics g) {
@@ -487,7 +516,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
             counter++;
         }
-
 
 
 
@@ -544,7 +572,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawString("Options", 87, 254);
     }
 
-    private void paintEntity(Graphics g) {
+    private void paintNpcs(Graphics g) {
 
 
         for (Npc n : currentOverWorld.npcList) {
@@ -591,6 +619,20 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintTileSet(Graphics g) { // Tile Rendering System
 
+        BufferedImage grass;
+        BufferedImage dirt;
+        BufferedImage rakedDirt;
+
+        try {
+            grass = ImageIO.read(new File("Data/GFX/Grass.png"));
+            dirt = ImageIO.read(new File("Data/GFX/Dirt.png"));
+            rakedDirt = ImageIO.read(new File("Data/GFX/RakedDirt.png"));
+        } catch (IOException e) {
+            grass = null;
+            dirt = null;
+            rakedDirt = null;
+        }
+
 
         for (int i = 0; i < 32; i++) { // foreach tile outer loop
             for (int j = 0; j < 24; j++) { // foreach tile inner loop
@@ -600,6 +642,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "grass":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
                         break;
                     case "water":
                         g.setColor(Color.blue);
@@ -608,10 +651,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "wood":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
                         break;
                     case "wall":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
                         break;
                     case "sand":
                         g.setColor(Color.orange);
@@ -620,10 +665,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "rakedDirt":
                         g.setColor(new Color(100, 40, 19));
                         g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(rakedDirt,i*25,j*25,25,25,this);
+
                         break;
                     case "dirt":
                         g.setColor(new Color(100, 80, 30));
                         g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(dirt,i*25,j*25,25,25,this);
                         break;
                     default:
                         g.setColor(Color.red);
@@ -642,26 +690,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage tree;                 // loads image pointers. SHOULD BE LOADED SOMEWHERE ELSE PROBABLY
         BufferedImage stone;
 
+
         try {
             tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
             stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
+            //     grass = ImageIO.read(new File("Data/GFX/Grass.png"));
         } catch (IOException e) {
             tree = null;
             stone = null;
+
         }
 
         for (int j = 0; j < 24; j++) { // foreach tile outer loop
             for (int i = 0; i < 32; i++) { // foreach tile inner loop
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
-
+                    case "grass":
+                        //       g.drawImage(grass, i * 25, j * 25, 50, 50, this);     // draws a grass on top of each "grass" tile.
+                        break;
                     case "wood":
                         g.drawImage(tree, i * 25 - 19, j * 25 - 80, 65, 100, this);       // draws a tree on top of each "wood" tile.
                         break;
-
                     case "wall":
                         g.drawImage(stone, i * 25 - 10, j * 25 - 10, 50, 50, this);     // draws a stone on top of each "wall" tile.
                         break;
+
+
                 }
             }
         }
@@ -729,8 +783,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     r = rotateRng();
 
-                    if (r > 98)
-                    {
+                    if (r > 98) {
                         currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25].type = "dirt";
                         currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25].growth = 0;
                     }
@@ -764,7 +817,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.yPos / 25 != 22) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 + 1].occupied) {
                                     n.yPos += movementSpeed;
-                                }else if (n.yPos / 25 + 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
+                                } else if (n.yPos / 25 + 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
@@ -785,7 +838,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied) {
                                     n.xPos -= movementSpeed;
                                 }
-                            }else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
+                            } else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                 System.out.println("the chaser hits you for 10 damage");
                                 player1.HP = player1.HP - 10;
 
@@ -801,7 +854,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.xPos / 25 != 22) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos / 25].occupied) {
                                     n.xPos += movementSpeed;
-                                } else if (n.xPos / 25 + 1 == player1.xPos /25 && n.yPos / 25 == player1.yPos / 25) {
+                                } else if (n.xPos / 25 + 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
@@ -910,6 +963,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             */
 
             case KeyEvent.VK_0:
+
+                currentTile = null;
 
                 if (startMenuVisible) {
                     startMenuVisible = false;               // this is how the menu hides other windows.
@@ -1104,21 +1159,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 break;
 
-            case KeyEvent.VK_2 :
-
-                int i;
-
-                for(i=0;i< player1.playerInventory.itemArray.length;i++){
-                    if (player1.playerInventory.itemArray[i].ID == 2){
+            case KeyEvent.VK_2:
 
 
+                for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+                    if (player1.playerInventory.itemArray[i].ID == 2) {
                         if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "wall";
 
                             player1.playerInventory.itemArray[i].ID = 0;
-                        } else
-
-                        if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                        } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
                             currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "wall";
 
                             player1.playerInventory.itemArray[i].ID = 0;
@@ -1128,9 +1178,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "wall";
 
                             player1.playerInventory.itemArray[i].ID = 0;
-                        } else
-
-                        if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                        } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
                             currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "wall";
 
                             player1.playerInventory.itemArray[i].ID = 0;
@@ -1144,97 +1192,93 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 break;
 
-            case KeyEvent.VK_4 :
-
+            case KeyEvent.VK_4:
+                currentTile.type = "fuck";
                 break;
 
-            case KeyEvent.VK_F :
+            case KeyEvent.VK_F:
 
                 System.out.println("F- fighting");
 
-                    boolean engagedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
-                    String harvestedItem = "";
-                    if (player1.orientation.equals("EAST")) {
+                boolean engagedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
+                String harvestedItem = "";
+                if (player1.orientation.equals("EAST")) {
 
-                        for ( Npc n : currentOverWorld.npcList)
-                        {
-                            if (player1.xPos / 25 + 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25){
-                                currentNpc = n;
-                                engagedSuccessfully = true;
-                            }
-
-
-                        }
-
-
-
-                    }
-                    if (player1.orientation.equals("WEST")) {
-
-                        for ( Npc n : currentOverWorld.npcList)
-                        {
-                            if (player1.xPos / 25 - 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25){
-                                currentNpc = n;
-                                engagedSuccessfully = true;
-                            }
-
-
+                    for (Npc n : currentOverWorld.npcList) {
+                        if (player1.xPos / 25 + 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25) {
+                            currentNpc = n;
+                            engagedSuccessfully = true;
                         }
 
 
                     }
-                    if (player1.orientation.equals("NORTH")) {
-
-                        for ( Npc n : currentOverWorld.npcList)
-                        {
-                            if (player1.yPos / 25 - 1 == n.yPos / 25 && player1.xPos / 25 == n.xPos / 25){
-                                currentNpc = n;
-                                engagedSuccessfully = true;
-                            }
 
 
+                }
+                if (player1.orientation.equals("WEST")) {
+
+                    for (Npc n : currentOverWorld.npcList) {
+                        if (player1.xPos / 25 - 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25) {
+                            currentNpc = n;
+                            engagedSuccessfully = true;
                         }
 
 
                     }
-                    if (player1.orientation.equals("SOUTH")) {
-
-                        for ( Npc n : currentOverWorld.npcList)
-                        {
-                            if (player1.yPos / 25 + 1 == n.yPos / 25 && player1.xPos / 25 == n.xPos /25 ){
-                                currentNpc = n;
-
-                                engagedSuccessfully = true;
-                            }
 
 
+                }
+                if (player1.orientation.equals("NORTH")) {
+
+                    for (Npc n : currentOverWorld.npcList) {
+                        if (player1.yPos / 25 - 1 == n.yPos / 25 && player1.xPos / 25 == n.xPos / 25) {
+                            currentNpc = n;
+                            engagedSuccessfully = true;
                         }
 
+
                     }
+
+
+                }
+                if (player1.orientation.equals("SOUTH")) {
+
+                    for (Npc n : currentOverWorld.npcList) {
+                        if (player1.yPos / 25 + 1 == n.yPos / 25 && player1.xPos / 25 == n.xPos / 25) {
+                            currentNpc = n;
+
+                            engagedSuccessfully = true;
+                        }
+
+
+                    }
+
+                }
 
                 System.out.println(engagedSuccessfully);
-                    if (engagedSuccessfully) { // Iff the tile is flagged to be successfully harvested, find an empty slot and fill it with a given item.
-                        System.out.println("engaged");
+                if (engagedSuccessfully) { // Iff the tile is flagged to be successfully harvested, find an empty slot and fill it with a given item.
+                    System.out.println("engaged");
 
 
-                        System.out.println("you hit the "+currentNpc.ai+" for 20 damage");
-                        currentNpc.HP = currentNpc.HP - 20;
-                        tick();
+                    System.out.println("you hit the " + currentNpc.ai + " for 20 damage");
+                    currentNpc.HP = currentNpc.HP - 20;
+                    tick();
 
-                        if (currentNpc.HP < 0){
-                            System.out.println("the "+currentNpc.ai+" dies");
-                            removeNpc(currentNpc.ID);
-
-                        }
-
+                    if (currentNpc.HP < 0) {
+                        System.out.println("the " + currentNpc.ai + " dies");
+                        removeNpc(currentNpc.ID);
 
                     }
 
+
+                }
 
 
                 break;
 
             case KeyEvent.VK_I:
+
+                currentTile = null;
 
                 if (!startMenuVisible) {
                     inventoryMenuVisible = !inventoryMenuVisible;
@@ -1251,6 +1295,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 tick();
                 break;
 
+            case KeyEvent.VK_ESCAPE:
+                currentItem = null;
+                currentTile = null;
+                currentTileX = 0;
+                currentTileY = 0;
+                break;
+
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             tick();
@@ -1264,11 +1315,617 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
         requestFocusInWindow();
 
+        int x = e.getX();
+        int y = e.getY();
 
-        System.out.println(e.getX() + ", " + e.getY());
+        if (!inventoryMenuVisible) {
+            currentTile = onMouseClickSelectTile(x, y);
+        }
+        if (inventoryMenuVisible) {
+            currentItem = onMouseClickSelectItem(x, y);
+        }
+        System.out.println("==CLICK==");
+        System.out.println(x + ", " + y);
+        System.out.println("" + (x / 25) + ", " + (y / 25));
+        System.out.println("=========");
+        System.out.println(currentItem.ID);
+
+    }
+
+    private Item onMouseClickSelectItem(int x, int y) {
+
+
+
+
+        if (inRange(x,587,617,true)){
+
+            currentItemColumn = 1;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 0;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 6;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 12;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 18;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 24;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 30;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 36;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 42;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 48;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 54;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 60;
+                System.out.println(currentItemRow);
+
+            }
+
+        } else
+
+        if(inRange(x,618,648,true)){
+
+            currentItemColumn = 2;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 1;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 7;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 13;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 19;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 25;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 31;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 37;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 43;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 49;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 55;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 61;
+                System.out.println(currentItemRow);
+
+            }
+
+        } else
+
+        if(inRange(x,649,679,true)){
+
+            currentItemColumn = 3;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 2;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 8;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 14;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 20;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 26;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 32;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 38;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 44;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 50;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 56;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 62;
+                System.out.println(currentItemRow);
+
+            }
+
+        } else
+
+        if(inRange(x,680,710,true)){
+
+            currentItemColumn = 4;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 3;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 11;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 15;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 21;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 27;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 33;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 39;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 45;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 51;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 57;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 63;
+                System.out.println(currentItemRow);
+
+            }
+        } else
+
+        if(inRange(x,711,741,true)){
+
+            currentItemColumn = 5;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 4;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 10;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 16;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 23;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 28;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 34;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 40;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 46;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 52;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 58;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 64;
+                System.out.println(currentItemRow);
+
+            }
+
+
+        } else
+
+        if(inRange(x,742,772,true)){
+
+            currentItemColumn = 6;
+            System.out.println(currentItemColumn);
+
+            if (inRange(y,176,206,true)){
+
+
+                currentItemRow = 1;
+                currentItemIndex = 5;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,207,237,true)){
+
+                currentItemRow = 2;
+                currentItemIndex = 11;
+                System.out.println(currentItemRow);
+            } else
+
+            if (inRange(y,238,268,true)){
+
+                currentItemRow = 3;
+                currentItemIndex = 17;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,269,299,true)){
+
+                currentItemRow = 4;
+                currentItemIndex = 23;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,300,330,true)){
+
+                currentItemRow = 5;
+                currentItemIndex = 29;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,331,361,true)){
+
+                currentItemRow = 6;
+                currentItemIndex = 35;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,362,392,true)){
+
+                currentItemRow = 7;
+                currentItemIndex = 41;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,393,423,true)){
+
+                currentItemRow = 8;
+                currentItemIndex = 47;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,424,454,true)){
+
+                currentItemRow = 9;
+                currentItemIndex = 54;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,455,485,true)){
+
+
+                currentItemRow = 10;
+                currentItemIndex = 59;
+                System.out.println(currentItemRow);
+
+            } else
+
+            if (inRange(y,486,516,true)){
+
+                currentItemRow = 11;
+                currentItemIndex = 65;
+                System.out.println(currentItemRow);
+
+            }
+
+
+        }
+
+        System.out.println(currentItemIndex);
+        return player1.playerInventory.itemArray[currentItemIndex];
+    }
+
+    private Tile onMouseClickSelectTile(int x, int y) {
+
+        currentTileX = x / 25;
+        currentTileY = y / 25;
+
+        return currentOverWorld.tilemap[x / 25][y / 25];
 
     }
 
@@ -1314,6 +1971,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         return ans;
     }
+
+
+        public boolean inRange(int i, int lower, int upper, boolean inclusive){
+
+            if (inclusive) {
+                return (i <= upper && i >= lower);
+            }
+            return (i < upper && i > lower);
+        }
+
 }
 
 
