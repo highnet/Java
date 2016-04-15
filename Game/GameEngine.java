@@ -35,7 +35,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentItemColumn = 0;
 
 
-
     private int actionTick = 0;  // Ticker for player actions.
 
     private final Timer timer = new Timer(gameSpeed, this);
@@ -67,7 +66,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     double nextTime = (double) System.nanoTime() / 1000000000.0;
 
 
-
     public GameEngine() {
 
 
@@ -88,7 +86,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         generatePlayer();               // Player is created.
 
-     //   currentItem = player1.playerInventory.itemArray[0];
+        //   currentItem = player1.playerInventory.itemArray[0];
 
         buildOverworld();               // adds worldSize x worldSize OverWorlds to the Overworld array.
 
@@ -436,9 +434,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
         if (mapVisible) {
             paintTileSet(g);
+           // paintOrientationArrow(g);
             paintPlayer(g);           // player painter
-            paintOrientationArrow(g);
             paintNpcs(g);               //npc(list) printer
+
             paintSprites(g);            // GFX sprite painter
 
         }
@@ -455,7 +454,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (currentTile != null) {
             paintCurrentlySelectedTileHighlights(g);
         }
-        if(currentItem != null){
+        if (currentItem != null) {
             paintCurrentlySelectedItemHighlights(g);
         }
     }
@@ -465,9 +464,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g2d.setColor(Color.red);
         g2d.setStroke(new BasicStroke(2));
 
-       if(inventoryMenuVisible) {
-           g2d.drawRect(587 + ((currentItemColumn-1) *30), 176 +((currentItemRow-1)*30), 30, 30);
-       }
+        if (inventoryMenuVisible) {
+            g2d.drawRect(587 + ((currentItemColumn - 1) * 30), 176 + ((currentItemRow - 1) * 30), 30, 30);
+        }
 
     }
 
@@ -516,7 +515,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
             counter++;
         }
-
 
 
     }
@@ -577,7 +575,85 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (Npc n : currentOverWorld.npcList) {
             g.setColor(n.pallete);
-            g.fillOval(n.xPos, n.yPos, 20, 20);
+            //g.fillOval(n.xPos, n.yPos, 20, 20);
+
+
+
+
+            if (n.ai.equals("Sheep")){
+
+                int xOffset = 0;
+                int yOffset = 0;
+
+                if (n.orientation.equals("NORTH")){
+
+                    xOffset = 4;
+                    yOffset = 6;
+
+                } else
+                if (n.orientation.equals("SOUTH")){
+
+
+                    xOffset = 5;
+                    yOffset = 6;
+
+                } else
+                if (n.orientation.equals("WEST")){
+
+
+                    xOffset = 6;
+                    yOffset = 5;
+
+                } else
+                if (n.orientation.equals("EAST")){
+
+
+                    xOffset = 4;
+                    yOffset = 3;
+
+                }
+
+                    g.drawImage(n.spriteMap.get(n.orientation),n.xPos - xOffset,n.yPos - yOffset,30,30,this);
+
+            } else
+
+            if (n.ai.equals("Chaser")){
+
+                int xOffset = 0;
+                int yOffset = 0;
+
+                if (n.orientation.equals("NORTH")){
+
+                    xOffset = 4;
+                    yOffset = 30;
+
+                } else
+                if (n.orientation.equals("SOUTH")){
+
+                    xOffset = 5;
+                    yOffset = 30;
+
+                } else
+                if (n.orientation.equals("WEST")){
+
+
+                    xOffset = 6;
+                    yOffset = 29;
+
+                } else
+                if (n.orientation.equals("EAST")){
+
+
+                    xOffset = 4;
+                    yOffset = 28;
+
+                }
+
+                g.drawImage(n.spriteMap.get(n.orientation),n.xPos - xOffset,n.yPos - yOffset,30,45,this);
+
+            }
+
+
         }
     }
 
@@ -590,9 +666,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         try {
-            northFrog= ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
+            northFrog = ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
             southFrog = ImageIO.read(new File("Data/GFX/SouthFroggy.png"));
-            eastFrog= ImageIO.read(new File("Data/GFX/EastFroggy.png"));                 // reads tree sprite
+            eastFrog = ImageIO.read(new File("Data/GFX/EastFroggy.png"));                 // reads tree sprite
             westFrog = ImageIO.read(new File("Data/GFX/WestFroggy.png"));
 
 
@@ -605,21 +681,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
-        switch (player1.orientation){
+        switch (player1.orientation) {
 
-            case "NORTH" :
-                g.drawImage(northFrog,player1.xPos - 6 ,player1.yPos - 8,30,30,this);
+            case "NORTH":
+                g.drawImage(northFrog, player1.xPos - 6, player1.yPos - 8, 30, 30, this);
                 break;
-            case "SOUTH" :
-                g.drawImage(southFrog,player1.xPos - 4 ,player1.yPos - 7,30,30,this);
+            case "SOUTH":
+                g.drawImage(southFrog, player1.xPos - 4, player1.yPos - 7, 30, 30, this);
                 break;
-            case "EAST" :
-                g.drawImage(eastFrog,player1.xPos - 3 ,player1.yPos - 5 ,30,30,this);
+            case "EAST":
+                g.drawImage(eastFrog, player1.xPos - 3, player1.yPos - 5, 30, 30, this);
                 break;
-            case "WEST" :
-                g.drawImage(westFrog,player1.xPos - 5  ,player1.yPos - 6,30,30,this);
+            case "WEST":
+                g.drawImage(westFrog, player1.xPos - 5, player1.yPos - 6, 30, 30, this);
                 break;
-            default :
+            default:
                 g.setColor(player1.pallete);
                 g.fillOval(player1.xPos, player1.yPos, 20, 20);
                 break;
@@ -705,13 +781,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "rakedDirt":
                         g.setColor(new Color(100, 40, 19));
                         g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(rakedDirt,i*25,j*25,25,25,this);
+                        g.drawImage(rakedDirt, i * 25, j * 25, 25, 25, this);
 
                         break;
                     case "dirt":
                         g.setColor(new Color(100, 80, 30));
                         g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(dirt,i*25,j*25,25,25,this);
+                        g.drawImage(dirt, i * 25, j * 25, 25, 25, this);
                         break;
                     default:
                         g.setColor(Color.red);
@@ -752,7 +828,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.drawImage(tree, i * 25 - 19, j * 25 - 80, 65, 100, this);       // draws a tree on top of each "wood" tile.
                         break;
                     case "wall":
-                        g.drawImage(stone, i * 25 - 10, j * 25 - 10, 50, 50, this);     // draws a stone on top of each "wall" tile.
+                        g.drawImage(stone, i * 25 - 10, j * 25 - 15, 50, 50, this);     // draws a stone on top of each "wall" tile.
                         break;
 
 
@@ -790,6 +866,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.yPos / 25 != 22) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 + 1].occupied) {
                                     n.yPos += movementSpeed;
+                                    n.orientation = "SOUTH";
                                 }
                             }
 
@@ -797,6 +874,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.yPos / 25 != 1) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 - 1].occupied) {
                                     n.yPos -= movementSpeed;
+                                    n.orientation = "NORTH";
                                 }
                             }
 
@@ -805,6 +883,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.xPos / 25 != 31) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos / 25].occupied) {
                                     n.xPos += movementSpeed;
+                                    n.orientation = "EAST";
                                 }
                             }
 
@@ -813,6 +892,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.xPos / 25 != 1) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied) {
                                     n.xPos -= movementSpeed;
+                                    n.orientation = "WEST";
                                 }
                             }
 
@@ -840,6 +920,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.yPos / 25 != 1) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 - 1].occupied) {
                                     n.yPos -= movementSpeed;
+                                    n.orientation = "NORTH";
                                 } else if (n.yPos / 25 - 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
@@ -857,6 +938,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.yPos / 25 != 22) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25 + 1].occupied) {
                                     n.yPos += movementSpeed;
+                                    n.orientation = "SOUTH";
                                 } else if (n.yPos / 25 + 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
@@ -877,6 +959,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.xPos / 25 != 1) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied) {
                                     n.xPos -= movementSpeed;
+                                    n.orientation = "WEST";
                                 }
                             } else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                 System.out.println("the chaser hits you for 10 damage");
@@ -894,6 +977,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             if (n.xPos / 25 != 22) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos / 25].occupied) {
                                     n.xPos += movementSpeed;
+                                    n.orientation = "EAST";
                                 } else if (n.xPos / 25 + 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
@@ -1376,95 +1460,73 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Item onMouseClickSelectItem(int x, int y) {
 
 
-
-
-        if (inRange(x,587,617,true)){
+        if (inRange(x, 587, 617, true)) {
 
             currentItemColumn = 1;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 0;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 6;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 12;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 18;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 24;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 30;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 36;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 42;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 48;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 54;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 60;
@@ -1472,95 +1534,73 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             }
 
-        } else
-
-        if(inRange(x,618,648,true)){
+        } else if (inRange(x, 618, 648, true)) {
 
             currentItemColumn = 2;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 1;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 7;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 13;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 19;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 25;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 31;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 37;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 43;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 49;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 55;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 61;
@@ -1568,95 +1608,73 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             }
 
-        } else
-
-        if(inRange(x,649,679,true)){
+        } else if (inRange(x, 649, 679, true)) {
 
             currentItemColumn = 3;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 2;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 8;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 14;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 20;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 26;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 32;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 38;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 44;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 50;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 56;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 62;
@@ -1664,190 +1682,146 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             }
 
-        } else
-
-        if(inRange(x,680,710,true)){
+        } else if (inRange(x, 680, 710, true)) {
 
             currentItemColumn = 4;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 3;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 11;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 15;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 21;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 27;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 33;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 39;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 45;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 51;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 57;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 63;
                 System.out.println(currentItemRow);
 
             }
-        } else
-
-        if(inRange(x,711,741,true)){
+        } else if (inRange(x, 711, 741, true)) {
 
             currentItemColumn = 5;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 4;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 10;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 16;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 23;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 28;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 34;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 40;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 46;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 52;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 58;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 64;
@@ -1856,95 +1830,73 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
 
-        } else
-
-        if(inRange(x,742,772,true)){
+        } else if (inRange(x, 742, 772, true)) {
 
             currentItemColumn = 6;
             System.out.println(currentItemColumn);
 
-            if (inRange(y,176,206,true)){
+            if (inRange(y, 176, 206, true)) {
 
 
                 currentItemRow = 1;
                 currentItemIndex = 5;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,207,237,true)){
+            } else if (inRange(y, 207, 237, true)) {
 
                 currentItemRow = 2;
                 currentItemIndex = 11;
                 System.out.println(currentItemRow);
-            } else
-
-            if (inRange(y,238,268,true)){
+            } else if (inRange(y, 238, 268, true)) {
 
                 currentItemRow = 3;
                 currentItemIndex = 17;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,269,299,true)){
+            } else if (inRange(y, 269, 299, true)) {
 
                 currentItemRow = 4;
                 currentItemIndex = 23;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,300,330,true)){
+            } else if (inRange(y, 300, 330, true)) {
 
                 currentItemRow = 5;
                 currentItemIndex = 29;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,331,361,true)){
+            } else if (inRange(y, 331, 361, true)) {
 
                 currentItemRow = 6;
                 currentItemIndex = 35;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,362,392,true)){
+            } else if (inRange(y, 362, 392, true)) {
 
                 currentItemRow = 7;
                 currentItemIndex = 41;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,393,423,true)){
+            } else if (inRange(y, 393, 423, true)) {
 
                 currentItemRow = 8;
                 currentItemIndex = 47;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,424,454,true)){
+            } else if (inRange(y, 424, 454, true)) {
 
                 currentItemRow = 9;
                 currentItemIndex = 54;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,455,485,true)){
+            } else if (inRange(y, 455, 485, true)) {
 
 
                 currentItemRow = 10;
                 currentItemIndex = 59;
                 System.out.println(currentItemRow);
 
-            } else
-
-            if (inRange(y,486,516,true)){
+            } else if (inRange(y, 486, 516, true)) {
 
                 currentItemRow = 11;
                 currentItemIndex = 65;
@@ -2012,13 +1964,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 
-        public boolean inRange(int i, int lower, int upper, boolean inclusive){
+    public boolean inRange(int i, int lower, int upper, boolean inclusive) {
 
-            if (inclusive) {
-                return (i <= upper && i >= lower);
-            }
-            return (i < upper && i > lower);
+        if (inclusive) {
+            return (i <= upper && i >= lower);
         }
+        return (i < upper && i > lower);
+    }
 
 }
 
