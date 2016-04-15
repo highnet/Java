@@ -684,16 +684,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         switch (player1.orientation) {
 
             case "NORTH":
-                g.drawImage(northFrog, player1.xPos - 6, player1.yPos - 3, 30, 30, this);
+                g.drawImage(northFrog, player1.xPos - 4, player1.yPos - 3, 26, 26, this);
                 break;
             case "SOUTH":
-                g.drawImage(southFrog, player1.xPos - 4, player1.yPos - 7, 30, 30, this);
+                g.drawImage(southFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             case "EAST":
-                g.drawImage(eastFrog, player1.xPos - 3, player1.yPos - 5, 30, 30, this);
+                g.drawImage(eastFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             case "WEST":
-                g.drawImage(westFrog, player1.xPos - 5, player1.yPos - 6, 30, 30, this);
+                g.drawImage(westFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             default:
                 g.setColor(player1.pallete);
