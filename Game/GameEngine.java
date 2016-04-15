@@ -583,8 +583,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintPlayer(Graphics g) {
 
-        g.setColor(player1.pallete);
-        g.fillOval(player1.xPos, player1.yPos, 20, 20);
+        BufferedImage northFrog;
+        BufferedImage southFrog;
+        BufferedImage eastFrog;
+        BufferedImage westFrog;
+
+
+        try {
+            northFrog= ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
+            southFrog = ImageIO.read(new File("Data/GFX/SouthFroggy.png"));
+            eastFrog= ImageIO.read(new File("Data/GFX/EastFroggy.png"));                 // reads tree sprite
+            westFrog = ImageIO.read(new File("Data/GFX/WestFroggy.png"));
+
+
+        } catch (IOException e) {
+            northFrog = null;
+            southFrog = null;
+            eastFrog = null;
+            westFrog = null;
+
+        }
+
+
+        switch (player1.orientation){
+
+            case "NORTH" :
+                g.drawImage(northFrog,player1.xPos - 6 ,player1.yPos - 8,30,30,this);
+                break;
+            case "SOUTH" :
+                g.drawImage(southFrog,player1.xPos - 4 ,player1.yPos - 7,30,30,this);
+                break;
+            case "EAST" :
+                g.drawImage(eastFrog,player1.xPos - 3 ,player1.yPos - 5 ,30,30,this);
+                break;
+            case "WEST" :
+                g.drawImage(westFrog,player1.xPos - 5  ,player1.yPos - 6,30,30,this);
+                break;
+            default :
+                g.setColor(player1.pallete);
+                g.fillOval(player1.xPos, player1.yPos, 20, 20);
+                break;
+        }
+
     }
 
     private void paintTileCoordinates(Graphics g) {
@@ -1330,7 +1370,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         System.out.println(x + ", " + y);
         System.out.println("" + (x / 25) + ", " + (y / 25));
         System.out.println("=========");
-        System.out.println(currentItem.ID);
 
     }
 
