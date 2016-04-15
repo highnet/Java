@@ -625,27 +625,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 if (n.orientation.equals("NORTH")){
 
                     xOffset = 4;
-                    yOffset = 30;
+                    yOffset = 20;
 
                 } else
                 if (n.orientation.equals("SOUTH")){
 
                     xOffset = 5;
-                    yOffset = 30;
+                    yOffset = 20;
 
                 } else
                 if (n.orientation.equals("WEST")){
 
 
                     xOffset = 6;
-                    yOffset = 29;
+                    yOffset = 19;
 
                 } else
                 if (n.orientation.equals("EAST")){
 
 
                     xOffset = 4;
-                    yOffset = 28;
+                    yOffset = 19;
 
                 }
 
@@ -684,7 +684,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         switch (player1.orientation) {
 
             case "NORTH":
-                g.drawImage(northFrog, player1.xPos - 6, player1.yPos - 8, 30, 30, this);
+                g.drawImage(northFrog, player1.xPos - 6, player1.yPos - 3, 30, 30, this);
                 break;
             case "SOUTH":
                 g.drawImage(southFrog, player1.xPos - 4, player1.yPos - 7, 30, 30, this);
@@ -810,7 +810,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         try {
             tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
             stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
-            //     grass = ImageIO.read(new File("Data/GFX/Grass.png"));
+
         } catch (IOException e) {
             tree = null;
             stone = null;
@@ -821,14 +821,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             for (int i = 0; i < 32; i++) { // foreach tile inner loop
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
-                    case "grass":
-                        //       g.drawImage(grass, i * 25, j * 25, 50, 50, this);     // draws a grass on top of each "grass" tile.
-                        break;
                     case "wood":
                         g.drawImage(tree, i * 25 - 19, j * 25 - 80, 65, 100, this);       // draws a tree on top of each "wood" tile.
                         break;
                     case "wall":
-                        g.drawImage(stone, i * 25 - 10, j * 25 - 15, 50, 50, this);     // draws a stone on top of each "wall" tile.
+                        g.drawImage(stone, i * 25 - 5, j * 25 - 10, 40, 40, this);     // draws a stone on top of each "wall" tile.
                         break;
 
 
