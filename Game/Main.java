@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
  * Created by bokense on 25-Mar-16.
  */
 public class Main extends JFrame {
-    final private static int WIDTH = 807;
-    final private static int HEIGHT = 630;
+    public final static int WIDTH = 807;
+    public final static int HEIGHT = 630;
 
     public Main() {
         this.initialize();

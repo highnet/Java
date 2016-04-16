@@ -1,9 +1,12 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -65,6 +68,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     double nextTime = (double) System.nanoTime() / 1000000000.0;
 
+    Map<String, BufferedImage> bufferedImageMap;
+
+    private boolean raining;
+    Point[] rainDrops;
+    int numberOfRainDrops = 50;
+
+
+    AudioInputStream audioInputStream;
+
+    Clip movementSound;
+
 
     public GameEngine() {
 
@@ -74,7 +88,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         addKeyListener(this); // Adds keyboard listener.
 
         setFocusable(true); // Setting required for keyboard listener.
-
 
         run();
 
@@ -99,9 +112,125 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         fillWord();
 
+        loadSprites();
+
+        loadRainSound();
+
+        raining = true;
+
+        generateRainPattern();
+
+
         runFlag = true;
 
         timer.start();
+
+    }
+
+
+
+
+    private void loadRainSound() {
+
+        File rain = new File("Data/Sound/Rain.wav");
+
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(rain);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Clip rainSound = AudioSystem.getClip();
+            rainSound.open(audioInputStream);
+            rainSound.start();
+            rainSound.loop(999);
+
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void generateRainPattern() {
+
+        rainDrops = new Point[numberOfRainDrops];
+
+        for (int i = 0; i < rainDrops.length; i++) {
+            int x = (int) (Math.random() * (Main.WIDTH));
+            int y = (int) (Math.random() * (Main.HEIGHT));
+
+            rainDrops[i] = new Point(x, y);
+        }
+
+        for (Point p : rainDrops) {
+            System.out.println("" + p.x + "," + p.y);
+        }
+    }
+
+    private void loadSprites() {
+        bufferedImageMap = new HashMap<>();
+
+        BufferedImage errorImg;
+        BufferedImage northFrog;
+        BufferedImage southFrog;
+        BufferedImage eastFrog;
+        BufferedImage westFrog;
+
+        BufferedImage grass;
+        BufferedImage dirt;
+        BufferedImage rakedDirt;
+        BufferedImage plankWall;
+
+        BufferedImage tree;
+        BufferedImage stone;
+
+
+        try {
+
+            errorImg = ImageIO.read(new File("Data/GFX/ErrorImg.jpg"));
+            northFrog = ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
+            southFrog = ImageIO.read(new File("Data/GFX/SouthFroggy.png"));
+            eastFrog = ImageIO.read(new File("Data/GFX/EastFroggy.png"));                 // reads tree sprite
+            westFrog = ImageIO.read(new File("Data/GFX/WestFroggy.png"));
+            grass = ImageIO.read(new File("Data/GFX/Grass.png"));
+            dirt = ImageIO.read(new File("Data/GFX/Dirt.png"));
+            rakedDirt = ImageIO.read(new File("Data/GFX/RakedDirt.png"));
+            plankWall = ImageIO.read(new File("Data/GFX/PlanksWall.png"));
+            tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
+            stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
+
+            bufferedImageMap.put("ERROR", errorImg);
+            bufferedImageMap.put("NORTH_FROG", northFrog);
+            bufferedImageMap.put("SOUTH_FROG", southFrog);
+            bufferedImageMap.put("EAST_FROG", eastFrog);
+            bufferedImageMap.put("WEST_FROG", westFrog);
+            bufferedImageMap.put("GRASS", grass);
+            bufferedImageMap.put("DIRT", dirt);
+            bufferedImageMap.put("RAKED_DIRT", rakedDirt);
+            bufferedImageMap.put("PLANK_WALL", plankWall);
+            bufferedImageMap.put("TREE", tree);
+            bufferedImageMap.put("STONE", stone);
+
+
+        } catch (IOException e) {
+            // JT TODO: should change to an ERROR SPRITE instead of a null image.
+
+            errorImg = null;
+            northFrog = null;
+            southFrog = null;
+            eastFrog = null;
+            westFrog = null;
+            grass = null;
+            dirt = null;
+            rakedDirt = null;
+            plankWall = null;
+            tree = null;
+            stone = null;
+
+        }
+
 
     }
 
@@ -219,7 +348,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 if (r > 98) {
-                    currentOverWorld.tilemap[i][j].type = "wall";
+                    currentOverWorld.tilemap[i][j].type = "stone";
                 }
 
                 if (currentOverWorld.tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
@@ -239,7 +368,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         for (i = 0; i < 32; i++) {                          // First, iterate through the entire tilemap of the current Overworld
             for (j = 0; j < 24; j++) {                      // and flag any non passable tiles as occupied. flag every passable tile as !occupied.
 
-                currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("wood")) || (currentOverWorld.tilemap[i][j].type.equals("wall")) || (currentOverWorld.tilemap[i][j].type.equals("water"));
+                currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("wood")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("stone")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("water")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("plankWall"));
             }
 
 
@@ -433,12 +565,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintStartMenu(g);
         }
         if (mapVisible) {
-            paintTileSet(g);
-           // paintOrientationArrow(g);
+            paintTilesLayer0(g);
+
             paintPlayer(g);           // player painter
             paintNpcs(g);               //npc(list) printer
-
-            paintSprites(g);            // GFX sprite painter
+            paintTilesLayer1(g);
+            if (raining) {
+                paintRain(g);
+            }
 
         }
 
@@ -458,6 +592,142 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintCurrentlySelectedItemHighlights(g);
         }
     }
+
+
+    private void paintTilesLayer0(Graphics g) { // Tile Rendering System
+
+        assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
+
+
+        for (int i = 0; i < 32; i++) { // foreach tile outer loop
+            for (int j = 0; j < 24; j++) { // foreach tile inner loop
+
+                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
+                switch (tileTypeToPaint) { // Rendering unit for each tile type
+                    case "grass":
+                        g.setColor(Color.green);
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
+                        break;
+                    case "water":
+                        g.setColor(Color.blue);
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        break;
+                    case "wood":
+                        g.setColor(Color.green);
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
+                        break;
+                    case "stone":
+                        g.setColor(Color.green);
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        g.drawImage(bufferedImageMap.get("STONE"), i * 25 - 5, j * 25 - 10, 40, 40, this);     // draws a tree
+                        break;
+                    case "sand":
+                        g.setColor(Color.orange);
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        break;
+                    case "rakedDirt":
+                        g.setColor(new Color(100, 40, 19));
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("RAKED_DIRT"), i * 25, j * 25, 25, 25, this);
+
+                        break;
+                    case "dirt":
+                        g.setColor(new Color(100, 80, 30));
+                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("DIRT"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "plankWall":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        g.drawImage(bufferedImageMap.get("PLANK_WALL"), i * 25, j * 25, 25, 25, this);
+                        break;
+
+                    default:
+                        g.setColor(Color.red);
+                        g.drawString("ERR", i * 25, j * 25 + 25);
+                        break;
+                }
+
+
+            }
+
+        }
+    }
+
+    private void paintTilesLayer1(Graphics g) {
+
+        assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
+
+
+        for (int i = 0; i < 32; i++) { // foreach tile outer loop
+            for (int j = 0; j < 24; j++) { // foreach tile inner loop
+
+                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
+                switch (tileTypeToPaint) { // Rendering unit for each tile type
+                    case "wood":
+                        g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
+                        break;
+                    case "stone":
+                        g.drawImage(bufferedImageMap.get("STONE"), i * 25 - 5, j * 25 - 10, 40, 40, this);     // draws a tree
+                        break;
+                }
+
+
+            }
+
+        }
+    }
+
+    private void paintRain(Graphics g) {
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.red);
+        g2d.setStroke(new BasicStroke(2));
+
+
+        g.setColor(Color.blue);
+        for (Point p : rainDrops) {
+            g2d.drawLine(p.x, p.y, p.x + 10, p.y + 10);
+        }
+        moveRain();
+    }
+
+    private void moveRain() {
+
+        for (int i = 0; i < rainDrops.length; i++) {
+            int rainSpeed = (int) (Math.random() * (12));
+            rainDrops[i].x += rainSpeed;
+            rainDrops[i].y += rainSpeed;
+        }
+
+        destroyRandomRaindrops();
+        replaceOutOfScreenRain();
+    }
+
+    private void destroyRandomRaindrops() {
+
+        int rng = (int) (Math.random() * (1000));
+        if (rng == 1000) {
+            int rainDropIndexToDestroy = (int) (Math.random() * (rainDrops.length));
+
+            rainDrops[rainDropIndexToDestroy].x = (int) (Math.random() * (Main.WIDTH));
+            rainDrops[rainDropIndexToDestroy].y = (int) (Math.random() * (Main.WIDTH));
+        }
+    }
+
+    private void replaceOutOfScreenRain() {
+
+        for (int i = 0; i < rainDrops.length; i++) {
+            if (rainDrops[i].x > Main.WIDTH || rainDrops[i].y > Main.HEIGHT) {
+                rainDrops[i].x = (int) (Math.random() * (Main.WIDTH));
+                rainDrops[i].y = (int) (Math.random() * (Main.HEIGHT));
+            }
+        }
+    }
+
 
     private void paintCurrentlySelectedItemHighlights(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -578,34 +848,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             //g.fillOval(n.xPos, n.yPos, 20, 20);
 
 
-
-
-            if (n.ai.equals("Sheep")){
+            if (n.ai.equals("Sheep")) {
 
                 int xOffset = 0;
                 int yOffset = 0;
 
-                if (n.orientation.equals("NORTH")){
+                if (n.orientation.equals("NORTH")) {
 
                     xOffset = 4;
                     yOffset = 6;
 
-                } else
-                if (n.orientation.equals("SOUTH")){
+                } else if (n.orientation.equals("SOUTH")) {
 
 
                     xOffset = 5;
                     yOffset = 6;
 
-                } else
-                if (n.orientation.equals("WEST")){
+                } else if (n.orientation.equals("WEST")) {
 
 
                     xOffset = 6;
                     yOffset = 5;
 
-                } else
-                if (n.orientation.equals("EAST")){
+                } else if (n.orientation.equals("EAST")) {
 
 
                     xOffset = 4;
@@ -613,35 +878,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 }
 
-                    g.drawImage(n.spriteMap.get(n.orientation),n.xPos - xOffset,n.yPos - yOffset,30,30,this);
+                g.drawImage(n.spriteMap.get(n.orientation), n.xPos - xOffset, n.yPos - yOffset, 30, 30, this);
 
-            } else
-
-            if (n.ai.equals("Chaser")){
+            } else if (n.ai.equals("Chaser")) {
 
                 int xOffset = 0;
                 int yOffset = 0;
 
-                if (n.orientation.equals("NORTH")){
+                if (n.orientation.equals("NORTH")) {
 
                     xOffset = 4;
                     yOffset = 20;
 
-                } else
-                if (n.orientation.equals("SOUTH")){
+                } else if (n.orientation.equals("SOUTH")) {
 
                     xOffset = 5;
                     yOffset = 20;
 
-                } else
-                if (n.orientation.equals("WEST")){
+                } else if (n.orientation.equals("WEST")) {
 
 
                     xOffset = 6;
                     yOffset = 19;
 
-                } else
-                if (n.orientation.equals("EAST")){
+                } else if (n.orientation.equals("EAST")) {
 
 
                     xOffset = 4;
@@ -649,7 +909,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 }
 
-                g.drawImage(n.spriteMap.get(n.orientation),n.xPos - xOffset,n.yPos - yOffset,30,45,this);
+                g.drawImage(n.spriteMap.get(n.orientation), n.xPos - xOffset, n.yPos - yOffset, 30, 45, this);
 
             }
 
@@ -659,41 +919,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintPlayer(Graphics g) {
 
-        BufferedImage northFrog;
-        BufferedImage southFrog;
-        BufferedImage eastFrog;
-        BufferedImage westFrog;
-
-
-        try {
-            northFrog = ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
-            southFrog = ImageIO.read(new File("Data/GFX/SouthFroggy.png"));
-            eastFrog = ImageIO.read(new File("Data/GFX/EastFroggy.png"));                 // reads tree sprite
-            westFrog = ImageIO.read(new File("Data/GFX/WestFroggy.png"));
-
-
-        } catch (IOException e) {
-            northFrog = null;
-            southFrog = null;
-            eastFrog = null;
-            westFrog = null;
-
-        }
-
-
+        assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
+        // paintOrientationArrow(g);
         switch (player1.orientation) {
 
             case "NORTH":
-                g.drawImage(northFrog, player1.xPos - 4, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("NORTH_FROG"), player1.xPos - 4, player1.yPos - 3, 26, 26, this);
                 break;
             case "SOUTH":
-                g.drawImage(southFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("SOUTH_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             case "EAST":
-                g.drawImage(eastFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("EAST_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             case "WEST":
-                g.drawImage(westFrog, player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("WEST_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
                 break;
             default:
                 g.setColor(player1.pallete);
@@ -732,108 +972,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
-
-    private void paintTileSet(Graphics g) { // Tile Rendering System
-
-        BufferedImage grass;
-        BufferedImage dirt;
-        BufferedImage rakedDirt;
-
-        try {
-            grass = ImageIO.read(new File("Data/GFX/Grass.png"));
-            dirt = ImageIO.read(new File("Data/GFX/Dirt.png"));
-            rakedDirt = ImageIO.read(new File("Data/GFX/RakedDirt.png"));
-        } catch (IOException e) {
-            grass = null;
-            dirt = null;
-            rakedDirt = null;
-        }
-
-
-        for (int i = 0; i < 32; i++) { // foreach tile outer loop
-            for (int j = 0; j < 24; j++) { // foreach tile inner loop
-
-                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
-                switch (tileTypeToPaint) { // Rendering unit for each tile type
-                    case "grass":
-                        g.setColor(Color.green);
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
-                        break;
-                    case "water":
-                        g.setColor(Color.blue);
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        break;
-                    case "wood":
-                        g.setColor(Color.green);
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
-                        break;
-                    case "wall":
-                        g.setColor(Color.green);
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(grass, i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
-                        break;
-                    case "sand":
-                        g.setColor(Color.orange);
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        break;
-                    case "rakedDirt":
-                        g.setColor(new Color(100, 40, 19));
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(rakedDirt, i * 25, j * 25, 25, 25, this);
-
-                        break;
-                    case "dirt":
-                        g.setColor(new Color(100, 80, 30));
-                        g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(dirt, i * 25, j * 25, 25, 25, this);
-                        break;
-                    default:
-                        g.setColor(Color.red);
-                        g.drawString("ERR", i * 25, j * 25 + 25);
-                        break;
-                }
-
-
-            }
-
-        }
-    }
-
-    private void paintSprites(Graphics g) {
-
-        BufferedImage tree;                 // loads image pointers. SHOULD BE LOADED SOMEWHERE ELSE PROBABLY
-        BufferedImage stone;
-
-
-        try {
-            tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
-            stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
-
-        } catch (IOException e) {
-            tree = null;
-            stone = null;
-
-        }
-
-        for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 0; i < 32; i++) { // foreach tile inner loop
-                String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
-                switch (tileTypeToPaint) { // Rendering unit for each tile type
-                    case "wood":
-                        g.drawImage(tree, i * 25 - 19, j * 25 - 80, 65, 100, this);       // draws a tree on top of each "wood" tile.
-                        break;
-                    case "wall":
-                        g.drawImage(stone, i * 25 - 5, j * 25 - 10, 40, 40, this);     // draws a stone on top of each "wall" tile.
-                        break;
-
-
-                }
-            }
-        }
-
-    }
 
     private void npcBehaviour() {
 
@@ -1110,6 +1248,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_UP: // User presses the up key
 
+                loadMovementSound();
+              //  movementSound.close();
+
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
                 if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
@@ -1128,6 +1269,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
             case KeyEvent.VK_DOWN: // Tries to move down
 
+                loadMovementSound();
                 player1.orientation = "SOUTH";
 
                 if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
@@ -1143,6 +1285,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 break;
             case KeyEvent.VK_LEFT: // Tries to move left
+                loadMovementSound();
 
                 player1.orientation = "WEST";
 
@@ -1160,6 +1303,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
+                loadMovementSound();
+
                 player1.orientation = "EAST";
 
                 if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
@@ -1218,7 +1363,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedSuccessfully = true;
 
                     }
-                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wall")) {
+                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("stone")) {
                         currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "dirt";
                         harvestedItem = "cobblestone";
                         currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
@@ -1232,7 +1377,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedSuccessfully = true;
 
                     }
-                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wall")) {
+                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("stone")) {
                         currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "dirt";
                         harvestedItem = "cobblestone";
                         currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
@@ -1244,7 +1389,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedSuccessfully = true;
                         harvestedItem = "lumber";
                     }
-                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wall")) {
+                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("stone")) {
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "dirt";
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
                         harvestedSuccessfully = true;
@@ -1255,7 +1400,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         harvestedItem = "lumber";
                         harvestedSuccessfully = true;
                     }
-                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wall")) {
+                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("stone")) {
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "dirt";
                         harvestedItem = "cobblestone";
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
@@ -1280,33 +1425,60 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 break;
 
+            /*
+            ITEM PLACEMENT
+             */
+
+
             case KeyEvent.VK_2:
 
+                if (currentItem != null && currentItem.ID == 1) {
+                    if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "stone";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
 
-                for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
-                    if (player1.playerInventory.itemArray[i].ID == 2) {
-                        if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
-                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "wall";
+                    } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "stone";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
 
-                            player1.playerInventory.itemArray[i].ID = 0;
-                        } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "wall";
+                    }
 
-                            player1.playerInventory.itemArray[i].ID = 0;
-                        }
+                    if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "stone";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
 
-                        if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
-                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "wall";
+                    } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "stone";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
+                    }
 
-                            player1.playerInventory.itemArray[i].ID = 0;
-                        } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "wall";
+                } else if (currentItem != null && currentItem.ID == 2) {
+                    if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankWall";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
 
-                            player1.playerInventory.itemArray[i].ID = 0;
-                        }
+                    } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "plankWall";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
 
+                    }
 
-                        break;
+                    if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "plankWall";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
+
+                    } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "plankWall";
+                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                        tick();
+
                     }
 
                 }
@@ -1426,6 +1598,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             tick();
+        }
+    }
+
+    private void loadMovementSound() {
+        File blop = new File("Data/Sound/Blop.wav");
+
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(blop);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            movementSound = AudioSystem.getClip();
+            movementSound.open(audioInputStream);
+
+            movementSound.start();
+
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1970,5 +2162,4 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 }
-
 

@@ -10,6 +10,7 @@ public class Item {
     ID : 1 : LUMBER
     ID : 2 : COBBLESTONE
     ID : 3 : SAND
+    ID : 4 : PLANKS_WALL
 
      */
 
