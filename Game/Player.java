@@ -9,6 +9,7 @@ public class Player extends Entity {
     public String orientation = "EAST";
     public Float HP;
     Inventory playerInventory;
+    CraftingInterface playerCrafter;
 
     public Player(int setID,int setxPos, int setyPos, int setInventorySize, float setHP, Color setColor){
 
@@ -16,6 +17,7 @@ public class Player extends Entity {
         this.HP = setHP;
 
         playerInventory = new Inventory(setInventorySize);
+        playerCrafter = new CraftingInterface(10);
 
     }
 

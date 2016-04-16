@@ -76,8 +76,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     AudioInputStream audioInputStream;
-
     Clip movementSound;
+
+    private boolean craftingMenuVisible = false;
+
+
+    int mouseDragX = 0;
+    int mouseDragY = 0;
 
 
     public GameEngine() {
@@ -126,8 +131,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
 
     }
-
-
 
 
     private void loadRainSound() {
@@ -186,6 +189,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage tree;
         BufferedImage stone;
 
+        BufferedImage inventoryLumber;
+
 
         try {
 
@@ -200,7 +205,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             plankWall = ImageIO.read(new File("Data/GFX/PlanksWall.png"));
             tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
             stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
+            inventoryLumber = ImageIO.read(new File("Data/GFX/InventoryLumber.png"));                // reads stone sprite.
 
+
+            bufferedImageMap.put("INVENTORY_LUMBER", inventoryLumber);
             bufferedImageMap.put("ERROR", errorImg);
             bufferedImageMap.put("NORTH_FROG", northFrog);
             bufferedImageMap.put("SOUTH_FROG", southFrog);
@@ -215,7 +223,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } catch (IOException e) {
-            // JT TODO: should change to an ERROR SPRITE instead of a null image.
 
             errorImg = null;
             northFrog = null;
@@ -228,6 +235,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             plankWall = null;
             tree = null;
             stone = null;
+            inventoryLumber = null;
 
         }
 
@@ -585,11 +593,74 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (inventoryMenuVisible) {
             paintInventory(g);
         }
+
+        if (craftingMenuVisible) {
+            paintCraftingMenu(g);
+        }
         if (currentTile != null) {
             paintCurrentlySelectedTileHighlights(g);
         }
         if (currentItem != null) {
             paintCurrentlySelectedItemHighlights(g);
+            paintCurrentlySelectedItemOnMouse(g);
+        }
+
+
+    }
+
+    private void paintCurrentlySelectedItemOnMouse(Graphics g) {
+        if (currentItem.ID == 1) {
+            g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), mouseDragX, mouseDragY, 20, 20, this);
+        }
+        if (currentItem.ID == 4) {
+            g.drawImage(bufferedImageMap.get("PLANK_WALL"), mouseDragX, mouseDragY, 20, 20, this);
+        }
+    }
+
+    private void paintCraftingMenu(Graphics g) {
+
+
+        g.setColor(Color.lightGray);
+        g.fillRect(25, 125, 200, 200);
+
+        g.setColor(Color.white);
+        g.fillRect(34, 149, 90, 90);
+        g.fillRect(157, 183, 30, 30);
+
+        g.setColor(Color.black);
+        g.fillRect(151,233,40,40);
+
+        g.setFont(font2);
+        g.drawString("Crafting", 34, 142);
+        int counter = 0;
+        int row = 0;
+
+        for (int i = 0; i < player1.playerCrafter.itemArray.length - 1; i++) {
+
+            if (counter == 3) {
+                counter = 0;
+                row++;
+            }
+
+            g.drawRect(34 + (counter * 30), 149 + (row * 30), 30, 30);
+
+
+            if (player1.playerCrafter.itemArray[i].ID == 1) {
+                g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), 34 + (counter * 30), 149 + (row * 30), 25, 22, this);
+            }
+
+            counter++;
+        }
+
+
+
+        g.drawRect(157, 183, 30, 30);
+        g.setColor(Color.white);
+        g.setFont(font2);
+        g.drawString("CRAFT",153,247);
+
+        if (player1.playerCrafter.itemArray[9].ID == 4){
+            g.drawImage(bufferedImageMap.get("PLANK_WALL"),157,183,30,30,this);
         }
     }
 
@@ -734,7 +805,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g2d.setColor(Color.red);
         g2d.setStroke(new BasicStroke(2));
 
-        if (inventoryMenuVisible) {
+        if (inventoryMenuVisible && currentItem != null && currentItem.equals(player1.playerCrafter.itemArray[9])){
+            g2d.drawRect(156,183,30,30);
+        }
+        else if (inventoryMenuVisible && currentItem != null) {
             g2d.drawRect(587 + ((currentItemColumn - 1) * 30), 176 + ((currentItemRow - 1) * 30), 30, 30);
         }
 
@@ -752,7 +826,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintInventory(Graphics g) {
 
         g.setColor(Color.lightGray);
-        g.fillRect(575, 149, 200, 400);
+        g.fillRect(575, 149, 200, 600);
         g.setFont(font3);
         g.setColor(Color.black);
         g.drawString("Inventory", 585, 167);
@@ -772,14 +846,20 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 row++;
             }
             if (player1.playerInventory.itemArray[i].ID == 1) {
-                g.setColor(new Color(138, 69, 19));
-                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
+                //              g.setColor(new Color(138, 69, 19));
+//                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
+                g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
 
             }
 
             if (player1.playerInventory.itemArray[i].ID == 2) {
                 g.setColor(Color.gray);
                 g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
+            }
+
+            if (player1.playerInventory.itemArray[i].ID == 4) {
+
+                g.drawImage(bufferedImageMap.get("PLANK_WALL"),593 + (counter * 30), 183 + (row * 30), 20, 20,this);
             }
             g.setColor(Color.black);
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
@@ -1236,6 +1316,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     mapVisible = false;
                     inventoryMenuVisible = false;
                     debugMenuVisible = false;
+                    craftingMenuVisible = false;
 
                     break;
                 }
@@ -1245,11 +1326,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 System.out.println(currentOverWorld.idX + currentOverWorld.idY);
 
                 break;
+            case KeyEvent.VK_C:
+
+                craftingMenuVisible = !craftingMenuVisible;
+
+                break;
 
             case KeyEvent.VK_UP: // User presses the up key
 
                 loadMovementSound();
-              //  movementSound.close();
+                //  movementSound.close();
 
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
@@ -1432,7 +1518,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_2:
 
-                if (currentItem != null && currentItem.ID == 1) {
+                if (currentItem != null && currentItem.ID == 2) {
                     if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "stone";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
@@ -1456,7 +1542,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         tick();
                     }
 
-                } else if (currentItem != null && currentItem.ID == 2) {
+                } else if (currentItem != null && currentItem.ID == 1) {
                     if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankWall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
@@ -1485,8 +1571,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 break;
 
-            case KeyEvent.VK_4:
-                currentTile.type = "fuck";
+            case KeyEvent.VK_R:
+                raining = !raining;
                 break;
 
             case KeyEvent.VK_F:
@@ -1633,21 +1719,104 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         int x = e.getX();
         int y = e.getY();
 
-        if (!inventoryMenuVisible) {
-            currentTile = onMouseClickSelectTile(x, y);
-        }
-        if (inventoryMenuVisible) {
-            currentItem = onMouseClickSelectItem(x, y);
-        }
         System.out.println("==CLICK==");
         System.out.println(x + ", " + y);
         System.out.println("" + (x / 25) + ", " + (y / 25));
         System.out.println("=========");
 
+        if (e.getButton() == MouseEvent.BUTTON3) { // ON LEFT MOUSE CLICK
+            currentItem = null;
+            currentItemIndex = 0;
+            currentItemColumn = 0;
+            currentItemRow = 0;
+            System.out.println("MouseEvent.BUTTON3");
+        } else if (e.getButton() == MouseEvent.BUTTON1) { // ON RIGHT MOUSE CLICK
+
+            if (inventoryMenuVisible && x > 151 && x < 151 + 40 && y > 233 && y < 233+40){
+
+
+                for (int i = 0; i < 64; i++) {
+                    if (player1.playerInventory.itemArray[i].ID == 0) {
+                            player1.playerInventory.itemArray[i].ID = player1.playerCrafter.itemArray[9].ID;
+                            break;
+                        }
+
+                    }
+                player1.playerCrafter = new CraftingInterface(10);
+                }
+
+
+            }
+            if (craftingMenuVisible && currentItem != null) {
+                putCurrentItemIntoCraftingInterface(x, y);
+            }
+
+            if (!inventoryMenuVisible) {
+                currentTile = onMouseClickSelectTile(x, y);
+            }
+            if (inventoryMenuVisible) {
+                currentItem = onMouseClickSelectItem(x, y);
+            }
+        }
+
+
+
+
+
+    private void putCurrentItemIntoCraftingInterface(int x, int y) {
+
+        int craftingSlotIndex = -1;
+
+        if (x > 34 && x < 34 + 30 && y > 149 && y < 149 + 30) {
+            craftingSlotIndex = 0;
+        } else if (x > 64 && x < 64 + 30 && y > 149 && y < 149 + 30) {
+            craftingSlotIndex = 1;
+        } else if (x > 94 && x < 94 + 30 && y > 149 && y < 149 + 30) {
+            craftingSlotIndex = 2;
+        } else if (x > 34 && x < 34 + 30 && y > 179 && y < 179 + 30) {
+            craftingSlotIndex = 3;
+        } else if (x > 64 && x < 64 + 30 && y > 179 && y < 179 + 30) {
+            craftingSlotIndex = 4;
+        } else if (x > 94 && x < 94 + 30 && y > 179 && y < 179 + 30) {
+            craftingSlotIndex = 5;
+        } else if (x > 34 && x < 34 + 30 && y > 209 && y < 209 + 30) {
+            craftingSlotIndex = 6;
+        } else if (x > 64 && x < 64 + 30 && y > 209 && y < 209 + 30) {
+            craftingSlotIndex = 7;
+        } else if (x > 94 && x < 94 + 30 && y > 209 && y < 209 + 30) {
+            craftingSlotIndex = 8;
+        }
+
+        if (craftingSlotIndex != -1) {
+            player1.playerCrafter.itemArray[craftingSlotIndex].ID = currentItem.ID;
+            currentItem.ID = 0;
+            currentItemIndex = 0;
+            currentItemRow = 0;
+            currentItemColumn = 0;
+        }
+
+        updateCrafterOutputSlot();
+
+    }
+
+    private void updateCrafterOutputSlot() {
+
+        if (player1.playerCrafter.itemArray[0].ID == 1 &&
+                player1.playerCrafter.itemArray[1].ID == 1 &&
+                player1.playerCrafter.itemArray[2].ID == 1) {
+            player1.playerCrafter.itemArray[9].ID = 4;
+        } else {
+            player1.playerCrafter.itemArray[9].ID = 0;
+
+        }
     }
 
     private Item onMouseClickSelectItem(int x, int y) {
 
+        currentItem = null;
+        currentItemIndex = -1;
+        currentItemColumn = -1;
+        currentItemRow = -1;
 
         if (inRange(x, 587, 617, true)) {
 
@@ -1709,8 +1878,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 System.out.println(currentItemRow);
 
             } else if (inRange(y, 455, 485, true)) {
-
-
                 currentItemRow = 10;
                 currentItemIndex = 54;
                 System.out.println(currentItemRow);
@@ -1783,7 +1950,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 System.out.println(currentItemRow);
 
             } else if (inRange(y, 455, 485, true)) {
-
 
                 currentItemRow = 10;
                 currentItemIndex = 55;
@@ -2095,9 +2261,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         }
+        if (x > 156 && x < 156 + 30 && y > 183 && y < 183 + 30){
+           return player1.playerCrafter.itemArray[9];
+        }
 
-        System.out.println(currentItemIndex);
+        if (currentItemIndex < 0) {
+            return null;
+        }
         return player1.playerInventory.itemArray[currentItemIndex];
+
     }
 
     private Tile onMouseClickSelectTile(int x, int y) {
@@ -2132,10 +2304,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void mouseDragged(MouseEvent e) {
 
+
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
+        mouseDragX = e.getX();
+        mouseDragY = e.getY();
+
 
     }
 
