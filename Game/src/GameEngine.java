@@ -576,7 +576,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             overWorld[currentOverWorld.idX][currentOverWorld.idY] = (Overworld) in.readObject();                                 //read Overworld object from file and write to currentOverWorld pointer.
             in.close();
             fileIn.close();
-            System.out.println("Data/"+name+".ser");
+            System.out.println("Data/CustomMaps/"+name+".ser");
         } catch (IOException i) {
             i.printStackTrace();
             return;
