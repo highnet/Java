@@ -515,7 +515,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void saveCustomWorld(String name){
         try {
             Writer writer = new BufferedWriter(new OutputStreamWriter(                      // First create a new textfile.
-                    new FileOutputStream("Data/Custom Maps/"+name+".ser"), "utf-8"));
+                    new FileOutputStream("Data/CustomMaps/"+name+".ser"), "utf-8"));
             writer.close();
 
 
@@ -524,7 +524,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         try {                                                                                       // Then serialize an Overworld object to it.
-            FileOutputStream fileOut = new FileOutputStream("Data/Custom Maps/" +name+ ".ser");
+            FileOutputStream fileOut = new FileOutputStream("Data/CustomMaps/" +name+ ".ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);           // creates output stream pointed to file.
             out.writeObject(overWorld[currentOverWorld.idX][currentOverWorld.idY]);                                  // serialize currentOverWorld.
             out.close();
@@ -571,7 +571,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void readCustomWorld(String name) {
 
         try {
-            FileInputStream fileIn = new FileInputStream("Data/Custom Maps/"+name+".ser");      // point to file.
+            FileInputStream fileIn = new FileInputStream("Data/CustomMaps/"+name+".ser");      // point to file.
             ObjectInputStream in = new ObjectInputStream(fileIn);                           // open stream.
             overWorld[currentOverWorld.idX][currentOverWorld.idY] = (Overworld) in.readObject();                                 //read Overworld object from file and write to currentOverWorld pointer.
             in.close();
