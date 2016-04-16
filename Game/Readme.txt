@@ -1,6 +1,3 @@
-
-PATCH 0.25
-
 IMPORTANT - HOW TO RUN:
 
 Create a folder called Data inside your main project folder. same folder where the src folder is located.
