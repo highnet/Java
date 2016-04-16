@@ -1,43 +1,17 @@
 
-MANU PATCH 0.15
+PATCH 0.25
 
-IMPORTANT !!! HOW TO RUN:
-
+IMPORTANT - HOW TO RUN:
 
 Create a folder called Data inside your main project folder. same folder where the src folder is located.
 
-place the file RNG.txt inside the Data folder.
+Place the file RNG.txt inside the Data folder.
 
-Create a folder called GFX inside the Data folder you just created.  place the files Tree.png and Rock.gif in the GFX folder
+Create a folder called GFX inside the Data folder you just created.  place any GFX related in the GFX folder
 
-compile will fail if these files does not exist.
+Create a folder called Sound inside your data folder you just created. place SOUND related files Sound folder
 
-
-Changes:
-
-
-
-Pre generated RNG number list reader. Read a whitespace separated list of pre-generated rng numbers from a file.
-
-Map save to file function.
-
-Map read from file function.
-
-GAME now automatically generates 5 maps and stores them in 5 .txt files it automatically creates in the Data folder.
-
-Npc Ai;  Movement and collision detection. Ai random walks every X action ticks.  
-(NOTE: works for multiple npc's with the possibilty of adding different ai's per npc)
-
-Sprite draw engine
-
-Main menu:
-
-the 0 key reveals the map or reopens the main menu. 
-( note: currently new maps are generated only once at runtime. pressing 0 only hides or reveals the main menu)
-
-the 9 key loads the next pre-generated map from the data folder only if the main menu is currently displayed.
-currently it cycles through each of the 5 maps generated at runtime.
-
+Compilation will fail if these files does not exist.
 
 
 
