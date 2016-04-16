@@ -11,6 +11,12 @@ public class Item {
     ID : 2 : COBBLESTONE
     ID : 3 : SAND
     ID : 4 : PLANKS_WALL
+    ID : 5 : RATSKIN_HOOD
+    ID : 6 : RATSKIN_CHEST
+    ID : 7 : RATSKIN_LEGS
+    ID : 8 : RATSKIN_BOOTS
+    ID : 9 : WOODEN_CLUB
+    ID : 10 : PLEB_SHIELD
 
      */
 

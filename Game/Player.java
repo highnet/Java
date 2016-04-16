@@ -10,6 +10,7 @@ public class Player extends Entity {
     public Float HP;
     Inventory playerInventory;
     CraftingInterface playerCrafter;
+    PlayerGearInterface gearInterface;
 
     public Player(int setID,int setxPos, int setyPos, int setInventorySize, float setHP, Color setColor){
 
@@ -18,6 +19,7 @@ public class Player extends Entity {
 
         playerInventory = new Inventory(setInventorySize);
         playerCrafter = new CraftingInterface(10);
+        gearInterface = new PlayerGearInterface();
 
     }
 

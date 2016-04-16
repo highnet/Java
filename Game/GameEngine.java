@@ -1,14 +1,12 @@
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Vector;
+import java.util.*;
 
 
 /**
@@ -70,16 +68,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     Map<String, BufferedImage> bufferedImageMap;
 
+    int windDirection = 1;
     private boolean raining;
     Point[] rainDrops;
-    int numberOfRainDrops = 50;
-
+    int numberOfRainDrops = 10;
+    Deque<Point> bufferSplashAnimations = new LinkedList<>();
 
     AudioInputStream audioInputStream;
     Clip movementSound;
 
     private boolean craftingMenuVisible = false;
-
 
     int mouseDragX = 0;
     int mouseDragY = 0;
@@ -124,7 +122,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         raining = true;
 
         generateRainPattern();
-
 
         runFlag = true;
 
@@ -175,25 +172,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void loadSprites() {
         bufferedImageMap = new HashMap<>();
 
+        BufferedImage northAdventurer;
+        BufferedImage southAdventurer;
+        BufferedImage eastAdventurer;
+        BufferedImage westAdventurer;
         BufferedImage errorImg;
         BufferedImage northFrog;
         BufferedImage southFrog;
         BufferedImage eastFrog;
         BufferedImage westFrog;
-
         BufferedImage grass;
         BufferedImage dirt;
         BufferedImage rakedDirt;
         BufferedImage plankWall;
-
         BufferedImage tree;
         BufferedImage stone;
-
         BufferedImage inventoryLumber;
 
 
         try {
-
+            northAdventurer = ImageIO.read(new File("Data/GFX/NorthAdventurer.png"));
+            eastAdventurer = ImageIO.read(new File("Data/GFX/EastAdventurer.png"));
+            southAdventurer = ImageIO.read(new File("Data/GFX/SouthAdventurer.png"));
+            westAdventurer = ImageIO.read(new File("Data/GFX/WestAdventurer.png"));
             errorImg = ImageIO.read(new File("Data/GFX/ErrorImg.jpg"));
             northFrog = ImageIO.read(new File("Data/GFX/NorthFroggy.png"));
             southFrog = ImageIO.read(new File("Data/GFX/SouthFroggy.png"));
@@ -207,7 +208,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
             inventoryLumber = ImageIO.read(new File("Data/GFX/InventoryLumber.png"));                // reads stone sprite.
 
-
+            bufferedImageMap.put("NORTH_ADVENTURER", northAdventurer);
+            bufferedImageMap.put("SOUTH_ADVENTURER", southAdventurer);
+            bufferedImageMap.put("EAST_ADVENTURER", eastAdventurer);
+            bufferedImageMap.put("WEST_ADVENTURER", westAdventurer);
             bufferedImageMap.put("INVENTORY_LUMBER", inventoryLumber);
             bufferedImageMap.put("ERROR", errorImg);
             bufferedImageMap.put("NORTH_FROG", northFrog);
@@ -574,12 +578,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
         if (mapVisible) {
             paintTilesLayer0(g);
-
             paintPlayer(g);           // player painter
             paintNpcs(g);               //npc(list) printer
             paintTilesLayer1(g);
             if (raining) {
                 paintRain(g);
+                if (!bufferSplashAnimations.isEmpty()){
+                    paintSplash(g);
+                }
             }
 
         }
@@ -606,6 +612,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
+    }
+
+    private void paintSplash(Graphics g) {
+
+        Point p = bufferSplashAnimations.pollFirst();
+
+      /*  for(int i = 0; i < 100; i++){
+            g.fillOval(p.x,p.y,i,i);
+        }
+        */
+
+        System.out.println("Paintdrop Destroyed @" +p.x + ", " + p.y);
     }
 
     private void paintCurrentlySelectedItemOnMouse(Graphics g) {
@@ -769,9 +787,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void moveRain() {
 
         for (int i = 0; i < rainDrops.length; i++) {
-            int rainSpeed = (int) (Math.random() * (12));
-            rainDrops[i].x += rainSpeed;
-            rainDrops[i].y += rainSpeed;
+            int gravity = (int) (Math.random() * (12));
+            rainDrops[i].x += gravity;
+            rainDrops[i].y += gravity;
+        }
+
+        for (int i = 0; i < rainDrops.length; i++) {
+            int wind = (int) (Math.random() * (6));
+            rainDrops[i].x += wind * windDirection;
         }
 
         destroyRandomRaindrops();
@@ -780,10 +803,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void destroyRandomRaindrops() {
 
-        int rng = (int) (Math.random() * (1000));
-        if (rng == 1000) {
+        int rng = (int) (Math.random() * (5000));
+        if (rng > 4990){
+            windDirection = -windDirection;
+            System.out.println(windDirection);
+        }
+        if (rng > 2500) {
             int rainDropIndexToDestroy = (int) (Math.random() * (rainDrops.length));
 
+            bufferSplashAnimations.offerFirst(new Point(rainDrops[rainDropIndexToDestroy].x,rainDrops[rainDropIndexToDestroy].y));
             rainDrops[rainDropIndexToDestroy].x = (int) (Math.random() * (Main.WIDTH));
             rainDrops[rainDropIndexToDestroy].y = (int) (Math.random() * (Main.WIDTH));
         }
@@ -1004,16 +1032,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         switch (player1.orientation) {
 
             case "NORTH":
-                g.drawImage(bufferedImageMap.get("NORTH_FROG"), player1.xPos - 4, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("NORTH_ADVENTURER"), player1.xPos - 4, player1.yPos - 20, 22, 40, this);
                 break;
             case "SOUTH":
-                g.drawImage(bufferedImageMap.get("SOUTH_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("SOUTH_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
                 break;
             case "EAST":
-                g.drawImage(bufferedImageMap.get("EAST_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("EAST_ADVENTURER"), player1.xPos - 3, player1.yPos  -20, 22, 40, this);
                 break;
             case "WEST":
-                g.drawImage(bufferedImageMap.get("WEST_FROG"), player1.xPos - 3, player1.yPos - 3, 26, 26, this);
+                g.drawImage(bufferedImageMap.get("WEST_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
                 break;
             default:
                 g.setColor(player1.pallete);
@@ -1335,7 +1363,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_UP: // User presses the up key
 
                 loadMovementSound();
-                //  movementSound.close();
 
                 player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
@@ -1542,7 +1569,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         tick();
                     }
 
-                } else if (currentItem != null && currentItem.ID == 1) {
+                } else if (currentItem != null && currentItem.ID == 4) {
                     if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
                         currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankWall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
@@ -1573,6 +1600,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_R:
                 raining = !raining;
+                break;
+
+            case KeyEvent.VK_K:
+               windDirection = -windDirection;
                 break;
 
             case KeyEvent.VK_F:
