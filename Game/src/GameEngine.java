@@ -33,7 +33,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentTileY = 0;
 
     private int tileBrushIndex = 0;
-    private String tileBrush = null;
+    private String tileBrush = "grass";
 
 
     private Item currentItem = null;
@@ -55,6 +55,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean inventoryMenuVisible = false;
 
     private boolean startMenuVisible = true;
+
+    private boolean viewMenuVisible = false;
 
     private boolean mapVisible = false;
 
@@ -127,12 +129,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         //  currentTile = currentOverWorld.tilemap[0][0];   // points to the currently selected tile.
 
 
-
         loadSprites();
 
         indexTiles();
 
-        loadRainSound();
+        //loadRainSound();
 
         raining = true;
 
@@ -144,11 +145,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void reset(){
+    private void reset() {
         player1 = null;
         cleanWorld();
 
-       generatePlayer();
+        generatePlayer();
 
 
     }
@@ -210,6 +211,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage water;
         BufferedImage rakedDirt;
         BufferedImage plankWall;
+        BufferedImage woodFloor;
         BufferedImage tree;
         BufferedImage stone;
         BufferedImage inventoryLumber;
@@ -240,6 +242,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             grass = ImageIO.read(new File("Data/GFX/Grass.png"));
             dirt = ImageIO.read(new File("Data/GFX/Dirt.png"));
             rakedDirt = ImageIO.read(new File("Data/GFX/RakedDirt.png"));
+            woodFloor = ImageIO.read(new File("Data/GFX/WoodFloor.png"));
             plankWall = ImageIO.read(new File("Data/GFX/PlanksWall.png"));
             water = ImageIO.read(new File("Data/GFX/Water.png"));
             tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
@@ -254,8 +257,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             eastZombie = ImageIO.read(new File("Data/GFX/EastZombie.png"));
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
-            bufferedImageMap.put("ARROW_UP",upArrow);
-            bufferedImageMap.put("ARROW_DOWN",downArrow);
+            bufferedImageMap.put("ARROW_UP", upArrow);
+            bufferedImageMap.put("ARROW_DOWN", downArrow);
             bufferedImageMap.put("NORTH_ADVENTURER", northAdventurer);
             bufferedImageMap.put("SOUTH_ADVENTURER", southAdventurer);
             bufferedImageMap.put("EAST_ADVENTURER", eastAdventurer);
@@ -268,19 +271,20 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("WEST_FROG", westFrog);
             bufferedImageMap.put("GRASS", grass);
             bufferedImageMap.put("DIRT", dirt);
+            bufferedImageMap.put("WOODFLOOR",woodFloor);
             bufferedImageMap.put("RAKEDDIRT", rakedDirt);
-            bufferedImageMap.put("WATER",water);
+            bufferedImageMap.put("WATER", water);
             bufferedImageMap.put("PLANKWALL", plankWall);
             bufferedImageMap.put("TREE", tree);
             bufferedImageMap.put("STONE", stone);
-            bufferedImageMap.put("NORTH_SHEEP",northSheep);
-            bufferedImageMap.put("SOUTH_SHEEP",southSheep);
-            bufferedImageMap.put("EAST_SHEEP",eastSheep);
-            bufferedImageMap.put("WEST_SHEEP",westSheep);
-            bufferedImageMap.put("NORTH_CHASER",northZombie);
-            bufferedImageMap.put("SOUTH_CHASER",southZombie);
-            bufferedImageMap.put("EAST_CHASER",eastZombie);
-            bufferedImageMap.put("WEST_CHASER",westZombie);
+            bufferedImageMap.put("NORTH_SHEEP", northSheep);
+            bufferedImageMap.put("SOUTH_SHEEP", southSheep);
+            bufferedImageMap.put("EAST_SHEEP", eastSheep);
+            bufferedImageMap.put("WEST_SHEEP", westSheep);
+            bufferedImageMap.put("NORTH_CHASER", northZombie);
+            bufferedImageMap.put("SOUTH_CHASER", southZombie);
+            bufferedImageMap.put("EAST_CHASER", eastZombie);
+            bufferedImageMap.put("WEST_CHASER", westZombie);
 
 
         } catch (IOException e) {
@@ -294,6 +298,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             dirt = null;
             rakedDirt = null;
             plankWall = null;
+            woodFloor = null;
             tree = null;
             stone = null;
             inventoryLumber = null;
@@ -483,7 +488,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     }
                 }
 
-                if(currentOverWorld.tilemap[i][j].type.equals("rakeddirt")){
+                if (currentOverWorld.tilemap[i][j].type.equals("rakeddirt")) {
                     currentOverWorld.tilemap[i][j].farmable = true;
                 }
 
@@ -559,10 +564,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
-    public void saveCustomWorld(String name){
+    public void saveCustomWorld(String name) {
         try {
             Writer writer = new BufferedWriter(new OutputStreamWriter(                      // First create a new textfile.
-                    new FileOutputStream("Data/CustomMaps/"+name+".ser"), "utf-8"));
+                    new FileOutputStream("Data/CustomMaps/" + name + ".ser"), "utf-8"));
             writer.close();
 
 
@@ -571,7 +576,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         try {                                                                                       // Then serialize an Overworld object to it.
-            FileOutputStream fileOut = new FileOutputStream("Data/CustomMaps/" +name+ ".ser");
+            FileOutputStream fileOut = new FileOutputStream("Data/CustomMaps/" + name + ".ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);           // creates output stream pointed to file.
             out.writeObject(overWorld[currentOverWorld.idX][currentOverWorld.idY]);                                  // serialize currentOverWorld.
             out.close();
@@ -618,12 +623,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void readCustomWorld(String name) {
 
         try {
-            FileInputStream fileIn = new FileInputStream("Data/CustomMaps/"+name+".ser");      // point to file.
+            FileInputStream fileIn = new FileInputStream("Data/CustomMaps/" + name + ".ser");      // point to file.
             ObjectInputStream in = new ObjectInputStream(fileIn);                           // open stream.
             overWorld[currentOverWorld.idX][currentOverWorld.idY] = (Overworld) in.readObject();                                 //read Overworld object from file and write to currentOverWorld pointer.
             in.close();
             fileIn.close();
-            System.out.println("Data/CustomMaps/"+name+".ser");
+            System.out.println("Data/CustomMaps/" + name + ".ser");
         } catch (IOException i) {
             i.printStackTrace();
             return;
@@ -730,7 +735,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintTilesLayer1(g);
             if (raining) {
                 paintRain(g);
-                if (!bufferSplashAnimations.isEmpty()){
+                if (!bufferSplashAnimations.isEmpty()) {
                     paintSplash(g);
                 }
             }
@@ -746,6 +751,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (inventoryMenuVisible) {
             paintInventory(g);
+        }
+
+        if (viewMenuVisible){
+            paintViewMenu(g);
         }
 
         if (craftingMenuVisible) {
@@ -771,7 +780,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
         */
 
-       // System.out.println("Paintdrop Destroyed @" +p.x + ", " + p.y);
+        // System.out.println("Paintdrop Destroyed @" +p.x + ", " + p.y);
     }
 
     private void paintCurrentlySelectedItemOnMouse(Graphics g) {
@@ -783,12 +792,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
-    private void paintPalleteMenu (Graphics g){
+    private void paintPalleteMenu(Graphics g) {
         g.setColor(Color.lightGray);
         g.fillRect(62, 15, 150, 80);
-        g.drawImage(bufferedImageMap.get("ARROW_UP"),80,20, 30, 30 ,this);
-        g.drawImage(bufferedImageMap.get("ARROW_DOWN"),80,50, 30, 30 ,this);
-        g.drawImage(bufferedImageMap.get(tileList.get(tileBrushIndex)),132,44, 30, 30 ,this);
+        g.drawImage(bufferedImageMap.get("ARROW_UP"), 80, 20, 30, 30, this);
+        g.drawImage(bufferedImageMap.get("ARROW_DOWN"), 80, 50, 30, 30, this);
+        g.drawImage(bufferedImageMap.get(tileList.get(tileBrushIndex)), 132, 44, 30, 30, this);
     }
 
     private void paintCraftingMenu(Graphics g) {
@@ -802,7 +811,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.fillRect(157, 183, 30, 30);
 
         g.setColor(Color.black);
-        g.fillRect(151,233,40,40);
+        g.fillRect(151, 233, 40, 40);
 
         g.setFont(font2);
         g.drawString("Crafting", 34, 142);
@@ -827,14 +836,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
-
         g.drawRect(157, 183, 30, 30);
         g.setColor(Color.white);
         g.setFont(font2);
-        g.drawString("CRAFT",153,247);
+        g.drawString("CRAFT", 153, 247);
 
-        if (player1.playerCrafter.itemArray[9].ID == 4){
-            g.drawImage(bufferedImageMap.get("PLANKWALL"),157,183,30,30,this);
+        if (player1.playerCrafter.itemArray[9].ID == 4) {
+            g.drawImage(bufferedImageMap.get("PLANKWALL"), 157, 183, 30, 30, this);
         }
     }
 
@@ -853,6 +861,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
+                        break;
+                    case "woodfloor":
+                        g.drawImage(bufferedImageMap.get("WOODFLOOR"), i * 25, j * 25, 25, 25, this);     // draws a grass on top of each "grass" ti
                         break;
                     case "water":
                         g.setColor(Color.blue);
@@ -920,17 +931,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
 
-                if (j == player1.yPos / 25 && i == player1.xPos / 25){
+                if (j == player1.yPos / 25 && i == player1.xPos / 25) {
                     paintPlayer(g);
                 }
 
-                for (Npc n: currentOverWorld.npcList){
-                    if (j == n.yPos / 25 && i == n.xPos / 25){
-                        paintNpcs(g,n);
+                for (Npc n : currentOverWorld.npcList) {
+                    if (j == n.yPos / 25 && i == n.xPos / 25) {
+                        paintNpcs(g, n);
 
                     }
                 }
-
 
 
             }
@@ -972,14 +982,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void destroyRandomRaindrops() {
 
         int rng = (int) (Math.random() * (5000));
-        if (rng > 4990){
+        if (rng > 4990) {
             windDirection = -windDirection;
             System.out.println(windDirection);
         }
         if (rng > 2500) {
             int rainDropIndexToDestroy = (int) (Math.random() * (rainDrops.length));
 
-            bufferSplashAnimations.offerFirst(new Point(rainDrops[rainDropIndexToDestroy].x,rainDrops[rainDropIndexToDestroy].y));
+            bufferSplashAnimations.offerFirst(new Point(rainDrops[rainDropIndexToDestroy].x, rainDrops[rainDropIndexToDestroy].y));
             rainDrops[rainDropIndexToDestroy].x = (int) (Math.random() * (Main.WIDTH));
             rainDrops[rainDropIndexToDestroy].y = (int) (Math.random() * (Main.WIDTH));
         }
@@ -1001,10 +1011,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g2d.setColor(Color.red);
         g2d.setStroke(new BasicStroke(2));
 
-        if (inventoryMenuVisible && currentItem != null && currentItem.equals(player1.playerCrafter.itemArray[9])){
-            g2d.drawRect(156,183,30,30);
-        }
-        else if (inventoryMenuVisible && currentItem != null) {
+        if (inventoryMenuVisible && currentItem != null && currentItem.equals(player1.playerCrafter.itemArray[9])) {
+            g2d.drawRect(156, 183, 30, 30);
+        } else if (inventoryMenuVisible && currentItem != null) {
             g2d.drawRect(587 + ((currentItemColumn - 1) * 30), 176 + ((currentItemRow - 1) * 30), 30, 30);
         }
 
@@ -1055,7 +1064,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (player1.playerInventory.itemArray[i].ID == 4) {
 
-                g.drawImage(bufferedImageMap.get("PLANKWALL"),593 + (counter * 30), 183 + (row * 30), 20, 20,this);
+                g.drawImage(bufferedImageMap.get("PLANKWALL"), 593 + (counter * 30), 183 + (row * 30), 20, 20, this);
             }
             g.setColor(Color.black);
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
@@ -1114,80 +1123,106 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawString("0 : Generate world ( overwrites all saves in Maps folder.) / close menu", 87, 88);
         g.drawString("1 : Load map from files", 87, 122);
         g.drawString("9 : Load Map ( test function )", 87, 157);
+
+        if (worldExists) {
+            g.drawString("World ready", 87, 220);
+        } else {
+            g.drawString("No world spawned", 87, 220);
+        }
+
+
         g.drawString("Options", 87, 254);
+    }
+
+
+    private void paintViewMenu(Graphics g) {
+        g.setColor(Color.gray);
+        g.fillRect(363, 452,  300, 100);
+        g.setColor(Color.black);
+        g.setFont(font2);
+
+        if (currentTile != null) {
+            g.drawString(currentTile.type, 373, 468);
+            if (currentTile.farmable) {
+                g.drawString("Farmable", 373, 488);
+            }
+            if (currentTile.occupied) {
+                g.drawString("Obstacle", 373, 508);
+            }
+
+
+
+        }
+
     }
 
     private void paintNpcs(Graphics g, Npc n) {
 
 
+        if (n.ai.equals("SHEEP")) {
+
+            int xOffset = 0;
+            int yOffset = 0;
+
+            if (n.orientation.equals("NORTH")) {
+
+                xOffset = 4;
+                yOffset = 6;
+
+            } else if (n.orientation.equals("SOUTH")) {
 
 
+                xOffset = 5;
+                yOffset = 6;
 
-            if (n.ai.equals("SHEEP")) {
-
-                int xOffset = 0;
-                int yOffset = 0;
-
-                if (n.orientation.equals("NORTH")) {
-
-                    xOffset = 4;
-                    yOffset = 6;
-
-                } else if (n.orientation.equals("SOUTH")) {
+            } else if (n.orientation.equals("WEST")) {
 
 
-                    xOffset = 5;
-                    yOffset = 6;
+                xOffset = 6;
+                yOffset = 5;
 
-                } else if (n.orientation.equals("WEST")) {
-
-
-                    xOffset = 6;
-                    yOffset = 5;
-
-                } else if (n.orientation.equals("EAST")) {
+            } else if (n.orientation.equals("EAST")) {
 
 
-                    xOffset = 4;
-                    yOffset = 3;
-
-                }
-
-                g.drawImage(bufferedImageMap.get(n.orientation+"_"+n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 30, this);
-
-            } else if (n.ai.equals("CHASER")) {
-
-                int xOffset = 0;
-                int yOffset = 0;
-
-                if (n.orientation.equals("NORTH")) {
-
-                    xOffset = 4;
-                    yOffset = 20;
-
-                } else if (n.orientation.equals("SOUTH")) {
-
-                    xOffset = 5;
-                    yOffset = 20;
-
-                } else if (n.orientation.equals("WEST")) {
-
-
-                    xOffset = 6;
-                    yOffset = 19;
-
-                } else if (n.orientation.equals("EAST")) {
-
-
-                    xOffset = 4;
-                    yOffset = 19;
-
-                }
-
-                g.drawImage(bufferedImageMap.get(n.orientation+"_"+n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 45, this);
+                xOffset = 4;
+                yOffset = 3;
 
             }
 
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 30, this);
+
+        } else if (n.ai.equals("CHASER")) {
+
+            int xOffset = 0;
+            int yOffset = 0;
+
+            if (n.orientation.equals("NORTH")) {
+
+                xOffset = 4;
+                yOffset = 20;
+
+            } else if (n.orientation.equals("SOUTH")) {
+
+                xOffset = 5;
+                yOffset = 20;
+
+            } else if (n.orientation.equals("WEST")) {
+
+
+                xOffset = 6;
+                yOffset = 19;
+
+            } else if (n.orientation.equals("EAST")) {
+
+
+                xOffset = 4;
+                yOffset = 19;
+
+            }
+
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 45, this);
+
+        }
 
 
     }
@@ -1205,7 +1240,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 g.drawImage(bufferedImageMap.get("SOUTH_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
                 break;
             case "EAST":
-                g.drawImage(bufferedImageMap.get("EAST_ADVENTURER"), player1.xPos - 3, player1.yPos  -20, 22, 40, this);
+                g.drawImage(bufferedImageMap.get("EAST_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
                 break;
             case "WEST":
                 g.drawImage(bufferedImageMap.get("WEST_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
@@ -1332,10 +1367,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     n.yPos -= movementSpeed;
                                     n.orientation = "NORTH";
                                 } else if (n.yPos / 25 - 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
+                                    n.orientation = "NORTH";
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
 
+                                } else {
+                                    n.orientation = "NORTH";
                                 }
                             }
 
@@ -1346,9 +1384,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     n.yPos += movementSpeed;
                                     n.orientation = "SOUTH";
                                 } else if (n.yPos / 25 + 1 == player1.yPos / 25 && n.xPos / 25 == player1.xPos / 25) {
+                                    n.orientation = "SOUTH";
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
+                                } else {
+                                    n.orientation = "SOUTH";
                                 }
                             }
 
@@ -1361,10 +1402,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied) {
                                     n.xPos -= movementSpeed;
                                     n.orientation = "WEST";
-                            } else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
-                                System.out.println("the chaser hits you for 10 damage");
-                                player1.HP = player1.HP - 10;
+                                } else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
+                                    n.orientation = "WEST";
+                                    System.out.println("the chaser hits you for 10 damage");
+                                    player1.HP = player1.HP - 10;
 
+                                } else {
+                                    n.orientation = "WEST";
+                                }
                             }
 
                         } else if (player1.xPos / 25 > n.xPos / 25) {
@@ -1374,15 +1419,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     n.xPos += movementSpeed;
                                     n.orientation = "EAST";
                                 } else if (n.xPos / 25 + 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
+                                    n.orientation = "EAST";
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
+                                } else {
+                                    n.orientation = "EAST";
                                 }
 
-                                }
                             }
-
-
                         }
+
+
                     }
 
                     break;
@@ -1494,29 +1541,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_SHIFT:
                 shiftPressed = true;
-            break;
+                break;
 
             case KeyEvent.VK_0:
 
                 currentTile = null;
 
-                if (worldExists){
-                if (startMenuVisible) {
-                    startMenuVisible = false;               // this is how the menu hides other windows.
-                    mapVisible = true;
+                if (worldExists) {
+                    if (startMenuVisible) {
+                        startMenuVisible = false;               // this is how the menu hides other windows.
+                        mapVisible = true;
 
-                    break;
-                } else {
-                    startMenuVisible = true;
+                        break;
+                    } else {
+                        startMenuVisible = true;
 
-                    mapVisible = false;
-                    inventoryMenuVisible = false;
-                    debugMenuVisible = false;
-                    craftingMenuVisible = false;
+                        mapVisible = false;
+                        inventoryMenuVisible = false;
+                        debugMenuVisible = false;
+                        craftingMenuVisible = false;
 
-                    break;
-                }
-                } else  if (startMenuVisible) {
+                        break;
+                    }
+                } else if (startMenuVisible) {
                     fillWorld();
                     worldExists = true;
                     startMenuVisible = false;               // this is how the menu hides other windows.
@@ -1533,8 +1580,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     break;
                 }
-
-
 
 
             case KeyEvent.VK_9:
@@ -1614,7 +1659,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_RIGHT: // Tries to move right
                 loadMovementSound();
 
-                if ( mapVisible) {
+                if (mapVisible) {
                     player1.orientation = "EAST";
 
                     if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
@@ -1807,7 +1852,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
 
             case KeyEvent.VK_K:
-               windDirection = -windDirection;
+                windDirection = -windDirection;
                 break;
 
             case KeyEvent.VK_F:
@@ -1901,6 +1946,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     break;
                 }
 
+            case KeyEvent.VK_V:
+
+
+                if (!startMenuVisible) {
+                    viewMenuVisible = !viewMenuVisible;
+                    break;
+                }
+
             case KeyEvent.VK_L:
                 currentOverWorld.npcList = new Vector<>();    // overwrites current Overworld npclist with an empty one.
                 break;
@@ -1909,7 +1962,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 tick();
                 break;
 
-            case KeyEvent.VK_3 :
+            case KeyEvent.VK_3:
 
                 String nameR;
 
@@ -1917,7 +1970,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 readCustomWorld(nameR);
                 break;
 
-            case KeyEvent.VK_4 :
+            case KeyEvent.VK_4:
 
                 String nameW;
 
@@ -1925,7 +1978,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 saveCustomWorld(nameW);
                 break;
 
-            case KeyEvent.VK_5 :
+            case KeyEvent.VK_5:
 
                 reloadOverWorld();
 
@@ -2000,16 +2053,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             System.out.println("MouseEvent.BUTTON3");
         } else if (e.getButton() == MouseEvent.BUTTON1) { // ON RIGHT MOUSE CLICK
-            
-            if(debugMenuVisible && x > 81 && x < 107 && y > 23 && y < 50){
+
+            if (debugMenuVisible && x > 81 && x < 107 && y > 23 && y < 50) {
                 rotateTileBrush(true);
             }
 
-            if(debugMenuVisible && x > 81 && x < 107 && y > 55 && y < 81){
+            if (debugMenuVisible && x > 81 && x < 107 && y > 55 && y < 81) {
                 rotateTileBrush(false);
             }
 
-            if (shiftPressed && controlPressed){
+            if (shiftPressed && controlPressed) {
                 currentTileX = x / 25;
                 currentTileY = y / 25;
                 currentOverWorld.tilemap[currentTileX][currentTileY].type = tileBrush;
@@ -2017,39 +2070,40 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
 
-            if (inventoryMenuVisible && x > 151 && x < 151 + 40 && y > 233 && y < 233+40){
+            if (inventoryMenuVisible && x > 151 && x < 151 + 40 && y > 233 && y < 233 + 40) {
 
 
                 for (int i = 0; i < 64; i++) {
                     if (player1.playerInventory.itemArray[i].ID == 0) {
-                            player1.playerInventory.itemArray[i].ID = player1.playerCrafter.itemArray[9].ID;
-                            break;
-                        }
-
+                        player1.playerInventory.itemArray[i].ID = player1.playerCrafter.itemArray[9].ID;
+                        break;
                     }
-                player1.playerCrafter = new CraftingInterface(10);
+
                 }
-
-
-            }
-            if (craftingMenuVisible && currentItem != null) {
-                putCurrentItemIntoCraftingInterface(x, y);
+                player1.playerCrafter = new CraftingInterface(10);
             }
 
-            if (!inventoryMenuVisible && !debugMenuVisible) {
-                currentTile = onMouseClickSelectTile(x, y);
-            }
-            if (inventoryMenuVisible) {
-                currentItem = onMouseClickSelectItem(x, y);
-            }
+
         }
-    
-    private void indexTiles(){
+        if (craftingMenuVisible && currentItem != null) {
+            putCurrentItemIntoCraftingInterface(x, y);
+        }
+
+        if (!inventoryMenuVisible && !debugMenuVisible) {
+            currentTile = onMouseClickSelectTile(x, y);
+        }
+        if (inventoryMenuVisible) {
+            currentItem = onMouseClickSelectItem(x, y);
+        }
+    }
+
+    private void indexTiles() {
         tileList.add("GRASS");
         tileList.add("STONE");
         tileList.add("DIRT");
         tileList.add("PLANKWALL");
         tileList.add("RAKEDDIRT");
+        tileList.add("WOODFLOOR");
         tileList.add("TREE");
         tileList.add("WATER");
 
@@ -2058,9 +2112,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 
-    private void rotateTileBrush(Boolean up){
-        
-        if (up){
+    private void rotateTileBrush(Boolean up) {
+
+        if (up) {
 
             System.out.println(tileBrushIndex);
             System.out.println(tileList.size());
@@ -2076,14 +2130,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             if (tileBrushIndex == 0) {
-                tileBrushIndex = tileList.size()-1;
+                tileBrushIndex = tileList.size() - 1;
             } else {
                 tileBrushIndex--;
             }
         }
 
         tileBrush = tileList.get(tileBrushIndex).toLowerCase();
-        
+
     }
 
 
@@ -2585,8 +2639,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         }
-        if (x > 156 && x < 156 + 30 && y > 183 && y < 183 + 30){
-           return player1.playerCrafter.itemArray[9];
+        if (x > 156 && x < 156 + 30 && y > 183 && y < 183 + 30) {
+            return player1.playerCrafter.itemArray[9];
         }
 
         if (currentItemIndex < 0) {
@@ -2654,20 +2708,20 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         return ans;
     }
 
-    public static String getUserInput(){
+    public static String getUserInput() {
         Scanner stringIn = new Scanner(System.in);
 
         System.out.println("please enters string:");
 
-        while (stringIn.hasNext()){
-            if (stringIn.hasNextLine()){
+        while (stringIn.hasNext()) {
+            if (stringIn.hasNextLine()) {
                 return stringIn.next();
             } else {
                 System.out.println("invalid input");
                 stringIn.next();
             }
         }
-return null;
+        return null;
     }
 
     public boolean inRange(int i, int lower, int upper, boolean inclusive) {
