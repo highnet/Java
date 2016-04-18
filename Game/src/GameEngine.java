@@ -128,8 +128,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
 
-
-
         loadSprites();
 
         indexTiles();
@@ -143,6 +141,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         runFlag = true;
 
         timer.start();
+
+    }
+
+    private void reset(){
+        player1 = null;
+        cleanWorld();
+
+       generatePlayer();
+
 
     }
 
@@ -504,6 +511,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         }
         currentOverWorld = overWorld[0][0];  // resets currentOverWorld pointer.
+    }
+
+    private void cleanWorld() {
+
+
+        int x;
+        int y;
+
+
+        for (x = 0; x < worldSize; x++) {             // iterates through the entire overWorlds array.
+            for (y = 0; y < worldSize; y++) {
+
+                overWorld[x][y].npcList = null;
+                overWorld[x][y].tilemap = null;
+
+                System.out.println("World" + x + y + " cleaned");
+            }
+
+        }
+        buildOverworld();
+
+        currentOverWorld = overWorld[0][0];
+        dummyWorld();
     }
 
 
@@ -1081,7 +1111,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.black);
         g.setFont(font2);
         g.drawString("AWESOME GAME PRE-ALPHA", 246, 41);
-        g.drawString("0 : Generate world ( on first run only, overwrites all saves.) / close menu", 87, 88);
+        g.drawString("0 : Generate world ( overwrites all saves in Maps folder.) / close menu", 87, 88);
         g.drawString("1 : Load map from files", 87, 122);
         g.drawString("9 : Load Map ( test function )", 87, 157);
         g.drawString("Options", 87, 254);
@@ -1305,10 +1335,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
-                                    if (player1.HP < 0) {
-                                        System.out.println("GAME OVER, resseting HP !!!!!");
-                                        player1.HP = 100F;
-                                    }
 
                                 }
                             }
@@ -1323,11 +1349,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
 
-                                    if (player1.HP < 0) {
-                                        System.out.println("GAME OVER, resseting HP !!!!!");
-                                        player1.HP = 100F;
-                                    }
-
                                 }
                             }
 
@@ -1340,15 +1361,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 if (!currentOverWorld.tilemap[n.xPos / 25 - 1][n.yPos / 25].occupied) {
                                     n.xPos -= movementSpeed;
                                     n.orientation = "WEST";
-                                }
                             } else if (n.xPos / 25 - 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                 System.out.println("the chaser hits you for 10 damage");
                                 player1.HP = player1.HP - 10;
-
-                                if (player1.HP < 0) {
-                                    System.out.println("GAME OVER, resseting HP !!!!!");
-                                    player1.HP = 100F;
-                                }
 
                             }
 
@@ -1361,11 +1376,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                 } else if (n.xPos / 25 + 1 == player1.xPos / 25 && n.yPos / 25 == player1.yPos / 25) {
                                     System.out.println("the chaser hits you for 10 damage");
                                     player1.HP = player1.HP - 10;
-
-                                    if (player1.HP < 0) {
-                                        System.out.println("GAME OVER, resseting HP !!!!!");
-                                        player1.HP = 100F;
-                                    }
+                                }
 
                                 }
                             }
@@ -1436,6 +1447,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         npcBehaviour();
         naturalProcesses();
         collisionMeshGenerator();
+
+        if (player1.HP < 0) {
+            System.out.println("GAME OVER,!!!!!");
+
+            startMenuVisible = true;
+            mapVisible = false;
+            inventoryMenuVisible = false;
+            debugMenuVisible = false;
+            craftingMenuVisible = false;
+            reset();
+            worldExists = false;
+        }
 
 
     }
@@ -1530,73 +1553,82 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 loadMovementSound();
 
-                player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
+                if (mapVisible) {
+                    player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
 
-                if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
+                    if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
 
 
-                    if (player1.yPos / 25 != 1) {
-                        player1.yPos -= movementSpeed; //update ypos
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // set's player position to occupied.
-                        // ( needed for npc actions that might occur before a new collision mesh is generated)
-                    } else {
-                        mapChange(0);       // edge detection and map scrolling.
+                        if (player1.yPos / 25 != 1) {
+                            player1.yPos -= movementSpeed; //update ypos
+                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // set's player position to occupied.
+                            // ( needed for npc actions that might occur before a new collision mesh is generated)
+                        } else {
+                            mapChange(0);       // edge detection and map scrolling.
+                        }
+
+
                     }
-
-
                 }
                 break;
             case KeyEvent.VK_DOWN: // Tries to move down
 
                 loadMovementSound();
-                player1.orientation = "SOUTH";
 
-                if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
+                if (mapVisible) {
+                    player1.orientation = "SOUTH";
+
+                    if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
 
 
-                    if (player1.yPos / 25 != 22) {
-                        player1.yPos += movementSpeed; //update ypos
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                    } else {
-                        mapChange(2);       // edge detection.
+                        if (player1.yPos / 25 != 22) {
+                            player1.yPos += movementSpeed; //update ypos
+                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                        } else {
+                            mapChange(2);       // edge detection.
+                        }
+
                     }
-
                 }
                 break;
             case KeyEvent.VK_LEFT: // Tries to move left
                 loadMovementSound();
 
-                player1.orientation = "WEST";
+                if (mapVisible) {
+                    player1.orientation = "WEST";
 
-                if (!currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                    if (!currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
 
 
-                    if (player1.xPos / 25 != 1) {
-                        player1.xPos -= movementSpeed; //update ypos
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                    } else {
-                        mapChange(3);          // edge detection.
+                        if (player1.xPos / 25 != 1) {
+                            player1.xPos -= movementSpeed; //update ypos
+                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                        } else {
+                            mapChange(3);          // edge detection.
+                        }
+
+
                     }
-
-
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
                 loadMovementSound();
 
-                player1.orientation = "EAST";
+                if ( mapVisible) {
+                    player1.orientation = "EAST";
 
-                if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                    if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
 
 
-                    if (player1.xPos / 25 != 30) {
-                        player1.xPos += movementSpeed; //update ypos
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                    } else {
-                        mapChange(1);
+                        if (player1.xPos / 25 != 30) {
+                            player1.xPos += movementSpeed; //update ypos
+                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                        } else {
+                            mapChange(1);
+                        }
+
+
                     }
-
-
                 }
                 break;
 
@@ -1908,7 +1940,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            tick();
+            if (mapVisible) {
+                tick();
+            }
         }
     }
 
