@@ -32,6 +32,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentTileX = 0;
     private int currentTileY = 0;
 
+    private int tileBrushIndex = 0;
+    private String tileBrush = null;
+
+
     private Item currentItem = null;
     private int currentItemIndex = 0;
     private int currentItemRow = 0;
@@ -54,6 +58,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private boolean mapVisible = false;
 
+    private boolean worldExists = false;
+
+    private boolean shiftPressed = false;
+    private boolean controlPressed = false;
+
+
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
     private Font font2 = new Font("Consola", Font.BOLD, 16);
     private Font font3 = new Font("Consola", Font.BOLD, 24);
@@ -75,6 +85,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     Point[] rainDrops;
     int numberOfRainDrops = 10;
     Deque<Point> bufferSplashAnimations = new LinkedList<>();
+    private ArrayList<String> tileList = new ArrayList<>();
 
     AudioInputStream audioInputStream;
     Clip movementSound;
@@ -115,22 +126,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         //  currentTile = currentOverWorld.tilemap[0][0];   // points to the currently selected tile.
 
-        System.out.println("Enter 1 to GENERATE WORLD. /n Enter 0 TO LOAD WORLD ");
-
-        playerInput = getUserInput();
-
-        if (playerInput.equals("1")){
-            fillWorld();
-        } else if (playerInput.equals("0")){
-
-                    reloadOverWorld();
-
-        }
 
 
 
 
         loadSprites();
+
+        indexTiles();
 
         loadRainSound();
 
@@ -198,6 +200,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage westFrog;
         BufferedImage grass;
         BufferedImage dirt;
+        BufferedImage water;
         BufferedImage rakedDirt;
         BufferedImage plankWall;
         BufferedImage tree;
@@ -211,9 +214,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage southSheep;
         BufferedImage eastSheep;
         BufferedImage westSheep;
+        BufferedImage upArrow;
+        BufferedImage downArrow;
 
 
         try {
+            upArrow = ImageIO.read(new File("Data/GFX/upArrow.png"));
+            downArrow = ImageIO.read(new File("Data/GFX/downArrow.png"));
             northAdventurer = ImageIO.read(new File("Data/GFX/NorthAdventurer.png"));
             eastAdventurer = ImageIO.read(new File("Data/GFX/EastAdventurer.png"));
             southAdventurer = ImageIO.read(new File("Data/GFX/SouthAdventurer.png"));
@@ -227,6 +234,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             dirt = ImageIO.read(new File("Data/GFX/Dirt.png"));
             rakedDirt = ImageIO.read(new File("Data/GFX/RakedDirt.png"));
             plankWall = ImageIO.read(new File("Data/GFX/PlanksWall.png"));
+            water = ImageIO.read(new File("Data/GFX/Water.png"));
             tree = ImageIO.read(new File("Data/GFX/Tree.png"));                 // reads tree sprite
             stone = ImageIO.read(new File("Data/GFX/Rock.gif"));                // reads stone sprite.
             inventoryLumber = ImageIO.read(new File("Data/GFX/InventoryLumber.png"));                // reads stone sprite.
@@ -239,6 +247,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             eastZombie = ImageIO.read(new File("Data/GFX/EastZombie.png"));
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
+            bufferedImageMap.put("ARROW_UP",upArrow);
+            bufferedImageMap.put("ARROW_DOWN",downArrow);
             bufferedImageMap.put("NORTH_ADVENTURER", northAdventurer);
             bufferedImageMap.put("SOUTH_ADVENTURER", southAdventurer);
             bufferedImageMap.put("EAST_ADVENTURER", eastAdventurer);
@@ -251,8 +261,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("WEST_FROG", westFrog);
             bufferedImageMap.put("GRASS", grass);
             bufferedImageMap.put("DIRT", dirt);
-            bufferedImageMap.put("RAKED_DIRT", rakedDirt);
-            bufferedImageMap.put("PLANK_WALL", plankWall);
+            bufferedImageMap.put("RAKEDDIRT", rakedDirt);
+            bufferedImageMap.put("WATER",water);
+            bufferedImageMap.put("PLANKWALL", plankWall);
             bufferedImageMap.put("TREE", tree);
             bufferedImageMap.put("STONE", stone);
             bufferedImageMap.put("NORTH_SHEEP",northSheep);
@@ -287,6 +298,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             southSheep = null;
             eastSheep = null;
             westSheep = null;
+            upArrow = null;
+            downArrow = null;
+            water = null;
 
         }
 
@@ -395,8 +409,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 r = rotateRng();
 
-                if (currentOverWorld.tilemap[i][j].type.equals("grass") && r > 96) {              // wood spawn rate/condition.
-                    currentOverWorld.tilemap[i][j].type = "wood";
+                if (currentOverWorld.tilemap[i][j].type.equals("grass") && r > 96) {              // tree spawn rate/condition.
+                    currentOverWorld.tilemap[i][j].type = "tree";
                 } else if ((currentOverWorld.tilemap[i][j].type.equals("dirt") && r > 96)) { // sand spawn rate/condition.
                     currentOverWorld.tilemap[i][j].type = "sand";
                 }
@@ -410,7 +424,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     currentOverWorld.tilemap[i][j].type = "stone";
                 }
 
-                if (currentOverWorld.tilemap[i][j].type.equals("rakedDirt")) {                   // Makes all rakedDirt farmable
+                if (currentOverWorld.tilemap[i][j].type.equals("rakeddirt")) {                   // Makes all rakedDirt farmable
                     currentOverWorld.tilemap[i][j].farmable = true;
                 }
             }
@@ -426,10 +440,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         for (i = 0; i < 32; i++) {                          // First, iterate through the entire tilemap of the current Overworld
             for (j = 0; j < 24; j++) {                      // and flag any non passable tiles as occupied. flag every passable tile as !occupied.
 
-                currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("wood")) ||
+                currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("tree")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("stone")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("water")) ||
-                        (currentOverWorld.tilemap[i][j].type.equals("plankWall"));
+                        (currentOverWorld.tilemap[i][j].type.equals("plankwall"));
             }
 
 
@@ -462,6 +476,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     }
                 }
 
+                if(currentOverWorld.tilemap[i][j].type.equals("rakeddirt")){
+                    currentOverWorld.tilemap[i][j].farmable = true;
+                }
 
             }
         }
@@ -694,6 +711,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintTileCoordinates(g);
             paintTileLines(g);
             paintDebugMenu(g);
+            paintPalleteMenu(g);
         }
 
         if (inventoryMenuVisible) {
@@ -731,8 +749,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), mouseDragX, mouseDragY, 20, 20, this);
         }
         if (currentItem.ID == 4) {
-            g.drawImage(bufferedImageMap.get("PLANK_WALL"), mouseDragX, mouseDragY, 20, 20, this);
+            g.drawImage(bufferedImageMap.get("PLANKWALL"), mouseDragX, mouseDragY, 20, 20, this);
         }
+    }
+
+    private void paintPalleteMenu (Graphics g){
+        g.setColor(Color.lightGray);
+        g.fillRect(62, 15, 150, 80);
+        g.drawImage(bufferedImageMap.get("ARROW_UP"),80,20, 30, 30 ,this);
+        g.drawImage(bufferedImageMap.get("ARROW_DOWN"),80,50, 30, 30 ,this);
+        g.drawImage(bufferedImageMap.get(tileList.get(tileBrushIndex)),132,44, 30, 30 ,this);
     }
 
     private void paintCraftingMenu(Graphics g) {
@@ -778,7 +804,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawString("CRAFT",153,247);
 
         if (player1.playerCrafter.itemArray[9].ID == 4){
-            g.drawImage(bufferedImageMap.get("PLANK_WALL"),157,183,30,30,this);
+            g.drawImage(bufferedImageMap.get("PLANKWALL"),157,183,30,30,this);
         }
     }
 
@@ -800,9 +826,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
                     case "water":
                         g.setColor(Color.blue);
-                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("WATER"), i * 25, j * 25, 25, 25, this);
                         break;
-                    case "wood":
+                    case "tree":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
@@ -818,10 +844,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.setColor(Color.orange);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         break;
-                    case "rakedDirt":
+                    case "rakeddirt":
                         g.setColor(new Color(100, 40, 19));
                         g.fillRect(i * 25, j * 25, 25, 25);
-                        g.drawImage(bufferedImageMap.get("RAKED_DIRT"), i * 25, j * 25, 25, 25, this);
+                        g.drawImage(bufferedImageMap.get("RAKEDDIRT"), i * 25, j * 25, 25, 25, this);
 
                         break;
                     case "dirt":
@@ -829,9 +855,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("DIRT"), i * 25, j * 25, 25, 25, this);
                         break;
-                    case "plankWall":
+                    case "plankwall":
                         g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        g.drawImage(bufferedImageMap.get("PLANK_WALL"), i * 25, j * 25, 25, 25, this);
+                        g.drawImage(bufferedImageMap.get("PLANKWALL"), i * 25, j * 25, 25, 25, this);
                         break;
 
                     default:
@@ -855,7 +881,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
-                    case "wood":
+                    case "tree":
                         g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
                         break;
                     case "stone":
@@ -999,7 +1025,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (player1.playerInventory.itemArray[i].ID == 4) {
 
-                g.drawImage(bufferedImageMap.get("PLANK_WALL"),593 + (counter * 30), 183 + (row * 30), 20, 20,this);
+                g.drawImage(bufferedImageMap.get("PLANKWALL"),593 + (counter * 30), 183 + (row * 30), 20, 20,this);
             }
             g.setColor(Color.black);
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
@@ -1055,8 +1081,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.black);
         g.setFont(font2);
         g.drawString("AWESOME GAME PRE-ALPHA", 246, 41);
-        g.drawString("0 : Start New Game", 87, 88);
-        g.drawString("9 : Load Map", 87, 157);
+        g.drawString("0 : Generate world ( on first run only, overwrites all saves.) / close menu", 87, 88);
+        g.drawString("1 : Load map from files", 87, 122);
+        g.drawString("9 : Load Map ( test function )", 87, 157);
         g.drawString("Options", 87, 254);
     }
 
@@ -1438,11 +1465,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             /*
             MOVEMENT AND ORIENTATION
             */
+            case KeyEvent.VK_CONTROL:
+                controlPressed = true;
+                break;
+
+            case KeyEvent.VK_SHIFT:
+                shiftPressed = true;
+            break;
 
             case KeyEvent.VK_0:
 
                 currentTile = null;
 
+                if (worldExists){
                 if (startMenuVisible) {
                     startMenuVisible = false;               // this is how the menu hides other windows.
                     mapVisible = true;
@@ -1458,6 +1493,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     break;
                 }
+                } else  if (startMenuVisible) {
+                    fillWorld();
+                    worldExists = true;
+                    startMenuVisible = false;               // this is how the menu hides other windows.
+                    mapVisible = true;
+
+                    break;
+                } else {
+                    startMenuVisible = true;
+
+                    mapVisible = false;
+                    inventoryMenuVisible = false;
+                    debugMenuVisible = false;
+                    craftingMenuVisible = false;
+
+                    break;
+                }
+
+
+
+
             case KeyEvent.VK_9:
 
                 readWorld(1, 1);    // loads world11.
@@ -1573,80 +1629,86 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                  */
             case KeyEvent.VK_1: // keyboard press 1 -> attempt to harvest block
-                System.out.println("1- Block Harvesting");
 
-                if (!player1.playerInventory.isFull()) { // Allows harvesting process to happen only if the inventory isnt full.
+                if (!startMenuVisible) {
+                    System.out.println("1- Block Harvesting");
 
-                    boolean harvestedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
-                    String harvestedItem = "";
-                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("wood")) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
-                        harvestedItem = "lumber";
+                    if (!player1.playerInventory.isFull()) { // Allows harvesting process to happen only if the inventory isnt full.
 
-                        harvestedSuccessfully = true;
+                        boolean harvestedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
+                        String harvestedItem = "";
+                        if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("tree")) {
+                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "grass";
+                            harvestedItem = "lumber";
 
-                    }
-                    if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("stone")) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "dirt";
-                        harvestedItem = "cobblestone";
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
-                        harvestedSuccessfully = true;
-                    }
+                            harvestedSuccessfully = true;
+
+                        }
+                        if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("stone")) {
+                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "dirt";
+                            harvestedItem = "cobblestone";
+                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
+                            harvestedSuccessfully = true;
+                        }
 
 
-                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("wood")) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
-                        harvestedItem = "lumber";
-                        harvestedSuccessfully = true;
+                        if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("tree")) {
+                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "grass";
+                            harvestedItem = "lumber";
+                            harvestedSuccessfully = true;
 
-                    }
-                    if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("stone")) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "dirt";
-                        harvestedItem = "cobblestone";
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
-                        harvestedSuccessfully = true;
+                        }
+                        if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("stone")) {
+                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "dirt";
+                            harvestedItem = "cobblestone";
+                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
+                            harvestedSuccessfully = true;
 
-                    }
-                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("wood")) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
-                        harvestedSuccessfully = true;
-                        harvestedItem = "lumber";
-                    }
-                    if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("stone")) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "dirt";
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
-                        harvestedSuccessfully = true;
-                        harvestedItem = "cobblestone";
-                    }
-                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("wood")) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
-                        harvestedItem = "lumber";
-                        harvestedSuccessfully = true;
-                    }
-                    if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("stone")) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "dirt";
-                        harvestedItem = "cobblestone";
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
-                        harvestedSuccessfully = true;
-                    }
+                        }
+                        if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("tree")) {
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "grass";
+                            harvestedSuccessfully = true;
+                            harvestedItem = "lumber";
+                        }
+                        if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("stone")) {
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "dirt";
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
+                            harvestedSuccessfully = true;
+                            harvestedItem = "cobblestone";
+                        }
+                        if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("tree")) {
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "grass";
+                            harvestedItem = "lumber";
+                            harvestedSuccessfully = true;
+                        }
+                        if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("stone")) {
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "dirt";
+                            harvestedItem = "cobblestone";
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
+                            harvestedSuccessfully = true;
+                        }
 
-                    if (harvestedSuccessfully) { // Iff the tile is flagged to be successfully harvested, find an empty slot and fill it with a given item.
-                        for (int i = 0; i < 64; i++) {
-                            if (player1.playerInventory.itemArray[i].ID == 0) {
-                                if (harvestedItem.equals("lumber")) {
-                                    player1.playerInventory.itemArray[i].ID = 1;
-                                    break;
-                                }
-                                if (harvestedItem.equals("cobblestone")) {
-                                    player1.playerInventory.itemArray[i].ID = 2;
-                                    break;
+                        if (harvestedSuccessfully) { // Iff the tile is flagged to be successfully harvested, find an empty slot and fill it with a given item.
+                            for (int i = 0; i < 64; i++) {
+                                if (player1.playerInventory.itemArray[i].ID == 0) {
+                                    if (harvestedItem.equals("lumber")) {
+                                        player1.playerInventory.itemArray[i].ID = 1;
+                                        break;
+                                    }
+                                    if (harvestedItem.equals("cobblestone")) {
+                                        player1.playerInventory.itemArray[i].ID = 2;
+                                        break;
+                                    }
                                 }
                             }
+                            tick();
                         }
-                        tick();
                     }
+                    break;
+                } else {
+                    reloadOverWorld();
+                    worldExists = true;
                 }
-                break;
 
             /*
             ITEM PLACEMENT
@@ -1681,24 +1743,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 } else if (currentItem != null && currentItem.ID == 4) {
                     if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankWall";
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankwall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "plankWall";
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "plankwall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     }
 
                     if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "plankWall";
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "plankwall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "plankWall";
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "plankwall";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
@@ -1873,6 +1935,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void keyReleased(KeyEvent e) {
 
+        switch (e.getKeyCode()) {
+
+            case KeyEvent.VK_SHIFT:
+                shiftPressed = false;
+                break;
+            case KeyEvent.VK_CONTROL:
+                controlPressed = false;
+                break;
+        }
     }
 
     @Override
@@ -1892,8 +1963,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             currentItemIndex = 0;
             currentItemColumn = 0;
             currentItemRow = 0;
+
             System.out.println("MouseEvent.BUTTON3");
         } else if (e.getButton() == MouseEvent.BUTTON1) { // ON RIGHT MOUSE CLICK
+            
+            if(debugMenuVisible && x > 81 && x < 107 && y > 23 && y < 50){
+                rotateTileBrush(true);
+            }
+
+            if(debugMenuVisible && x > 81 && x < 107 && y > 55 && y < 81){
+                rotateTileBrush(false);
+            }
+
+            if (shiftPressed && controlPressed){
+                currentTileX = x / 25;
+                currentTileY = y / 25;
+                currentOverWorld.tilemap[currentTileX][currentTileY].type = tileBrush;
+
+            }
+
 
             if (inventoryMenuVisible && x > 151 && x < 151 + 40 && y > 233 && y < 233+40){
 
@@ -1914,16 +2002,55 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 putCurrentItemIntoCraftingInterface(x, y);
             }
 
-            if (!inventoryMenuVisible) {
+            if (!inventoryMenuVisible && !debugMenuVisible) {
                 currentTile = onMouseClickSelectTile(x, y);
             }
             if (inventoryMenuVisible) {
                 currentItem = onMouseClickSelectItem(x, y);
             }
         }
+    
+    private void indexTiles(){
+        tileList.add("GRASS");
+        tileList.add("STONE");
+        tileList.add("DIRT");
+        tileList.add("PLANKWALL");
+        tileList.add("RAKEDDIRT");
+        tileList.add("TREE");
+        tileList.add("WATER");
 
 
+        tileBrushIndex = 0;
+    }
 
+
+    private void rotateTileBrush(Boolean up){
+        
+        if (up){
+
+            System.out.println(tileBrushIndex);
+            System.out.println(tileList.size());
+
+            if (tileBrushIndex == tileList.size() - 1) {
+                tileBrushIndex = 0;
+
+            } else {
+                tileBrushIndex++;
+            }
+
+        } else {
+
+
+            if (tileBrushIndex == 0) {
+                tileBrushIndex = tileList.size()-1;
+            } else {
+                tileBrushIndex--;
+            }
+        }
+
+        tileBrush = tileList.get(tileBrushIndex).toLowerCase();
+        
+    }
 
 
     private void putCurrentItemIntoCraftingInterface(int x, int y) {
