@@ -24,7 +24,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 2;  // Defines Overworld dimensions.
+    private int worldSize = 5;  // Defines Overworld dimensions.
 
     private Overworld currentOverWorld = null;
 
@@ -91,6 +91,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     AudioInputStream audioInputStream;
     Clip movementSound;
+    Clip rainSound;
+    Clip woodsSound;
+    Clip menuSound;
+
+    private int stepCounter = 0;
+    private boolean rainSoundLoaded = false;
+    private boolean woodsSoundLoaded = false;
+    private boolean menuSoundLoaded = false;
+
 
     private boolean craftingMenuVisible = false;
 
@@ -133,7 +142,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         indexTiles();
 
-        //loadRainSound();
+
+        loadMenuSound();
+
+
 
         raining = true;
 
@@ -166,15 +178,62 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         try {
-            Clip rainSound = AudioSystem.getClip();
+            rainSound = AudioSystem.getClip();
             rainSound.open(audioInputStream);
             rainSound.start();
             rainSound.loop(999);
+            rainSoundLoaded = true;
 
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void loadWoodsSound() {
+
+        File woods = new File("Data/Sound/Woods.wav");
+
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(woods);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            woodsSound = AudioSystem.getClip();
+            woodsSound.open(audioInputStream);
+            woodsSound.start();
+            woodsSound.loop(999);
+            woodsSoundLoaded = true;
+
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadMenuSound() {
+
+
+        File menu1 = new File("Data/Sound/Menu1.wav");
+
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(menu1);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            menuSound = AudioSystem.getClip();
+            menuSound.open(audioInputStream);
+            menuSound.start();
+            menuSound.loop(999);
+            menuSoundLoaded = true;
+
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1414,7 +1473,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                         } else if (player1.xPos / 25 > n.xPos / 25) {
 
-                            if (n.xPos / 25 != 22) {
+                            if (n.xPos / 25 != 30) {
                                 if (!currentOverWorld.tilemap[n.xPos / 25 + 1][n.yPos / 25].occupied) {
                                     n.xPos += movementSpeed;
                                     n.orientation = "EAST";
@@ -1445,42 +1504,66 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (direction == 0) {                 // 0=up. 1=right 2=down 3=left
 
             if (currentOverWorld.idY == worldSize - 1)      // checks for top edge of Overworld.
+
             {
-                currentOverWorld = overWorld[currentOverWorld.idX][0];      // load bottom edge of Overworld. ( world is currently round. )
-                player1.yPos = 22 * 25;                                      // sets player y coordinate to bottom edge of tilemap
-
+                if (!overWorld[currentOverWorld.idX][0].tilemap[player1.xPos / 25][22].occupied && !overWorld[currentOverWorld.idX][0].tilemap[player1.xPos / 25][23].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    currentOverWorld = overWorld[currentOverWorld.idX][0];      // load bottom edge of Overworld. ( world is currently round. )
+                    player1.yPos = 22 * 25;                                      // sets player y coordinate to bottom edge of tilemap
+                }
             } else {
-
-                player1.yPos = 22 * 25;
-                currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY + 1];  // Otherwise loads next Overworld up.
+                if (!overWorld[currentOverWorld.idX][currentOverWorld.idY + 1].tilemap[player1.xPos / 25][22].occupied && !overWorld[currentOverWorld.idX][currentOverWorld.idY + 1].tilemap[player1.xPos / 25][23].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    player1.yPos = 22 * 25;
+                    currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY + 1];  // Otherwise loads next Overworld up.
+                }
             }
 
         } else if (direction == 1) {
             if (currentOverWorld.idX == worldSize - 1)       // same concept for every direction.
             {
-                currentOverWorld = overWorld[0][currentOverWorld.idY];
-                player1.xPos = 1 * 25;
+                if (!overWorld[0][currentOverWorld.idY].tilemap[1][player1.yPos / 25].occupied && !overWorld[0][currentOverWorld.idY].tilemap[0][player1.yPos / 25].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    currentOverWorld = overWorld[0][currentOverWorld.idY];
+                    player1.xPos = 1 * 25;
+                }
             } else {
-                player1.xPos = 1 * 25;
-                currentOverWorld = overWorld[currentOverWorld.idX + 1][currentOverWorld.idY];
+                if (!overWorld[currentOverWorld.idX + 1][currentOverWorld.idY].tilemap[1][player1.yPos / 25].occupied && !overWorld[currentOverWorld.idX + 1][currentOverWorld.idY].tilemap[0][player1.yPos / 25].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    player1.xPos = 1 * 25;
+                    currentOverWorld = overWorld[currentOverWorld.idX + 1][currentOverWorld.idY];
+                }
             }
         } else if (direction == 2) {
-            if (currentOverWorld.idY == 0) {
-                player1.yPos = 1 * 25;
-                currentOverWorld = overWorld[currentOverWorld.idX][worldSize - 1];
-            } else {
 
-                player1.yPos = 1 * 25;
-                currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY - 1];
-            }
+
+                if (currentOverWorld.idY == 0) {
+                    if (!overWorld[currentOverWorld.idX][worldSize -1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][worldSize -1].tilemap[player1.xPos / 25][0].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                        player1.yPos = 1 * 25;
+                        currentOverWorld = overWorld[currentOverWorld.idX][worldSize - 1];
+                    }
+                } else {
+                    if (!overWorld[currentOverWorld.idX][currentOverWorld.idY -1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][currentOverWorld.idY - 1].tilemap[player1.xPos / 25][0].occupied) {
+                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                        player1.yPos = 1 * 25;
+                        currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY - 1];
+                    }
+                }
+
         } else if (direction == 3) {
             if (currentOverWorld.idX == 0) {
-                currentOverWorld = overWorld[worldSize - 1][currentOverWorld.idY];
-                player1.xPos = 30 * 25;
+                if (!overWorld[worldSize - 1][currentOverWorld.idY].tilemap[30][player1.yPos / 25].occupied && !overWorld[worldSize - 1][currentOverWorld.idY].tilemap[31][player1.yPos / 25].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    currentOverWorld = overWorld[worldSize - 1][currentOverWorld.idY];
+                    player1.xPos = 30 * 25;
+                }
             } else {
-
-                player1.xPos = 30 * 25;
-                currentOverWorld = overWorld[currentOverWorld.idX - 1][currentOverWorld.idY];
+                if (!overWorld[currentOverWorld.idX - 1][currentOverWorld.idY].tilemap[30][player1.yPos / 25].occupied && !overWorld[currentOverWorld.idX - 1][currentOverWorld.idY].tilemap[31][player1.yPos / 25].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    player1.xPos = 30 * 25;
+                    currentOverWorld = overWorld[currentOverWorld.idX - 1][currentOverWorld.idY];
+                }
             }
         }
 
@@ -1550,6 +1633,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 if (worldExists) {
                     if (startMenuVisible) {
                         startMenuVisible = false;               // this is how the menu hides other windows.
+
+                        if(!rainSoundLoaded && !woodsSoundLoaded) {
+                            loadRainSound();
+                            loadWoodsSound();
+                        }
+
                         mapVisible = true;
 
                         break;
@@ -1569,6 +1658,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     startMenuVisible = false;               // this is how the menu hides other windows.
                     mapVisible = true;
 
+                    if(!rainSoundLoaded && !woodsSoundLoaded) {
+                        loadRainSound();
+                        loadWoodsSound();
+                    }
                     break;
                 } else {
                     startMenuVisible = true;
@@ -1677,6 +1770,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 break;
 
+            case KeyEvent.VK_M:
+
+                if(menuSoundLoaded && rainSoundLoaded && woodsSoundLoaded){
+                    menuSound.stop();
+                    rainSound.stop();
+                    woodsSound.stop();
+
+                    menuSoundLoaded = false;
+                    rainSoundLoaded = false;
+                    woodsSoundLoaded = false;
+
+                } else {
+                loadMenuSound();
+                    loadWoodsSound();
+                    loadRainSound();
+            }
+
+
+                break;
+
             /*
             DEBUG MENU/INDICATORS OPEN/CLOSE
             Open all debug menus and indicators
@@ -1769,6 +1882,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             for (int i = 0; i < 64; i++) {
                                 if (player1.playerInventory.itemArray[i].ID == 0) {
                                     if (harvestedItem.equals("lumber")) {
+                                        loadChopSound();
                                         player1.playerInventory.itemArray[i].ID = 1;
                                         break;
                                     }
@@ -1984,6 +2098,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 break;
 
+            case KeyEvent.VK_6:
+
+                currentOverWorld.npcList = new Vector<>();
+                dummyWorld();
+
+                break;
+
             case KeyEvent.VK_ESCAPE:
                 currentItem = null;
                 currentTile = null;
@@ -2000,10 +2121,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void loadMovementSound() {
-        File blop = new File("Data/Sound/Blop.wav");
+        File Step1 = new File("Data/Sound/Step1.wav");
+        File Step2 = new File("Data/Sound/Step2.wav");
+        File Step3 = new File("Data/Sound/Step3.wav");
+        File Step4 = new File("Data/Sound/Step4.wav");
+
+
+        stepCounter = rotateRng() % 3;
 
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(blop);
+
+            if (stepCounter == 0) {
+                audioInputStream = AudioSystem.getAudioInputStream(Step1);
+            } else if (stepCounter == 1){
+                audioInputStream = AudioSystem.getAudioInputStream(Step2);
+            } else if (stepCounter == 2){
+                audioInputStream = AudioSystem.getAudioInputStream(Step3);
+            } else if (stepCounter == 3){
+                audioInputStream = AudioSystem.getAudioInputStream(Step4);
+            }
+
+
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
@@ -2017,6 +2155,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadChopSound() {
+
+        File woodChoop = new File("Data/Sound/WoodChop.wav");
+
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(woodChoop);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Clip woodsSound = AudioSystem.getClip();
+            woodsSound.open(audioInputStream);
+            woodsSound.start();
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
