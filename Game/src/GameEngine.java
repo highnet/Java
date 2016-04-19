@@ -148,7 +148,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadMenuSound();
 
 
-
         raining = true;
 
         generateRainPattern();
@@ -227,11 +226,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         try {
+
             menuSound = AudioSystem.getClip();
             menuSound.open(audioInputStream);
+
             menuSound.start();
+
             menuSound.loop(999);
             menuSoundLoaded = true;
+
 
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
@@ -258,6 +261,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void loadSprites() {
         bufferedImageMap = new HashMap<>();
 
+        BufferedImage ratSkinHood;
+        BufferedImage ratSkinChest;
+
+        BufferedImage WoodFloorDoorNorth;
+        BufferedImage WoodFloorDoorEast;
+        BufferedImage WoodFloorDoorSouth;
+        BufferedImage WoodFloorDoorWest;
+
+        BufferedImage stonePathGrass;
         BufferedImage northAdventurer;
         BufferedImage southAdventurer;
         BufferedImage eastAdventurer;
@@ -289,6 +301,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         try {
+
+            ratSkinHood = ImageIO.read(new File("Data/GFX/ratSkinHood.png"));
+            ratSkinChest = ImageIO.read(new File("Data/GFX/ratSkinChest.png"));
+
+
+            WoodFloorDoorNorth = ImageIO.read(new File("Data/GFX/WoodFloorDoorNorth.png"));
+            WoodFloorDoorEast = ImageIO.read(new File("Data/GFX/WoodFloorDoorEast.png"));
+            WoodFloorDoorSouth = ImageIO.read(new File("Data/GFX/WoodFloorDoorSouth.png"));
+            WoodFloorDoorWest = ImageIO.read(new File("Data/GFX/WoodFloorDoorWest.png"));
+
+            stonePathGrass = ImageIO.read(new File("Data/GFX/StonePathGrass.png"));
             upArrow = ImageIO.read(new File("Data/GFX/upArrow.png"));
             downArrow = ImageIO.read(new File("Data/GFX/downArrow.png"));
             northAdventurer = ImageIO.read(new File("Data/GFX/NorthAdventurer.png"));
@@ -318,6 +341,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             eastZombie = ImageIO.read(new File("Data/GFX/EastZombie.png"));
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
+
+            bufferedImageMap.put("RATSKINCHEST", ratSkinChest);
+            bufferedImageMap.put("RATSKINHOOD", ratSkinHood);
+            bufferedImageMap.put("WOODFLOORDOORNORTH", WoodFloorDoorNorth);
+            bufferedImageMap.put("WOODFLOORDOOREAST", WoodFloorDoorEast);
+            bufferedImageMap.put("WOODFLOORDOORSOUTH", WoodFloorDoorSouth);
+            bufferedImageMap.put("WOODFLOORDOORWEST", WoodFloorDoorWest);
+            bufferedImageMap.put("STONEPATHGRASS", stonePathGrass);
             bufferedImageMap.put("ARROW_UP", upArrow);
             bufferedImageMap.put("ARROW_DOWN", downArrow);
             bufferedImageMap.put("NORTH_ADVENTURER", northAdventurer);
@@ -332,7 +363,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("WEST_FROG", westFrog);
             bufferedImageMap.put("GRASS", grass);
             bufferedImageMap.put("DIRT", dirt);
-            bufferedImageMap.put("WOODFLOOR",woodFloor);
+            bufferedImageMap.put("WOODFLOOR", woodFloor);
             bufferedImageMap.put("RAKEDDIRT", rakedDirt);
             bufferedImageMap.put("WATER", water);
             bufferedImageMap.put("PLANKWALL", plankWall);
@@ -350,6 +381,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         } catch (IOException e) {
 
+            ratSkinChest = null;
+            WoodFloorDoorNorth = null;
+            WoodFloorDoorEast = null;
+            WoodFloorDoorSouth = null;
+            WoodFloorDoorWest = null;
             errorImg = null;
             northFrog = null;
             southFrog = null;
@@ -374,6 +410,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             upArrow = null;
             downArrow = null;
             water = null;
+            ratSkinHood = null;
 
         }
 
@@ -516,6 +553,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("tree")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("stone")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("water")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodfloordoornorth")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodfloordooreast")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodfloordoorsouth")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodfloordoorwest")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("plankwall"));
             }
 
@@ -570,14 +611,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
                 dummyWorld();                               // initializes current Overworld tilemap.
                 generateWorldImproved();                    // generates RNG world and serializes to file.
-                if(currentOverWorld.idX < 10 && currentOverWorld.idY < 10){
+                if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
                     System.out.println("World0" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
-                } else if  (currentOverWorld.idX < 10){
+                } else if (currentOverWorld.idX < 10) {
                     System.out.println("World0" + currentOverWorld.idX + currentOverWorld.idY + " generated");
-                } else if (currentOverWorld.idY < 10){
+                } else if (currentOverWorld.idY < 10) {
                     System.out.println("World" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
                 } else {
-                    System.out.println("World" + currentOverWorld.idX +  currentOverWorld.idY + " generated");
+                    System.out.println("World" + currentOverWorld.idX + currentOverWorld.idY + " generated");
                 }
                 populateWorld();                        // initializes and populates currentOverWorld.npclist with RNG Npc's.
                 saveWorld();
@@ -615,17 +656,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         try {
 
-            if(currentOverWorld.idX < 10 && currentOverWorld.idY < 10){
-                fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + "0" +currentOverWorld.idY + ".ser");
-            } else if  (currentOverWorld.idX < 10){
-               fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
-            } else if (currentOverWorld.idY < 10){
-             fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + "0" +currentOverWorld.idY + ".ser");
+            if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
+                fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + "0" + currentOverWorld.idY + ".ser");
+            } else if (currentOverWorld.idX < 10) {
+                fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
+            } else if (currentOverWorld.idY < 10) {
+                fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + "0" + currentOverWorld.idY + ".ser");
             } else {
-            fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
+                fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
             }
-
-
 
 
             ObjectOutputStream out = new ObjectOutputStream(fileOut);           // creates output stream pointed to file.
@@ -679,12 +718,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void readWorld(int idX, int idY) {
 
         try {
-            if(idX < 10 && idY < 10){
-                fileIn = new FileInputStream("Data/Maps/WORLD0" + idX +"0"+ idY + ".ser");
-            } else if  (currentOverWorld.idX < 10){
+            if (idX < 10 && idY < 10) {
+                fileIn = new FileInputStream("Data/Maps/WORLD0" + idX + "0" + idY + ".ser");
+            } else if (currentOverWorld.idX < 10) {
                 fileIn = new FileInputStream("Data/Maps/WORLD0" + idX + idY + ".ser");
-            } else if (currentOverWorld.idY < 10){
-                fileIn = new FileInputStream("Data/Maps/WORLD" + idX + "0" +idY + ".ser");
+            } else if (currentOverWorld.idY < 10) {
+                fileIn = new FileInputStream("Data/Maps/WORLD" + idX + "0" + idY + ".ser");
             } else {
                 fileIn = new FileInputStream("Data/Maps/WORLD" + idX + idY + ".ser");
             }
@@ -694,12 +733,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             in.close();
             fileIn.close();
 
-            if(idX < 10 && idY < 10){
-                System.out.println("World0" + idX +"0"+ idY + " loaded");
-            } else if  (currentOverWorld.idX < 10){
+            if (idX < 10 && idY < 10) {
+                System.out.println("World0" + idX + "0" + idY + " loaded");
+            } else if (currentOverWorld.idX < 10) {
                 System.out.println("World0" + idX + idY + " loaded");
-            } else if (currentOverWorld.idY < 10){
-                System.out.println("World" + idX +"0"+ idY + " loaded");
+            } else if (currentOverWorld.idY < 10) {
+                System.out.println("World" + idX + "0" + idY + " loaded");
             } else {
                 System.out.println("World" + idX + idY + " loaded");
             }
@@ -843,9 +882,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (inventoryMenuVisible) {
             paintInventory(g);
+            paintPlayerGearInterface(g);
         }
 
-        if (viewMenuVisible){
+        if (viewMenuVisible) {
             paintViewMenu(g);
         }
 
@@ -862,6 +902,61 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     }
+
+    private void paintPlayerGearInterface(Graphics g) {
+        g.setColor(Color.white);
+        g.fillRect(663, 512, 25, 25); // HELM LOCATION
+        g.fillRect(663, 542, 25, 25); // CHEST LOCATION
+        g.fillRect(663, 572, 25, 25); // PANTS LOCATION
+        g.fillRect(693, 542, 25, 25); // OFFHAND LOCATION
+        g.fillRect(633, 542, 25, 25); // MAINHAND LOCATION
+        g.setColor(Color.black);
+        g.drawRect(663, 512, 25, 25);
+        g.drawRect(663, 542, 25, 25);
+        g.drawRect(663, 572, 25, 25);
+        g.drawRect(693, 542, 25, 25);
+        g.drawRect(633, 542, 25, 25);
+
+
+        switch (player1.gearInterface.itemArray[0].ID) {
+            case 5:
+                g.drawImage(bufferedImageMap.get("RATSKINHOOD"), 663, 512, 25, 25, this);
+                break;
+        }
+
+
+        switch (player1.gearInterface.itemArray[1].ID) {
+            case 6:
+
+                g.drawImage(bufferedImageMap.get("RATSKINCHEST"), 663, 542, 25, 25, this);
+                break;
+        }
+
+        switch (player1.gearInterface.itemArray[2].ID) {
+            case 7:
+
+                break;
+        }
+
+        switch (player1.gearInterface.itemArray[3].ID) {
+            case 8:
+
+                break;
+        }
+
+        switch (player1.gearInterface.itemArray[4].ID) {
+            case 9:
+
+                break;
+        }
+
+        switch (player1.gearInterface.itemArray[5].ID) {
+            case 10:
+
+                break;
+        }
+    }
+
 
     private void paintSplash(Graphics g) {
 
@@ -991,6 +1086,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "plankwall":
                         g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
                         g.drawImage(bufferedImageMap.get("PLANKWALL"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "stonepathgrass":
+                        g.drawImage(bufferedImageMap.get("STONEPATHGRASS"), i * 25, j * 25, 25, 25, this);
+                        break;
+
+                    case "woodfloordooreast":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOOREAST"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodfloordoornorth":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORNORTH"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodfloordoorsouth":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORSOUTH"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodfloordoorwest":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORWEST"), i * 25, j * 25, 25, 25, this);
                         break;
 
                     default:
@@ -1229,7 +1340,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintViewMenu(Graphics g) {
         g.setColor(Color.gray);
-        g.fillRect(363, 452,  300, 100);
+        g.fillRect(363, 452, 300, 100);
         g.setColor(Color.black);
         g.setFont(font2);
 
@@ -1241,7 +1352,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (currentTile.occupied) {
                 g.drawString("Obstacle", 373, 508);
             }
-
 
 
         }
@@ -1570,19 +1680,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } else if (direction == 2) {
 
 
-                if (currentOverWorld.idY == 0) {
-                    if (!overWorld[currentOverWorld.idX][worldSize -1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][worldSize -1].tilemap[player1.xPos / 25][0].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                        player1.yPos = 1 * 25;
-                        currentOverWorld = overWorld[currentOverWorld.idX][worldSize - 1];
-                    }
-                } else {
-                    if (!overWorld[currentOverWorld.idX][currentOverWorld.idY -1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][currentOverWorld.idY - 1].tilemap[player1.xPos / 25][0].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
-                        player1.yPos = 1 * 25;
-                        currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY - 1];
-                    }
+            if (currentOverWorld.idY == 0) {
+                if (!overWorld[currentOverWorld.idX][worldSize - 1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][worldSize - 1].tilemap[player1.xPos / 25][0].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    player1.yPos = 1 * 25;
+                    currentOverWorld = overWorld[currentOverWorld.idX][worldSize - 1];
                 }
+            } else {
+                if (!overWorld[currentOverWorld.idX][currentOverWorld.idY - 1].tilemap[player1.xPos / 25][1].occupied && !overWorld[currentOverWorld.idX][currentOverWorld.idY - 1].tilemap[player1.xPos / 25][0].occupied) {
+                    currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = false;
+                    player1.yPos = 1 * 25;
+                    currentOverWorld = overWorld[currentOverWorld.idX][currentOverWorld.idY - 1];
+                }
+            }
 
         } else if (direction == 3) {
             if (currentOverWorld.idX == 0) {
@@ -1601,11 +1711,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
-            System.out.println("Overworld0" + currentOverWorld.idX + "0" +currentOverWorld.idY + " loaded");
-        } else if ( currentOverWorld.idX < 10){
-            System.out.println("Overworld0" + currentOverWorld.idX +  +currentOverWorld.idY + " loaded");
-        } else if ( currentOverWorld.idY < 10){
-            System.out.println("Overworld" + currentOverWorld.idX + "0" +currentOverWorld.idY + " loaded");
+            System.out.println("Overworld0" + currentOverWorld.idX + "0" + currentOverWorld.idY + " loaded");
+        } else if (currentOverWorld.idX < 10) {
+            System.out.println("Overworld0" + currentOverWorld.idX + +currentOverWorld.idY + " loaded");
+        } else if (currentOverWorld.idY < 10) {
+            System.out.println("Overworld" + currentOverWorld.idX + "0" + currentOverWorld.idY + " loaded");
         } else {
             System.out.println("Overworld" + currentOverWorld.idX + +currentOverWorld.idY + " loaded");
         }
@@ -1677,7 +1787,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (startMenuVisible) {
                         startMenuVisible = false;               // this is how the menu hides other windows.
 
-                        if(!rainSoundLoaded && !woodsSoundLoaded) {
+                        if (!rainSoundLoaded && !woodsSoundLoaded) {
                             loadRainSound();
                             loadWoodsSound();
                         }
@@ -1701,7 +1811,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     startMenuVisible = false;               // this is how the menu hides other windows.
                     mapVisible = true;
 
-                    if(!rainSoundLoaded && !woodsSoundLoaded) {
+                    if (!rainSoundLoaded && !woodsSoundLoaded) {
                         loadRainSound();
                         loadWoodsSound();
                     }
@@ -1815,7 +1925,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_M:
 
-                if(menuSoundLoaded && rainSoundLoaded && woodsSoundLoaded){
+                if (menuSoundLoaded && rainSoundLoaded && woodsSoundLoaded) {
                     menuSound.stop();
                     rainSound.stop();
                     woodsSound.stop();
@@ -1825,10 +1935,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     woodsSoundLoaded = false;
 
                 } else {
-                loadMenuSound();
+                    loadMenuSound();
                     loadWoodsSound();
                     loadRainSound();
-            }
+                }
 
 
                 break;
@@ -2176,11 +2286,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (stepCounter == 0) {
                 audioInputStream = AudioSystem.getAudioInputStream(Step1);
-            } else if (stepCounter == 1){
+            } else if (stepCounter == 1) {
                 audioInputStream = AudioSystem.getAudioInputStream(Step2);
-            } else if (stepCounter == 2){
+            } else if (stepCounter == 2) {
                 audioInputStream = AudioSystem.getAudioInputStream(Step3);
-            } else if (stepCounter == 3){
+            } else if (stepCounter == 3) {
                 audioInputStream = AudioSystem.getAudioInputStream(Step4);
             }
 
@@ -2290,7 +2400,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             putCurrentItemIntoCraftingInterface(x, y);
         }
 
-        if (!inventoryMenuVisible && !debugMenuVisible) {
+        if (!inventoryMenuVisible && !debugMenuVisible && !startMenuVisible) {
             currentTile = onMouseClickSelectTile(x, y);
         }
         if (inventoryMenuVisible) {
@@ -2307,7 +2417,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         tileList.add("WOODFLOOR");
         tileList.add("TREE");
         tileList.add("WATER");
-
+        tileList.add("STONEPATHGRASS");
+        tileList.add("WOODFLOORDOORNORTH");
+        tileList.add("WOODFLOORDOOREAST");
+        tileList.add("WOODFLOORDOORSOUTH");
+        tileList.add("WOODFLOORDOORWEST");
 
         tileBrushIndex = 0;
     }

@@ -16,7 +16,7 @@ public class Item {
     ID : 7 : RATSKIN_LEGS
     ID : 8 : RATSKIN_BOOTS
     ID : 9 : WOODEN_CLUB
-    ID : 10 : PLEB_SHIELD
+    ID : 10 : WOODEN_SHIELD
 
      */
 
