@@ -24,8 +24,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 5;  // Defines Overworld dimensions.
-
+    private int worldSize = 20;  // Defines Overworld dimensions
     private Overworld currentOverWorld = null;
 
     private Tile currentTile = null;
@@ -49,6 +48,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Player player1;
 
     private Npc currentNpc;    // Selected Npc pointer
+
+    FileOutputStream fileOut;
+    FileInputStream fileIn;
 
     private boolean debugMenuVisible = false;
 
@@ -568,7 +570,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
                 dummyWorld();                               // initializes current Overworld tilemap.
                 generateWorldImproved();                    // generates RNG world and serializes to file.
-                System.out.println("World" + currentOverWorld.idX + currentOverWorld.idY + " generated");
+                if(currentOverWorld.idX < 10 && currentOverWorld.idY < 10){
+                    System.out.println("World0" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
+                } else if  (currentOverWorld.idX < 10){
+                    System.out.println("World0" + currentOverWorld.idX + currentOverWorld.idY + " generated");
+                } else if (currentOverWorld.idY < 10){
+                    System.out.println("World" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
+                } else {
+                    System.out.println("World" + currentOverWorld.idX +  currentOverWorld.idY + " generated");
+                }
                 populateWorld();                        // initializes and populates currentOverWorld.npclist with RNG Npc's.
                 saveWorld();
             }
@@ -602,18 +612,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     private void saveWorld() {
+
         try {
-            Writer writer = new BufferedWriter(new OutputStreamWriter(                      // First create a new textfile.
-                    new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + currentOverWorld.idY + ".ser"), "utf-8"));
-            writer.close();
+
+            if(currentOverWorld.idX < 10 && currentOverWorld.idY < 10){
+                fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + "0" +currentOverWorld.idY + ".ser");
+            } else if  (currentOverWorld.idX < 10){
+               fileOut = new FileOutputStream("Data/Maps/WORLD0" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
+            } else if (currentOverWorld.idY < 10){
+             fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + "0" +currentOverWorld.idY + ".ser");
+            } else {
+            fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
+            }
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        try {                                                                                       // Then serialize an Overworld object to it.
-            FileOutputStream fileOut = new FileOutputStream("Data/Maps/WORLD" + currentOverWorld.idX + currentOverWorld.idY + ".ser");
+
             ObjectOutputStream out = new ObjectOutputStream(fileOut);           // creates output stream pointed to file.
             out.writeObject(overWorld[currentOverWorld.idX][currentOverWorld.idY]);                                  // serialize currentOverWorld.
             out.close();
@@ -665,12 +679,31 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     public void readWorld(int idX, int idY) {
 
         try {
-            FileInputStream fileIn = new FileInputStream("Data/Maps/WORLD" + idX + idY + ".ser");      // point to file.
+            if(idX < 10 && idY < 10){
+                fileIn = new FileInputStream("Data/Maps/WORLD0" + idX +"0"+ idY + ".ser");
+            } else if  (currentOverWorld.idX < 10){
+                fileIn = new FileInputStream("Data/Maps/WORLD0" + idX + idY + ".ser");
+            } else if (currentOverWorld.idY < 10){
+                fileIn = new FileInputStream("Data/Maps/WORLD" + idX + "0" +idY + ".ser");
+            } else {
+                fileIn = new FileInputStream("Data/Maps/WORLD" + idX + idY + ".ser");
+            }
+            // point to file.
             ObjectInputStream in = new ObjectInputStream(fileIn);                           // open stream.
             overWorld[idX][idY] = (Overworld) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("World" + idX + idY + " loaded");
+
+            if(idX < 10 && idY < 10){
+                System.out.println("World0" + idX +"0"+ idY + " loaded");
+            } else if  (currentOverWorld.idX < 10){
+                System.out.println("World0" + idX + idY + " loaded");
+            } else if (currentOverWorld.idY < 10){
+                System.out.println("World" + idX +"0"+ idY + " loaded");
+            } else {
+                System.out.println("World" + idX + idY + " loaded");
+            }
+
         } catch (IOException | ClassNotFoundException i) {
             i.printStackTrace();
 
@@ -1567,7 +1600,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
         }
 
-        System.out.println("Overworld" + currentOverWorld.idX + +currentOverWorld.idY + " loaded");
+        if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
+            System.out.println("Overworld0" + currentOverWorld.idX + "0" +currentOverWorld.idY + " loaded");
+        } else if ( currentOverWorld.idX < 10){
+            System.out.println("Overworld0" + currentOverWorld.idX +  +currentOverWorld.idY + " loaded");
+        } else if ( currentOverWorld.idY < 10){
+            System.out.println("Overworld" + currentOverWorld.idX + "0" +currentOverWorld.idY + " loaded");
+        } else {
+            System.out.println("Overworld" + currentOverWorld.idX + +currentOverWorld.idY + " loaded");
+        }
+
+
     }
 
 
