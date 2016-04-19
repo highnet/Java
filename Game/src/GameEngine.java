@@ -24,7 +24,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 20;  // Defines Overworld dimensions
+    private int worldSize = 2;  // Defines Overworld dimensions
     private Overworld currentOverWorld = null;
 
     private Tile currentTile = null;
@@ -261,14 +261,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void loadSprites() {
         bufferedImageMap = new HashMap<>();
 
+
+        BufferedImage sand;
+        BufferedImage woodenFenceNECorner;
+        BufferedImage woodenFenceSWCorner;
+        BufferedImage woodenFenceSECorner;
+        BufferedImage woodenFenceNWCorner;
         BufferedImage ratSkinHood;
         BufferedImage ratSkinChest;
-
         BufferedImage WoodFloorDoorNorth;
         BufferedImage WoodFloorDoorEast;
         BufferedImage WoodFloorDoorSouth;
         BufferedImage WoodFloorDoorWest;
-
         BufferedImage stonePathGrass;
         BufferedImage northAdventurer;
         BufferedImage southAdventurer;
@@ -298,19 +302,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage westSheep;
         BufferedImage upArrow;
         BufferedImage downArrow;
+        BufferedImage woodenFenceHorizontal;
+        BufferedImage woodenFenceVertical;
 
 
         try {
 
+            sand = ImageIO.read((new File("Data/GFX/Sand.png")));
+            woodenFenceNECorner = ImageIO.read(new File("Data/GFX/woodenFenceNECorner.png"));
+            woodenFenceSWCorner = ImageIO.read(new File("Data/GFX/woodenFenceSWCorner.png"));
+            woodenFenceSECorner = ImageIO.read(new File("Data/GFX/woodenFenceSECorner.png"));
+            woodenFenceNWCorner = ImageIO.read(new File("Data/GFX/woodenFenceNWCorner.png"));
+            woodenFenceHorizontal = ImageIO.read(new File("Data/GFX/woodenFenceHorizontal.png"));
+            woodenFenceVertical = ImageIO.read(new File("Data/GFX/woodenFenceVertical.png"));
             ratSkinHood = ImageIO.read(new File("Data/GFX/ratSkinHood.png"));
             ratSkinChest = ImageIO.read(new File("Data/GFX/ratSkinChest.png"));
-
-
             WoodFloorDoorNorth = ImageIO.read(new File("Data/GFX/WoodFloorDoorNorth.png"));
             WoodFloorDoorEast = ImageIO.read(new File("Data/GFX/WoodFloorDoorEast.png"));
             WoodFloorDoorSouth = ImageIO.read(new File("Data/GFX/WoodFloorDoorSouth.png"));
             WoodFloorDoorWest = ImageIO.read(new File("Data/GFX/WoodFloorDoorWest.png"));
-
             stonePathGrass = ImageIO.read(new File("Data/GFX/StonePathGrass.png"));
             upArrow = ImageIO.read(new File("Data/GFX/upArrow.png"));
             downArrow = ImageIO.read(new File("Data/GFX/downArrow.png"));
@@ -342,6 +352,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
 
+            bufferedImageMap.put("SAND",sand);
+            bufferedImageMap.put("WOODENFENCENWCORNER", woodenFenceNWCorner);
+            bufferedImageMap.put("WOODENFENCENECORNER", woodenFenceNECorner);
+            bufferedImageMap.put("WOODENFENCESWCORNER", woodenFenceSWCorner);
+            bufferedImageMap.put("WOODENFENCESECORNER", woodenFenceSECorner);
+            bufferedImageMap.put("WOODENFENCEHORIZONTAL", woodenFenceHorizontal);
+            bufferedImageMap.put("WOODENFENCEVERTICAL", woodenFenceVertical);
             bufferedImageMap.put("RATSKINCHEST", ratSkinChest);
             bufferedImageMap.put("RATSKINHOOD", ratSkinHood);
             bufferedImageMap.put("WOODFLOORDOORNORTH", WoodFloorDoorNorth);
@@ -380,7 +397,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } catch (IOException e) {
-
+            sand = null;
+            woodenFenceNECorner = null;
+            woodenFenceSECorner = null;
+            woodenFenceSWCorner = null;
+            woodenFenceNWCorner = null;
             ratSkinChest = null;
             WoodFloorDoorNorth = null;
             WoodFloorDoorEast = null;
@@ -411,6 +432,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             downArrow = null;
             water = null;
             ratSkinHood = null;
+            woodenFenceHorizontal = null;
+            woodenFenceVertical = null;
 
         }
 
@@ -557,6 +580,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         (currentOverWorld.tilemap[i][j].type.equals("woodfloordooreast")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodfloordoorsouth")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodfloordoorwest")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfencevertical")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfencehorizontal")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfencenecorner")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfencenwcorner")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfencesecorner")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("woodenfenceswcorner")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("plankwall"));
             }
 
@@ -1070,13 +1099,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
                     case "sand":
                         g.setColor(Color.orange);
-                        g.fillRect(i * 25, j * 25, 25, 25);
+                        g.drawImage(bufferedImageMap.get("SAND"),i*25,j*25,25,25,this);
                         break;
                     case "rakeddirt":
                         g.setColor(new Color(100, 40, 19));
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("RAKEDDIRT"), i * 25, j * 25, 25, 25, this);
-
                         break;
                     case "dirt":
                         g.setColor(new Color(100, 80, 30));
@@ -1103,7 +1131,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "woodfloordoorwest":
                         g.drawImage(bufferedImageMap.get("WOODFLOORDOORWEST"), i * 25, j * 25, 25, 25, this);
                         break;
-
+                    case "woodenfencehorizontal":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencevertical":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencenwcorner":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencenecorner":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencesecorner":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfenceswcorner":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
                     default:
                         g.setColor(Color.red);
                         g.drawString("ERR", i * 25, j * 25 + 25);
@@ -1131,6 +1176,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "stone":
                         g.drawImage(bufferedImageMap.get("STONE"), i * 25 - 5, j * 25 - 10, 40, 40, this);     // draws a tree
                         break;
+                    case "woodenfencehorizontal":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCEHORIZONTAL"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodenfencevertical":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCEVERTICAL"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodenfencenwcorner":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCENWCORNER"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodenfenceswcorner":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCESWCORNER"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodenfencenecorner":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCENECORNER"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "woodenfencesecorner":
+                        g.drawImage(bufferedImageMap.get("WOODENFENCESECORNER"), i * 25, j * 25, 25, 25, this);
+                        break;
+
+
                 }
 
 
@@ -2409,6 +2474,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void indexTiles() {
+        tileList.add("SAND");
         tileList.add("GRASS");
         tileList.add("STONE");
         tileList.add("DIRT");
@@ -2422,6 +2488,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         tileList.add("WOODFLOORDOOREAST");
         tileList.add("WOODFLOORDOORSOUTH");
         tileList.add("WOODFLOORDOORWEST");
+        tileList.add("WOODENFENCEHORIZONTAL");
+        tileList.add("WOODENFENCEVERTICAL");
+        tileList.add("WOODENFENCENWCORNER");
+        tileList.add("WOODENFENCENECORNER");
+        tileList.add("WOODENFENCESECORNER");
+        tileList.add("WOODENFENCESWCORNER");
 
         tileBrushIndex = 0;
     }
