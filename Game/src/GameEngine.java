@@ -262,6 +262,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         bufferedImageMap = new HashMap<>();
 
 
+        BufferedImage woodenClubW;
+        BufferedImage woodenClubE;
+        BufferedImage woodenShield;
+        BufferedImage northPlayer;
+        BufferedImage eastPlayer;
+        BufferedImage southPlayer;
+        BufferedImage westPlayer;
         BufferedImage sand;
         BufferedImage woodenFenceNECorner;
         BufferedImage woodenFenceSWCorner;
@@ -269,6 +276,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         BufferedImage woodenFenceNWCorner;
         BufferedImage ratSkinHood;
         BufferedImage ratSkinChest;
+        BufferedImage ratSkinPants;
         BufferedImage WoodFloorDoorNorth;
         BufferedImage WoodFloorDoorEast;
         BufferedImage WoodFloorDoorSouth;
@@ -307,7 +315,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         try {
-
+            woodenClubW = ImageIO.read((new File("Data/GFX/woodenClubW.png")));
+            woodenClubE = ImageIO.read((new File("Data/GFX/woodenClubE.png")));
+            woodenShield = ImageIO.read((new File("Data/GFX/WoodenShield.png")));
+            westPlayer = ImageIO.read((new File("Data/GFX/westPlayer.png")));
+            northPlayer = ImageIO.read((new File("Data/GFX/NorthPlayer.png")));
+            eastPlayer = ImageIO.read((new File("Data/GFX/EastPlayer.png")));
+            southPlayer = ImageIO.read((new File("Data/GFX/SouthPlayer.png")));
             sand = ImageIO.read((new File("Data/GFX/Sand.png")));
             woodenFenceNECorner = ImageIO.read(new File("Data/GFX/woodenFenceNECorner.png"));
             woodenFenceSWCorner = ImageIO.read(new File("Data/GFX/woodenFenceSWCorner.png"));
@@ -317,6 +331,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             woodenFenceVertical = ImageIO.read(new File("Data/GFX/woodenFenceVertical.png"));
             ratSkinHood = ImageIO.read(new File("Data/GFX/ratSkinHood.png"));
             ratSkinChest = ImageIO.read(new File("Data/GFX/ratSkinChest.png"));
+            ratSkinPants = ImageIO.read(new File("Data/GFX/ratSkinPants.png"));
             WoodFloorDoorNorth = ImageIO.read(new File("Data/GFX/WoodFloorDoorNorth.png"));
             WoodFloorDoorEast = ImageIO.read(new File("Data/GFX/WoodFloorDoorEast.png"));
             WoodFloorDoorSouth = ImageIO.read(new File("Data/GFX/WoodFloorDoorSouth.png"));
@@ -351,8 +366,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             eastZombie = ImageIO.read(new File("Data/GFX/EastZombie.png"));
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
+            bufferedImageMap.put("WOODEN_CLUB_W", woodenClubW);
+            bufferedImageMap.put("WOODEN_CLUB_E", woodenClubE);
 
-            bufferedImageMap.put("SAND",sand);
+            bufferedImageMap.put("WOODEN_SHIELD", woodenShield);
+            bufferedImageMap.put("NORTH_PLAYER", northPlayer);
+            bufferedImageMap.put("EAST_PLAYER", eastPlayer);
+            bufferedImageMap.put("SOUTH_PLAYER", southPlayer);
+            bufferedImageMap.put("WEST_PLAYER", westPlayer);
+            bufferedImageMap.put("SAND", sand);
             bufferedImageMap.put("WOODENFENCENWCORNER", woodenFenceNWCorner);
             bufferedImageMap.put("WOODENFENCENECORNER", woodenFenceNECorner);
             bufferedImageMap.put("WOODENFENCESWCORNER", woodenFenceSWCorner);
@@ -361,6 +383,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("WOODENFENCEVERTICAL", woodenFenceVertical);
             bufferedImageMap.put("RATSKINCHEST", ratSkinChest);
             bufferedImageMap.put("RATSKINHOOD", ratSkinHood);
+            bufferedImageMap.put("RATSKINPANTS", ratSkinPants);
             bufferedImageMap.put("WOODFLOORDOORNORTH", WoodFloorDoorNorth);
             bufferedImageMap.put("WOODFLOORDOOREAST", WoodFloorDoorEast);
             bufferedImageMap.put("WOODFLOORDOORSOUTH", WoodFloorDoorSouth);
@@ -397,12 +420,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } catch (IOException e) {
+            woodenClubW = null;
+            woodenClubE = null;
+
+            woodenShield = null;
+            eastPlayer = null;
+            northPlayer = null;
+            westPlayer = null;
+            southPlayer = null;
             sand = null;
             woodenFenceNECorner = null;
             woodenFenceSECorner = null;
             woodenFenceSWCorner = null;
             woodenFenceNWCorner = null;
             ratSkinChest = null;
+            ratSkinPants = null;
             WoodFloorDoorNorth = null;
             WoodFloorDoorEast = null;
             WoodFloorDoorSouth = null;
@@ -893,6 +925,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (mapVisible) {
             paintTilesLayer0(g);
             paintTilesLayer1(g);
+
             if (raining) {
                 paintRain(g);
                 if (!bufferSplashAnimations.isEmpty()) {
@@ -931,6 +964,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     }
+
 
     private void paintPlayerGearInterface(Graphics g) {
         g.setColor(Color.white);
@@ -975,13 +1009,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         switch (player1.gearInterface.itemArray[4].ID) {
             case 9:
+                g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), 694, 543, 25, 25, this);
 
                 break;
         }
 
         switch (player1.gearInterface.itemArray[5].ID) {
             case 10:
-
+                g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), 633, 543, 25, 25, this);
                 break;
         }
     }
@@ -1099,7 +1134,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
                     case "sand":
                         g.setColor(Color.orange);
-                        g.drawImage(bufferedImageMap.get("SAND"),i*25,j*25,25,25,this);
+                        g.drawImage(bufferedImageMap.get("SAND"), i * 25, j * 25, 25, 25, this);
                         break;
                     case "rakeddirt":
                         g.setColor(new Color(100, 40, 19));
@@ -1201,6 +1236,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (j == player1.yPos / 25 && i == player1.xPos / 25) {
                     paintPlayer(g);
+
                 }
 
                 for (Npc n : currentOverWorld.npcList) {
@@ -1257,7 +1293,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (rng > 2500) {
             int rainDropIndexToDestroy = (int) (Math.random() * (rainDrops.length));
 
-            bufferSplashAnimations.offerFirst(new Point(rainDrops[rainDropIndexToDestroy].x, rainDrops[rainDropIndexToDestroy].y));
+            //     bufferSplashAnimations.offerFirst(new Point(rainDrops[rainDropIndexToDestroy].x, rainDrops[rainDropIndexToDestroy].y));
             rainDrops[rainDropIndexToDestroy].x = (int) (Math.random() * (Main.WIDTH));
             rainDrops[rainDropIndexToDestroy].y = (int) (Math.random() * (Main.WIDTH));
         }
@@ -1498,19 +1534,28 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
         // paintOrientationArrow(g);
-        switch (player1.orientation) {
+        switch (player1.orientation) { // DRAWS A NAKED PLAYER CHARACTER
 
             case "NORTH":
-                g.drawImage(bufferedImageMap.get("NORTH_ADVENTURER"), player1.xPos - 4, player1.yPos - 20, 22, 40, this);
+                paintShield(g);
+                paintWeapon(g);
+                g.drawImage(bufferedImageMap.get("NORTH_PLAYER"), player1.xPos - 4, player1.yPos - 20, 22, 40, this);
+
                 break;
             case "SOUTH":
-                g.drawImage(bufferedImageMap.get("SOUTH_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                g.drawImage(bufferedImageMap.get("SOUTH_PLAYER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                paintShield(g);
+                paintWeapon(g);
                 break;
             case "EAST":
-                g.drawImage(bufferedImageMap.get("EAST_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                paintShield(g);
+                g.drawImage(bufferedImageMap.get("EAST_PLAYER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                paintWeapon(g);
                 break;
             case "WEST":
-                g.drawImage(bufferedImageMap.get("WEST_ADVENTURER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                paintWeapon(g);
+                g.drawImage(bufferedImageMap.get("WEST_PLAYER"), player1.xPos - 3, player1.yPos - 20, 22, 40, this);
+                paintShield(g);
                 break;
             default:
                 g.setColor(player1.pallete);
@@ -1518,6 +1563,86 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
         }
 
+
+    }
+
+    private void paintWeapon(Graphics g) {
+        switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
+            case "SOUTH": {
+                switch (player1.gearInterface.itemArray[5].ID) { // SOUTH-FACING WEAPON RENDERING UNIT
+                    case 10:
+                        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 15, player1.yPos -10, 20, 20, this);
+                        break;
+                }
+
+               break;
+            }
+
+            case "EAST": {
+                switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
+                    case 10:
+                        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_E"), player1.xPos + 5, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+                break;
+            }
+
+            case "NORTH": {
+                switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
+                    case 10:
+                        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 13, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+                break;
+            }
+            case "WEST": {
+                switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
+                    case 10:
+                        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 9, player1.yPos - 8, 20, 20, this);
+                        break;
+                }
+            }
+            break;
+        }
+
+    }
+
+    private void paintShield(Graphics g) {
+
+        switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
+            case "SOUTH": {
+                switch (player1.gearInterface.itemArray[4].ID) { // SOUTH-FACING SHIELD RENDERING UNIT
+                    case 9:
+                        g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos + 5, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+
+                break;
+            }
+
+            case "EAST": {
+                switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
+                    case 9:
+                        g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+            }
+
+            case "NORTH": {
+                switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
+                    case 9:
+                        g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+            }
+            case "WEST": {
+                switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
+                    case 9:
+                        g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 20, 20, this);
+                        break;
+                }
+            }
+        }
     }
 
     private void paintTileCoordinates(Graphics g) {
