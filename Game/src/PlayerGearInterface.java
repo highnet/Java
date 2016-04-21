@@ -7,12 +7,12 @@ public class PlayerGearInterface {
     public PlayerGearInterface() {
 
         itemArray = new Item[6];
-        itemArray[0] = new Item(5);
-        itemArray[1] = new Item(6);
-        itemArray[2] = new Item(7);
-        itemArray[3] = new Item(8);
-        itemArray[4] = new Item(9);
-        itemArray[5] = new Item(10);
+        itemArray[0] = new Item(5); // HEAD ZONE
+        itemArray[1] = new Item(29); // CHEST ZONE
+        itemArray[2] = new Item(15); // PANTS ZONE
+        itemArray[3] = new Item(8); // Todo: BOOTS ZONE (NOT YET IMPLEMENTED)
+        itemArray[4] = new Item(9); // MAINHAND ZONE
+        itemArray[5] = new Item(10); // OFFHAND ZONE
 
     }
 
