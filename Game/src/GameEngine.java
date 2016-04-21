@@ -115,6 +115,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean TRIGGER_endOfCombat = false;
     private int storeXPos = 0;
     private int storeYPos = 0;
+    private boolean attackStyleChooserVisible = false;
+
+
+    int[] abilities = new int[3];
 
 
     public GameEngine() {
@@ -166,9 +170,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
+
     }
 
     private void loadSpritesReworked() {
+
+        loadBufferedImage("ABILITY_MHAND_SLICE.png", "ABILITY_MHAND_SLICE");
+        loadBufferedImage("ABILITY_MHAND_STAB.png", "ABILITY_MHAND_STAB");
+        loadBufferedImage("ABILITY_OHAND_BLOCK.png", "ABILITY_OHAND_BLOCK");
+
+        loadBufferedImage("RedDagger.png", "RED_DAGGER");
+        loadBufferedImage("JunkscrapLegguardsPlayerModelEast.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_EAST");
+        loadBufferedImage("JunkscrapLegguardsPlayerModelWest.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_WEST");
+        loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelEast.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelWest.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
+
+        loadBufferedImage("BlueLegguardsPlayerModelEast.png", "BLUE_LEGGUARDS_PLAYERMODEL_EAST");
+        loadBufferedImage("BlueLegguardsPlayerModelWest.png", "BLUE_LEGGUARDS_PLAYERMODEL_WEST");
+        loadBufferedImage("BlueLegguardsTrimmedPlayerModelEast.png", "BLUE_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("BlueLegguardsTrimmedPlayerModelEast.png", "BLUE_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
+
+        loadBufferedImage("GreenLegguardsPlayerModelEast.png", "GREEN_LEGGUARDS_PLAYERMODEL_EAST");
+        loadBufferedImage("GreenLegguardsPlayerModelWest.png", "GREEN_LEGGUARDS_PLAYERMODEL_WEST");
+        loadBufferedImage("GreenLegguardsTrimmedPlayerModelEast.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("GreenLegguardsTrimmedPlayerModelEast.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
+
+        loadBufferedImage("RatskinPantsPlayerModelEast.png", "RATSKIN_PANTS_PLAYERMODEL_EAST");
+        loadBufferedImage("RatskinPantsPlayerModelWest.png", "RATSKIN_PANTS_PLAYERMODEL_WEST");
+
+        loadBufferedImage("BrownPlatebodyPlayerModelEast.png", "BROWN_PLATEBODY_PLAYERMODEL_EAST");
+        loadBufferedImage("BrownPlatebodyPlayerModelWest.png", "BROWN_PLATEBODY_PLAYERMODEL_WEST");
+        loadBufferedImage("BrownPlatebodyTrimmedPlayerModelEast.png", "BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("BrownPlatebodyTrimmedPlayerModelWest.png", "BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_WEST");
+
+        loadBufferedImage("bluePlatebodyPlayerModelEast.png", "BLUE_PLATEBODY_PLAYERMODEL_EAST");
+        loadBufferedImage("bluePlatebodyPlayerModelWest.png", "BLUE_PLATEBODY_PLAYERMODEL_WEST");
+        loadBufferedImage("bluePlatebodyPlayerTrimmedPlayerModelEast.png", "BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("bluePlatebodyPlayerTrimmedPlayeModelWest.png", "BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_WEST");
+
+        loadBufferedImage("greenPlatebodyPlayerModelEast.png", "GREEN_PLATEBODY_PLAYERMODEL_EAST");
+        loadBufferedImage("greenPlatebodyPlayerModelWest.png", "GREEN_PLATEBODY_PLAYERMODEL_WEST");
+        loadBufferedImage("GreenPlatebodyTrimmedPlayerModelEast.png", "GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("GreenPlatebodyTrimmedPlayerModelWest.png", "GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_WEST");
 
         loadBufferedImage("BagIcon.png", "BAG_ICON");
         loadBufferedImage("CraftingIcon.png", "CRAFTING_ICON");
@@ -1027,6 +1070,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintTilesLayer0(g);
             paintTilesLayer1(g);
 
+
             paintQuickslotGUI(g);
 
             if (raining) {
@@ -1034,6 +1078,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 if (!bufferSplashAnimations.isEmpty()) {
                     paintSplash(g);
                 }
+            }
+
+            if (attackStyleChooserVisible) {
+                paintAttackStyleChooser(g);
+                paintChosenAbilities(g);
             }
 
         }
@@ -1068,6 +1117,72 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void paintChosenAbilities(Graphics g) {
+
+
+        for (int i = 0; i < 3; i++) {
+            g.drawRect(24 + (30 * i), 440, 30, 30);
+        }
+
+        switch (abilities[0]){
+            case 1:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24,440,30,30,this);
+                break;
+            case 2:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24,440,30,30,this);
+                break;
+            case 3:
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24,440,30,30,this);
+                break;
+        }
+
+        switch (abilities[1]){
+            case 1:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24+30,440,30,30,this);
+                break;
+            case 2:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24+30,440,30,30,this);
+                break;
+            case 3:
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24+30,440,30,30,this);
+                break;
+        }
+
+        switch (abilities[2]){
+            case 1:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24+60,440,30,30,this);
+                break;
+            case 2:
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24+60,440,30,30,this);
+                break;
+            case 3:
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24+60,440,30,30,this);
+                break;
+        }
+    }
+
+    private void paintAttackStyleChooser(Graphics g) {
+
+        g.setColor(Color.lightGray);
+        g.fillRect(25, 356, 300, 120);
+        g.setColor(Color.black);
+        g.setFont(font2);
+        g.drawString("Choose your skills", 25, 376);
+
+        g.drawString("Active Skills", 25, 433);
+
+        for (int i = 0; i < 8; i++) {
+            g.drawRect(25 + (30 * i), 386, 30, 30);
+        }
+
+        g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"), 30, 386, this);
+        g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"), 60, 386, this);
+        g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"), 90, 386, this);
+
+
+
+    }
+
     private void paintQuickslotGUI(Graphics g) {
 
         if (mouseDragX > 730 && mouseDragX < 773 && mouseDragY > 26 && mouseDragY < 62) {
@@ -1080,6 +1195,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawImage(bufferedImageMap.get("CRAFTING_ICON"), 688 - 15, 20 - 17, 60, 60, this);
         } else {
             g.drawImage(bufferedImageMap.get("CRAFTING_ICON"), 678, 15, 40, 40, this);
+
+        }
+
+        if (mouseDragX > 626 && mouseDragX < 666 && mouseDragY > 26 && mouseDragY < 62) {
+            g.drawImage(bufferedImageMap.get("RED_DAGGER"), 616, 20 - 17, 60, 60, this);
+        } else {
+            g.drawImage(bufferedImageMap.get("RED_DAGGER"), 628, 15, 40, 40, this);
 
         }
     }
@@ -1125,10 +1247,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawRect(693, 542, 25, 25);
         g.drawRect(633, 542, 25, 25);
 
+        g.setFont(font1);
+
 
         switch (player1.gearInterface.itemArray[0].ID) { // HELMET ZONE
             case 5:
                 g.drawImage(bufferedImageMap.get("RATSKINHOOD"), 663, 512, 25, 25, this);
+                break;
+            default:
+                g.drawString("ERROR", 663, 512);
                 break;
         }
 
@@ -1155,6 +1282,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 17:
                 g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED"), 663, 542, 25, 25, this);
                 break;
+            default:
+                g.drawString("ERROR", 663, 542);
+                break;
         }
 
         switch (player1.gearInterface.itemArray[2].ID) { // LEG ZONE
@@ -1179,11 +1309,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 28:
                 g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED"), 663, 572, 25, 25, this);
                 break;
+            default:
+                g.drawString("ERROR", 663, 572);
+                break;
         }
 
         switch (player1.gearInterface.itemArray[3].ID) { // Todo: BOOT ZONE (NOT YET IMPLEMENTED)
             case 8:
-
+                //
+                break;
+            default:
+                //  g.drawString("ERROR",663,572);
                 break;
         }
 
@@ -1211,6 +1347,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 26:
                 g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), 694, 543, 25, 25, this);
                 break;
+            default:
+                g.drawString("ERROR", 693, 543);
+                break;
 
         }
 
@@ -1220,6 +1359,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
             case 13:
                 g.drawImage(bufferedImageMap.get("BLUE_DAGGER"), 633, 543, 25, 25, this);
+                break;
+            default:
+                g.drawString("ERROR", 633, 543);
                 break;
         }
     }
@@ -1302,6 +1444,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     private void paintTilesLayer0(Graphics g) { // Tile Rendering System
+
+
+
+
+        Npc n = new Npc(0,0,0,0,Color.BLACK,"");
+
+        boolean b = n instanceof Npc;
 
         assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
 
@@ -1747,6 +1896,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 paintShield(g, magnitude);
                 paintWeapon(g, magnitude);
                 g.drawImage(bufferedImageMap.get("NORTH_PLAYER"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                paintArmor(g, magnitude);
+                paintLegs(g, magnitude);
                 break;
             case "SOUTH":
                 g.drawImage(bufferedImageMap.get("SOUTH_PLAYER"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
@@ -1754,16 +1905,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 paintLegs(g, magnitude);
                 paintShield(g, magnitude);
                 paintWeapon(g, magnitude);
-
                 break;
             case "EAST":
                 paintShield(g, magnitude);
                 g.drawImage(bufferedImageMap.get("EAST_PLAYER"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                paintArmor(g, magnitude);
+                paintLegs(g, magnitude);
                 paintWeapon(g, magnitude);
                 break;
             case "WEST":
                 paintWeapon(g, magnitude);
                 g.drawImage(bufferedImageMap.get("WEST_PLAYER"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                paintArmor(g, magnitude);
+                paintLegs(g, magnitude);
                 paintShield(g, magnitude);
                 break;
             default:
@@ -1811,7 +1965,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 case "EAST": {
                     switch (player1.gearInterface.itemArray[2].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
+                        case 7:
+                            g.drawImage(bufferedImageMap.get("RATSKIN_PANTS_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 14:
+                            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 21:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 22:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 27:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 28:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                     break;
@@ -1826,7 +1996,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 case "WEST": {
                     switch (player1.gearInterface.itemArray[2].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
+                        case 7:
+                            g.drawImage(bufferedImageMap.get("RATSKIN_PANTS_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 14:
+                            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 21:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 22:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 27:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 28:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                 }
@@ -1836,6 +2022,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (magnitude == 5) {
+
+
+
 
             switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
                 case "SOUTH": {
@@ -1924,8 +2113,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 case "EAST": {
                     switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
-                            //        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_E"), player1.xPos + 5, player1.yPos - 5, 20, 20, this);
+                        case 24:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 17:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 30:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 23:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 16:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 29:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                     break;
@@ -1941,8 +2145,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
                 case "WEST": {
                     switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
-                            //      g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 9, player1.yPos - 8, 20, 20, this);
+                        case 24:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 17:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 30:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 23:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 16:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 29:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                 }
@@ -1998,7 +2217,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 case "EAST": {
                     switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
                         case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_E"), player1.xPos + 5, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_E"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                     break;
@@ -2069,31 +2288,91 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             break;
                     }
 
-                    break;
+
                 }
+
+                break;
+
 
                 case "EAST": {
                     switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
-                        case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                        case 10:
+                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 11:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 12:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 18:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 19:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 25:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 26:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
+                break;
 
                 case "NORTH": {
                     switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
-                        case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                        case 10:
+                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 11:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 12:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 18:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 19:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 25:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 26:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
+                break;
                 case "WEST": {
                     switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
-                        case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                        case 10:
+                            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 11:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 12:
+                            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 18:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 19:
+                            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER_TRIMMED"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 25:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 26:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), player1.xPos - 2, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
+                break;
             }
         }
         if (magnitude == 5) {
@@ -2894,10 +3173,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (currentNpc.HP < 0) {
                         System.out.println("the " + currentNpc.ai + " dies");
                         removeNpc(currentNpc.ID);
-
-
                         TRIGGER_endOfCombat = true;
-
 
                     }
 
@@ -2972,7 +3248,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_A:
                 System.out.println("WELCOME TO THE DEBUG CONSOLE");
 
-                String inputString = JOptionPane.showInputDialog("Please input a command \n set id [gearSlot] [itemID] \n weather rain toggle \n weather rain setVector [x] ");
+                String inputString = JOptionPane.showInputDialog("Please input a command \n set id [mhand/ohand/chest/legs/head] [itemID] \n weather rain toggle \n weather rain setVector [x] ");
 
 
                 if (inputString != null && inputString.length() > 12) {
@@ -2981,7 +3257,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                      */
 
-                    if (inputString.substring(0, 12).equals("set id armor")) {
+                    if (inputString.substring(0, 12).equals("set id chest")) {
                         if (inputString.length() < 15) { // case for if the user inputs a number less than 2 digits
                             player1.gearInterface.itemArray[1].ID = Integer.valueOf(inputString.substring(13, 14));
                         } else if (inputString.length() < 16) { // case for if the user inputs a number less than 3 digits
@@ -3000,7 +3276,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             player1.gearInterface.itemArray[2].ID = Integer.valueOf(inputString.substring(12, 14));
                         }
                                   /*
-                    SET ID SHIELD
+                    SET ID OFFHAND
                      */
 
                     } else if (inputString.substring(0, 12).equals("set id ohand")) {
@@ -3009,6 +3285,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             player1.gearInterface.itemArray[4].ID = Integer.valueOf(inputString.substring(13, 14));
                         } else if (inputString.length() < 16) { // case for if the user inputs a number less than 3 digits
                             player1.gearInterface.itemArray[4].ID = Integer.valueOf(inputString.substring(13, 15));
+                        }
+                    }
+                                         /*
+                    SET ID MAINHAND
+                     */
+                    else if (inputString.substring(0, 12).equals("set id mhand")) {
+                        System.out.println("EDIT MHAND");
+                        System.out.println(player1.gearInterface.itemArray[5].ID);
+                        if (inputString.length() < 15) { // case for if the user inputs a number less than 2 digits
+                            player1.gearInterface.itemArray[5].ID = Integer.valueOf(inputString.substring(13, 14));
+                        } else if (inputString.length() < 16) { // case for if the user inputs a number less than 3 digits
+                            player1.gearInterface.itemArray[5].ID = Integer.valueOf(inputString.substring(13, 15));
                         }
 
                         System.out.println(player1.gearInterface.itemArray[4].ID);
@@ -3040,6 +3328,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (mapVisible) {
                 tick();
             }
+
         }
     }
 
@@ -3174,6 +3463,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (inventoryMenuVisible) {
             currentItem = onMouseClickSelectItem(x, y);
         }
+
+        if (attackStyleChooserVisible) {
+            onMouseClickAddAbility(x, y);
+        }
     /*
     QUICKSLOT GUI INTERFACE
     */
@@ -3181,7 +3474,43 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             inventoryMenuVisible = !inventoryMenuVisible;
         } else if (x > 678 && x < 728 && y > 26 && y < 62) {
             craftingMenuVisible = !craftingMenuVisible;
+        } else if (x > 626 && x < 666 && y > 26 && y < 62) {
+            attackStyleChooserVisible = !attackStyleChooserVisible;
         }
+
+    }
+
+    private void onMouseClickAddAbility(int x, int y) {
+
+        int abilityIDToAdd = 0;
+        if (x > 26 && x < 56 && y > 386 && y < 416) {
+            abilityIDToAdd = 1;
+        } else if (x > 56 && x < 86 && y > 386 && y < 416) {
+            abilityIDToAdd = 2;
+        } else if (x > 86 && x < 116 && y > 386 && y < 416) {
+            abilityIDToAdd = 3;
+        } else if (x > 116 && x < 146 && y > 386 && y < 416) {
+            abilityIDToAdd = 0;
+        } else if (x > 146 && x < 176 && y > 386 && y < 416) {
+            abilityIDToAdd = 0;
+        } else if (x > 176 && x < 206 && y > 386 && y < 416) {
+            abilityIDToAdd = 0;
+        } else if (x > 206 && x < 236 && y > 386 && y < 416) {
+            abilityIDToAdd = 0;
+        } else if (x > 236 && x < 266 && y > 386 && y < 416) {
+            abilityIDToAdd = 0;
+        }
+
+        if (abilities[0] == 0) {
+            abilities[0] = abilityIDToAdd;
+        } else if (abilities[1] == 0) {
+            abilities[1] = abilityIDToAdd;
+        }
+        else if(abilities[2] == 0) {
+            abilities[2] = abilityIDToAdd;
+        }
+
+        System.out.println(abilities[0] + ", " + abilities[1] + ", " + abilities[2]);
 
     }
 
