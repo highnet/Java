@@ -37,7 +37,7 @@ public class Main extends JFrame {
     private void initialize() {
 
         this.setSize(WIDTH, HEIGHT);
-        this.setTitle("v 0.32 Development");
+        this.setTitle("v 0.35 Development");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridLayout(1, 1));
