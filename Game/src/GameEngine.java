@@ -40,6 +40,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentItemRow = 0;
     private int currentItemColumn = 0;
 
+    private Item currentHoverItem = null;
+    private int currentHoverItemIndex = 0;
+    private int currentHoverItemRow = 0;
+    private int currentHoverItemColumn = 0;
+
 
     private int actionTick = 0;  // Ticker for player actions.
 
@@ -175,27 +180,55 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void loadSpritesReworked() {
 
+        loadBufferedImage("GearWorksLogo.png","GEARWORKS_LOGO");
+        loadBufferedImage("GearWorksLogoSmall.png","GEARWORKS_LOGO_SMALL");
+
+        loadBufferedImage("GenericShieldBack.png", "GENERIC_SHIELD_BACK");
+
+        loadBufferedImage("BrownPlatebodyPlayerModelNorth.png", "BROWN_PLATEBODY_PLAYERMODEL_NORTH");
+        loadBufferedImage("BrownPlatebodyTrimmedPlayerModelNorth.png", "BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH");
+
+        loadBufferedImage("BluePlatebodyPlayerModelNorth.png", "BLUE_PLATEBODY_PLAYERMODEL_NORTH");
+        loadBufferedImage("BluePlatebodyTrimmedPlayerModelNorth.png", "BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH");
+
+        loadBufferedImage("GreenPlatebodyPlayerModelNorth.png", "GREEN_PLATEBODY_PLAYERMODEL_NORTH");
+        loadBufferedImage("GreenPlatebodyTrimmedPlayerModelNorth.png", "GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH");
+
         loadBufferedImage("ABILITY_MHAND_SLICE.png", "ABILITY_MHAND_SLICE");
         loadBufferedImage("ABILITY_MHAND_STAB.png", "ABILITY_MHAND_STAB");
         loadBufferedImage("ABILITY_OHAND_BLOCK.png", "ABILITY_OHAND_BLOCK");
 
-        loadBufferedImage("RedDagger.png", "RED_DAGGER");
+        loadBufferedImage("RedDaggerW.png", "RED_DAGGER_WEST");
+        loadBufferedImage("RedDaggerE.png", "RED_DAGGER_EAST");
+        loadBufferedImage("BlueDaggerE.png", "BLUE_DAGGER_EAST");
+
+
+        loadBufferedImage("GreenDaggerW.png", "GREEN_DAGGER_WEST");
+        loadBufferedImage("GreenDaggerE.png", "GREEN_DAGGER_EAST");
+
+        loadBufferedImage("JunkscrapLegguardsPlayerModelNorth.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_NORTH");
         loadBufferedImage("JunkscrapLegguardsPlayerModelEast.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_EAST");
         loadBufferedImage("JunkscrapLegguardsPlayerModelWest.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_WEST");
         loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelEast.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
+        loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelNorth.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_NORTH");
         loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelWest.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
 
         loadBufferedImage("BlueLegguardsPlayerModelEast.png", "BLUE_LEGGUARDS_PLAYERMODEL_EAST");
+        loadBufferedImage("BlueLegguardsPlayerModelNorth.png", "BLUE_LEGGUARDS_PLAYERMODEL_NORTH");
         loadBufferedImage("BlueLegguardsPlayerModelWest.png", "BLUE_LEGGUARDS_PLAYERMODEL_WEST");
+        loadBufferedImage("BlueLegguardsTrimmedPlayerModelNorth.png", "BLUE_LEGGUARDS_TRIMMED_PLAYERMODEL_NORTH");
         loadBufferedImage("BlueLegguardsTrimmedPlayerModelEast.png", "BLUE_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
         loadBufferedImage("BlueLegguardsTrimmedPlayerModelEast.png", "BLUE_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
 
         loadBufferedImage("GreenLegguardsPlayerModelEast.png", "GREEN_LEGGUARDS_PLAYERMODEL_EAST");
+        loadBufferedImage("GreenLegguardsPlayerModelNorth.png", "GREEN_LEGGUARDS_PLAYERMODEL_NORTH");
         loadBufferedImage("GreenLegguardsPlayerModelWest.png", "GREEN_LEGGUARDS_PLAYERMODEL_WEST");
+        loadBufferedImage("GreenLegguardsTrimmedPlayerModelNorth.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_NORTH");
         loadBufferedImage("GreenLegguardsTrimmedPlayerModelEast.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_EAST");
         loadBufferedImage("GreenLegguardsTrimmedPlayerModelEast.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_WEST");
 
         loadBufferedImage("RatskinPantsPlayerModelEast.png", "RATSKIN_PANTS_PLAYERMODEL_EAST");
+        loadBufferedImage("RatskinPantsPlayerModelNorth.png", "RATSKIN_PANTS_PLAYERMODEL_NORTH");
         loadBufferedImage("RatskinPantsPlayerModelWest.png", "RATSKIN_PANTS_PLAYERMODEL_WEST");
 
         loadBufferedImage("BrownPlatebodyPlayerModelEast.png", "BROWN_PLATEBODY_PLAYERMODEL_EAST");
@@ -253,12 +286,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("GreenLegguardsTrimmedPlayerModelSouth.png", "GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH");
 
         loadBufferedImage("JunkscrapLegguards.png", "JUNKSCRAP_LEGGUARDS");
-        // *jt Todo: ASSET IS MISSING A (MODEL/FILE)
-        //    loadBufferedImage("JunkscrapLegguardsPlayerModelSouth.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_SOUTH");
+
+        loadBufferedImage("JunkscrapLegguardsPlayerModelSouth.png", "JUNKSCRAP_LEGGUARDS_PLAYERMODEL_SOUTH");
 
         loadBufferedImage("JunkscrapLegguardsTrimmed.png", "JUNKSCRAP_LEGGUARDS_TRIMMED");
-        // *jt Todo: ASSET IS MISSING A (MODEL/FILE)
-        //     loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelSouth.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH");
+
+        loadBufferedImage("JunkscrapLegguardsTrimmedPlayerModelSouth.png", "JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH");
 
         loadBufferedImage("RatskinPants.png", "Ratskin_Pants");
         loadBufferedImage("RatskinPantsPlayerModelSouth.png", "RATSKIN_PANTS_PLAYERMODEL_SOUTH");
@@ -443,7 +476,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         try {
-            blueDagger = ImageIO.read((new File("Data/GFX/BlueDagger.png")));
+            blueDagger = ImageIO.read((new File("Data/GFX/BlueDaggerW.png")));
             blueBucklerTrimmed = ImageIO.read((new File("Data/GFX/BlueBucklerTrimmed.png")));
             greenBuckler = ImageIO.read((new File("Data/GFX/GreenBuckler.png")));
             blueBuckler = ImageIO.read((new File("Data/GFX/BlueBuckler.png")));
@@ -499,7 +532,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             westZombie = ImageIO.read(new File("Data/GFX/WestZombie.png"));
 
             bufferedImageMap.put("GREEN_BUCKLER", greenBuckler);
-            bufferedImageMap.put("BLUE_DAGGER", blueDagger);
+            bufferedImageMap.put("BLUE_DAGGER_WEST", blueDagger);
             bufferedImageMap.put("BLUE_BUCKLER_TRIMMED", blueBucklerTrimmed);
             bufferedImageMap.put("WOODEN_CLUB_W", woodenClubW);
             bufferedImageMap.put("WOODEN_CLUB_E", woodenClubE);
@@ -531,7 +564,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("EAST_ADVENTURER", eastAdventurer);
             bufferedImageMap.put("WEST_ADVENTURER", westAdventurer);
             bufferedImageMap.put("INVENTORY_LUMBER", inventoryLumber);
-            bufferedImageMap.put("ERROR", errorImg);
+            bufferedImageMap.put("ERROR_IMG", errorImg);
             bufferedImageMap.put("NORTH_FROG", northFrog);
             bufferedImageMap.put("SOUTH_FROG", southFrog);
             bufferedImageMap.put("EAST_FROG", eastFrog);
@@ -1062,9 +1095,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
-        if (startMenuVisible) {
-            paintStartMenu(g);
-        }
+
 
         if (mapVisible && !engagedSuccessfully) {
             paintTilesLayer0(g);
@@ -1113,8 +1144,54 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintCurrentlySelectedItemHighlights(g);
             paintCurrentlySelectedItemOnMouse(g);
         }
+        if ( shiftPressed && currentHoverItem != null ){ // && 5 seconds rested on item
+
+          paintInventoryItemTooltip(g);
 
 
+        }
+
+        if (startMenuVisible) {
+            paintStartMenu(g);
+        } else{
+            g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO_SMALL"),15,540,28*2,28*2,this);
+        }
+
+
+
+    }
+
+    private void paintInventoryItemTooltip(Graphics g) {
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        int borderWidth = 120;
+        int borderHeight = 60;
+
+        if (mouseDragX > 677 && mouseDragY < 767){
+            g2d.setColor(Color.lightGray);
+            g2d.fillRect(mouseDragX - borderWidth, mouseDragY - borderHeight, borderWidth, borderHeight);
+            g2d.setStroke(new BasicStroke(3));
+
+            g2d.setColor(Color.black);
+            g2d.drawRect(mouseDragX - borderWidth, mouseDragY - borderHeight, borderWidth, borderHeight);
+
+            g2d.setColor(Color.red);
+            g2d.setFont(font2);
+           // g2d.drawString(String.valueOf(currentHoverItem.ID),mouseDragX + 10,mouseDragY - borderHeight);
+
+        } else {
+            // g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
+            g2d.setColor(Color.lightGray);
+            g2d.fillRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
+            g2d.setStroke(new BasicStroke(3));
+
+            g2d.setColor(Color.black);
+            g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
+
+            g2d.setFont(font2);
+            g2d.drawString("ID: " + String.valueOf(currentHoverItem.ID),mouseDragX + 5 , mouseDragY - borderHeight + 15);
+        }
     }
 
     private void paintChosenAbilities(Graphics g) {
@@ -1124,39 +1201,39 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawRect(24 + (30 * i), 440, 30, 30);
         }
 
-        switch (abilities[0]){
+        switch (abilities[0]) {
             case 1:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"), 24, 440, 30, 30, this);
                 break;
             case 2:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"), 24, 440, 30, 30, this);
                 break;
             case 3:
-                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"), 24, 440, 30, 30, this);
                 break;
         }
 
-        switch (abilities[1]){
+        switch (abilities[1]) {
             case 1:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24+30,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"), 24 + 30, 440, 30, 30, this);
                 break;
             case 2:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24+30,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"), 24 + 30, 440, 30, 30, this);
                 break;
             case 3:
-                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24+30,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"), 24 + 30, 440, 30, 30, this);
                 break;
         }
 
-        switch (abilities[2]){
+        switch (abilities[2]) {
             case 1:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"),24+60,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_SLICE"), 24 + 60, 440, 30, 30, this);
                 break;
             case 2:
-                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"),24+60,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_MHAND_STAB"), 24 + 60, 440, 30, 30, this);
                 break;
             case 3:
-                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"),24+60,440,30,30,this);
+                g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"), 24 + 60, 440, 30, 30, this);
                 break;
         }
     }
@@ -1180,7 +1257,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawImage(bufferedImageMap.get("ABILITY_OHAND_BLOCK"), 90, 386, this);
 
 
-
     }
 
     private void paintQuickslotGUI(Graphics g) {
@@ -1199,9 +1275,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (mouseDragX > 626 && mouseDragX < 666 && mouseDragY > 26 && mouseDragY < 62) {
-            g.drawImage(bufferedImageMap.get("RED_DAGGER"), 616, 20 - 17, 60, 60, this);
+            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), 616, 20 - 17, 60, 60, this);
         } else {
-            g.drawImage(bufferedImageMap.get("RED_DAGGER"), 628, 15, 40, 40, this);
+            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), 628, 15, 40, 40, this);
 
         }
     }
@@ -1254,6 +1330,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 5:
                 g.drawImage(bufferedImageMap.get("RATSKINHOOD"), 663, 512, 25, 25, this);
                 break;
+            case 0:
+                break;
             default:
                 g.drawString("ERROR", 663, 512);
                 break;
@@ -1282,6 +1360,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 17:
                 g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED"), 663, 542, 25, 25, this);
                 break;
+            case 0:
+                break;
             default:
                 g.drawString("ERROR", 663, 542);
                 break;
@@ -1309,6 +1389,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 28:
                 g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED"), 663, 572, 25, 25, this);
                 break;
+            case 0:
+                break;
             default:
                 g.drawString("ERROR", 663, 572);
                 break;
@@ -1333,7 +1415,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 12:
                 g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), 694, 543, 25, 25, this);
                 break;
-
             case 18:
                 g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), 694, 543, 25, 25, this);
                 break;
@@ -1347,6 +1428,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 26:
                 g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), 694, 543, 25, 25, this);
                 break;
+            case 0:
+                break;
             default:
                 g.drawString("ERROR", 693, 543);
                 break;
@@ -1358,7 +1441,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), 633, 543, 25, 25, this);
                 break;
             case 13:
-                g.drawImage(bufferedImageMap.get("BLUE_DAGGER"), 633, 543, 25, 25, this);
+                g.drawImage(bufferedImageMap.get("BLUE_DAGGER_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 31:
+                g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 20:
+                g.drawImage(bufferedImageMap.get("GREEN_DAGGER_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 0:
                 break;
             default:
                 g.drawString("ERROR", 633, 543);
@@ -1381,11 +1472,99 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintCurrentlySelectedItemOnMouse(Graphics g) {
         if (currentItem.ID == 1) {
-            g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), mouseDragX, mouseDragY, 20, 20, this);
+            g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 2) {
+            g.drawImage(bufferedImageMap.get("STONE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 3) {
+            g.drawImage(bufferedImageMap.get("SAND"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
         }
         if (currentItem.ID == 4) {
-            g.drawImage(bufferedImageMap.get("PLANKWALL"), mouseDragX, mouseDragY, 20, 20, this);
+            g.drawImage(bufferedImageMap.get("PLANKWALL"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
         }
+        if (currentItem.ID == 5) {
+            g.drawImage(bufferedImageMap.get("RATSKINHOOD"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 6) {
+            g.drawImage(bufferedImageMap.get("RATSKINCHEST"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 7) {
+            g.drawImage(bufferedImageMap.get("RATSKINPANTS"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 8) {
+            g.drawImage(bufferedImageMap.get("RATSKIN_BOOTS"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 9) {
+            g.drawImage(bufferedImageMap.get("WOODEN_CLUB"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 10) {
+            g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 11) {
+            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 12) {
+            g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 13) {
+            g.drawImage(bufferedImageMap.get("BLUE_DAGGER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 14) {
+            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 15) {
+            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 16) {
+            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 17) {
+            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 18) {
+            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 19) {
+            g.drawImage(bufferedImageMap.get("GREEN_BUCKLER_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 20) {
+            g.drawImage(bufferedImageMap.get("GREEN_DAGGER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 21) {
+            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 22) {
+            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 23) {
+            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 24) {
+            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 25) {
+            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 26) {
+            g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 27) {
+            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 28) {
+            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 29) {
+            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 30) {
+            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_TRIMMED"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 31) {
+            g.drawImage(bufferedImageMap.get("RED_DAGGER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+
     }
 
     private void paintPalleteMenu(Graphics g) {
@@ -1446,11 +1625,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintTilesLayer0(Graphics g) { // Tile Rendering System
 
 
+        Npc n = new Npc(0, 0, 0, 0, Color.BLACK, "");
 
-
-        Npc n = new Npc(0,0,0,0,Color.BLACK,"");
-
-        boolean b = n instanceof Npc;
 
         assert bufferedImageMap != null : "ERROR: bufferedImageMap is null";
 
@@ -1711,20 +1887,71 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 row++;
             }
             if (player1.playerInventory.itemArray[i].ID == 1) {
-                //              g.setColor(new Color(138, 69, 19));
-//                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
                 g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 2) {
+                g.drawImage(bufferedImageMap.get("STONE"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
 
-            }
+            } else if (player1.playerInventory.itemArray[i].ID == 3) {
+                g.drawImage(bufferedImageMap.get("SAND"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
 
-            if (player1.playerInventory.itemArray[i].ID == 2) {
-                g.setColor(Color.gray);
-                g.fillOval(593 + (counter * 30), 183 + (row * 30), 20, 20);
-            }
-
-            if (player1.playerInventory.itemArray[i].ID == 4) {
-
+            } else if (player1.playerInventory.itemArray[i].ID == 4) {
                 g.drawImage(bufferedImageMap.get("PLANKWALL"), 593 + (counter * 30), 183 + (row * 30), 20, 20, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 5) {
+                g.drawImage(bufferedImageMap.get("RATSKINHOOD"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 6) {
+                g.drawImage(bufferedImageMap.get("RATSKINCHEST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 7) {
+                g.drawImage(bufferedImageMap.get("RATSKINPANTS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 8) {
+                g.drawImage(bufferedImageMap.get("ERROR_IMG"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+                //todo: NOT YET IMPLEMENTED
+                // g.drawImage(bufferedImageMap.get("RATSKIN_BOOTS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 9) {
+                g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 10) {
+                g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 11) {
+                g.drawImage(bufferedImageMap.get("BLUE_BUCKLER"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 12) {
+                g.drawImage(bufferedImageMap.get("BLUE_BUCKLER_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 13) {
+                g.drawImage(bufferedImageMap.get("BLUE_DAGGER_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 14) {
+                g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 15) {
+                g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 16) {
+                g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 17) {
+                g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 18) {
+                g.drawImage(bufferedImageMap.get("GREEN_BUCKLER"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 19) {
+                g.drawImage(bufferedImageMap.get("GREEN_BUCKLER_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 20) {
+                g.drawImage(bufferedImageMap.get("GREEN_DAGGER_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 21) {
+                g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 22) {
+                g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 23) {
+                g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 24) {
+                g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 25) {
+                g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 26) {
+                g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 27) {
+                g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 28) {
+                g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 29) {
+                g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 30) {
+                g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_TRIMMED"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 31) {
+                g.drawImage(bufferedImageMap.get("RED_DAGGER_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             }
             g.setColor(Color.black);
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
@@ -1779,7 +2006,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.fillRect(24, 1, 750, 600);
         g.setColor(Color.black);
         g.setFont(font2);
-        g.drawString("AWESOME GAME PRE-ALPHA", 246, 41);
         g.drawString("0 : Generate world ( overwrites all saves in Maps folder.) / close menu", 87, 88);
         g.drawString("1 : Load map from files", 87, 122);
         g.drawString("9 : Load Map ( test function )", 87, 157);
@@ -1790,8 +2016,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawString("No world spawned", 87, 220);
         }
 
-
-        g.drawString("Options", 87, 254);
+        g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO"),0,275,Main.WIDTH,325,this);
     }
 
 
@@ -1940,22 +2165,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             g.drawImage(bufferedImageMap.get("RATSKIN_PANTS_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                         case 14:
-                            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 4, player1.yPos - 12, 25 * magnitude, 40 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                         case 21:
-                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 4, player1.yPos - 12, 25 * magnitude, 40 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                         case 22:
-                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos - 4, player1.yPos - 12, 25 * magnitude, 40 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                         case 27:
-                            // *jt Todo: ASSET IS MISSING A (MODEL/FILE)
-                            //     g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 5, player1.yPos - 20, this);
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, this);
                             break;
                         case 28:
-                            // *jt Todo: ASSET IS MISSING A (MODEL/FILE)
-
-                            //    g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos -5, player1.yPos  -20, this);
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 19, this);
                             break;
 
                     }
@@ -1989,7 +2211,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 case "NORTH": {
                     switch (player1.gearInterface.itemArray[2].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
+                        case 7:
+                            g.drawImage(bufferedImageMap.get("RATSKIN_PANTS_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 14:
+                            g.drawImage(bufferedImageMap.get("BLUE_LEGGUARDS_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 21:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 22:
+                            g.drawImage(bufferedImageMap.get("GREEN_LEGGUARDS_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 27:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 28:
+                            g.drawImage(bufferedImageMap.get("JUNKSCRAP_LEGGUARDS_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 3, player1.yPos - 19, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                     break;
@@ -2022,8 +2260,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (magnitude == 5) {
-
-
 
 
             switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
@@ -2137,8 +2373,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 case "NORTH": {
                     switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
-                        case 10:
-                            //        g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 13, player1.yPos - 5, 20, 20, this);
+                        case 24:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 17:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 30:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 23:
+                            g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 16:
+                            g.drawImage(bufferedImageMap.get("BLUE_PLATEBODY_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
+                        case 29:
+                            g.drawImage(bufferedImageMap.get("BROWN_PLATEBODY_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
                     }
                     break;
@@ -2209,6 +2460,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         case 9:
                             g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
                             break;
+                        case 13:
+                            g.drawImage(bufferedImageMap.get("BLUE_DAGGER_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 20:
+                            g.drawImage(bufferedImageMap.get("GREEN_DAGGER_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 31:
+                            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
                     }
 
                     break;
@@ -2219,14 +2479,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         case 9:
                             g.drawImage(bufferedImageMap.get("WOODEN_CLUB_E"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
                             break;
+                        case 13:
+                            g.drawImage(bufferedImageMap.get("BLUE_DAGGER_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 20:
+                            g.drawImage(bufferedImageMap.get("GREEN_DAGGER_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 31:
+                            g.drawImage(bufferedImageMap.get("RED_DAGGER_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
                     }
                     break;
                 }
 
                 case "NORTH": {
-                    switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
+                    switch (player1.gearInterface.itemArray[5].ID) { // NORTH-FACING WEAPON RENDERING UNIT
                         case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 13, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 13:
+                            g.drawImage(bufferedImageMap.get("BLUE_DAGGER_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 20:
+                            g.drawImage(bufferedImageMap.get("GREEN_DAGGER_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 31:
+                            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                     break;
@@ -2234,7 +2512,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 case "WEST": {
                     switch (player1.gearInterface.itemArray[5].ID) { // EAST-FACING WEAPON RENDERING UNIT
                         case 9:
-                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 9, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
+                            g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 13:
+                            g.drawImage(bufferedImageMap.get("BLUE_DAGGER_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 20:
+                            g.drawImage(bufferedImageMap.get("GREEN_DAGGER_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 31:
+                            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
@@ -2248,6 +2535,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     switch (player1.gearInterface.itemArray[5].ID) { // SOUTH-FACING WEAPON RENDERING UNIT
                         case 9:
                             g.drawImage(bufferedImageMap.get("WOODEN_CLUB_W"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 13:
+                            g.drawImage(bufferedImageMap.get("BLUE_DAGGER_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 20:
+                            g.drawImage(bufferedImageMap.get("GREEN_DAGGER_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 31:
+                            g.drawImage(bufferedImageMap.get("RED_DAGGER_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
@@ -2295,6 +2591,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 case "EAST": {
+
+                    if (player1.gearInterface.itemArray[4].ID != 0) {
+                        g.drawImage(bufferedImageMap.get("GENERIC_SHIELD_BACK"), player1.xPos - 1, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                    }
+
+                    /*
                     switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
                         case 10:
                             g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
@@ -2318,10 +2620,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
+                    */
                 }
                 break;
 
                 case "NORTH": {
+                    if (player1.gearInterface.itemArray[4].ID != 0) {
+                        g.drawImage(bufferedImageMap.get("GENERIC_SHIELD_BACK"), player1.xPos + 1, player1.yPos - 10, 25 * magnitude, 25 * magnitude, this);
+                    }
+
+                    /*
                     switch (player1.gearInterface.itemArray[4].ID) { // EAST-FACING SHIELD RENDERING UNIT
                         case 10:
                             g.drawImage(bufferedImageMap.get("WOODEN_SHIELD"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
@@ -2345,6 +2653,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             g.drawImage(bufferedImageMap.get("JUNKSCRAP_BUCKLER_TRIMMED"), player1.xPos + 5, player1.yPos - 8, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
+                    */
                 }
                 break;
                 case "WEST": {
@@ -2946,6 +3255,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                  */
             case KeyEvent.VK_1: // keyboard press 1 -> attempt to harvest block
 
+                currentItem = null;
+
                 if (!startMenuVisible) {
                     System.out.println("1- Block Harvesting");
 
@@ -3248,16 +3559,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_A:
                 System.out.println("WELCOME TO THE DEBUG CONSOLE");
 
-                String inputString = JOptionPane.showInputDialog("Please input a command \n set id [mhand/ohand/chest/legs/head] [itemID] \n weather rain toggle \n weather rain setVector [x] ");
+                String inputString = JOptionPane.showInputDialog("Please input a command \n set id [mhand/ohand/chest/legs/head] [itemID] \n weather rain toggle \n weather rain setVector [x] \n add inv [itemId] ");
 
-
-                if (inputString != null && inputString.length() > 12) {
+                if (inputString != null && inputString.length() > 7) {
                     /*
                     SET ID ARMOR
 
                      */
-
-                    if (inputString.substring(0, 12).equals("set id chest")) {
+                    if (inputString.substring(0, 7).equals("add inv")) {
+                        if (inputString.length() == 9) {
+                            for (int i = 0; i < 64; i++) {
+                                if (player1.playerInventory.itemArray[i].ID == 0) {
+                                    player1.playerInventory.itemArray[i].ID = Integer.valueOf(inputString.substring(8, 9));
+                                    break;
+                                }
+                            }
+                        } else if (inputString.length() == 10) {
+                            for (int i = 0; i < 64; i++) {
+                                if (player1.playerInventory.itemArray[i].ID == 0) {
+                                    player1.playerInventory.itemArray[i].ID = Integer.valueOf(inputString.substring(8, 10));
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (inputString.substring(0, 12).equals("set id chest")) {
                         if (inputString.length() < 15) { // case for if the user inputs a number less than 2 digits
                             player1.gearInterface.itemArray[1].ID = Integer.valueOf(inputString.substring(13, 14));
                         } else if (inputString.length() < 16) { // case for if the user inputs a number less than 3 digits
@@ -3321,7 +3646,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     }
                 }
-                break;
+
 
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -3416,6 +3741,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         System.out.println("=========");
 
         if (e.getButton() == MouseEvent.BUTTON3) { // ON LEFT MOUSE CLICK
+
+
+            if (inventoryMenuVisible){
+                onMouseClickEquipItems(x,y);
+            }
             currentItem = null;
             currentItemIndex = 0;
             currentItemColumn = 0;
@@ -3423,6 +3753,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } else if (e.getButton() == MouseEvent.BUTTON1) { // ON RIGHT MOUSE CLICK
+
+            if (inventoryMenuVisible) {
+                currentItem = onMouseClickSelectItem(x, y);
+            }
 
             if (debugMenuVisible && x > 81 && x < 107 && y > 23 && y < 50) {
                 rotateTileBrush(true);
@@ -3460,9 +3794,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (!inventoryMenuVisible && !debugMenuVisible && !startMenuVisible) {
             currentTile = onMouseClickSelectTile(x, y);
         }
-        if (inventoryMenuVisible) {
-            currentItem = onMouseClickSelectItem(x, y);
-        }
+
 
         if (attackStyleChooserVisible) {
             onMouseClickAddAbility(x, y);
@@ -3478,6 +3810,201 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             attackStyleChooserVisible = !attackStyleChooserVisible;
         }
 
+    }
+
+    private void onMouseClickEquipItems(int x, int y) {
+        Item newItem = onMouseClickSelectItem(x,y);
+        if (newItem != null) {
+
+            // MAINHAND
+            if ((newItem.ID == 9 ||
+                    newItem.ID == 13 ||
+                    newItem.ID == 20 ||
+                    newItem.ID == 31)) {
+                Item oldItem = player1.gearInterface.itemArray[5];
+                if (equipItem(newItem)) {
+                    for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+                        if (player1.playerInventory.itemArray[i].ID == newItem.ID) {
+                            player1.playerInventory.itemArray[i].ID = oldItem.ID;
+                            break;
+                        }
+                    }
+                }
+            }
+            // CHEST ARMOR
+            if ((newItem.ID == 6 ||
+                    newItem.ID == 16 ||
+                    newItem.ID == 17 ||
+                    newItem.ID == 23 ||
+                    newItem.ID == 24 ||
+                    newItem.ID == 29 ||
+                    newItem.ID == 30
+            )) {
+                Item oldItem = player1.gearInterface.itemArray[1];
+                if (equipItem(newItem)) {
+                    for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+                        if (player1.playerInventory.itemArray[i].ID == newItem.ID) {
+                            player1.playerInventory.itemArray[i].ID = oldItem.ID;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // LEG ARMOR
+            if ((newItem.ID == 7 ||
+                    newItem.ID == 14 ||
+                    newItem.ID == 15 ||
+                    newItem.ID == 21 ||
+                    newItem.ID == 22 ||
+                    newItem.ID == 27 ||
+                    newItem.ID == 28
+            )) {
+                Item oldItem = player1.gearInterface.itemArray[2];
+                if (equipItem(newItem)) {
+                    for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+                        if (player1.playerInventory.itemArray[i].ID == newItem.ID) {
+                            player1.playerInventory.itemArray[i].ID = oldItem.ID;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // OFFHAND
+            if ((newItem.ID == 10 ||
+                    newItem.ID == 11 ||
+                    newItem.ID == 12 ||
+                    newItem.ID == 18 ||
+                    newItem.ID == 19 ||
+                    newItem.ID == 25 ||
+                    newItem.ID == 26
+            )) {
+                Item oldItem = player1.gearInterface.itemArray[4];
+                if (equipItem(newItem)) {
+                    for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
+                        if (player1.playerInventory.itemArray[i].ID == newItem.ID) {
+                            player1.playerInventory.itemArray[i].ID = oldItem.ID;
+                            break;
+                        }
+                    }
+                }
+            }
+            }
+        }
+
+
+    private boolean equipItem(Item item) {
+        // MAIN HAND WEAPONS
+        if (item.ID == 13){
+            player1.gearInterface.itemArray[5] = new Item(13);
+            return true;
+        }
+        else if (item.ID == 9){
+            player1.gearInterface.itemArray[5] = new Item(9);
+            return true;
+        }
+        else if (item.ID == 20){
+            player1.gearInterface.itemArray[5] = new Item(20);
+            return true;
+        }
+        else if (item.ID == 31){
+            player1.gearInterface.itemArray[5] = new Item(31);
+            return true;
+        }
+        //  CHEST ARMOR
+        else if (item.ID == 6){
+            player1.gearInterface.itemArray[1] = new Item(6);
+            return true;
+        }
+        else if (item.ID == 16){
+            player1.gearInterface.itemArray[1] = new Item(16);
+            return true;
+        }
+        else if (item.ID == 17){
+            player1.gearInterface.itemArray[1] = new Item(17);
+            return true;
+        }
+        else if (item.ID == 23){
+            player1.gearInterface.itemArray[1] = new Item(23);
+            return true;
+        }
+        else if (item.ID == 24){
+            player1.gearInterface.itemArray[1] = new Item(24);
+            return true;
+        }
+        else if (item.ID == 29){
+            player1.gearInterface.itemArray[1] = new Item(29);
+            return true;
+        }
+        else if (item.ID == 30){
+            player1.gearInterface.itemArray[1] = new Item(30);
+            return true;
+        }
+
+        // LEG ARMOR
+        else if (item.ID == 7){
+            player1.gearInterface.itemArray[2] = new Item(7);
+            return true;
+        }
+        else if (item.ID == 14){
+            player1.gearInterface.itemArray[2] = new Item(14);
+            return true;
+        }
+        else if (item.ID == 15){
+            player1.gearInterface.itemArray[2] = new Item(15);
+            return true;
+        }
+        else if (item.ID == 21){
+            player1.gearInterface.itemArray[2] = new Item(21);
+            return true;
+        }
+        else if (item.ID == 22){
+            player1.gearInterface.itemArray[2] = new Item(22);
+            return true;
+        }
+        else if (item.ID == 27){
+            player1.gearInterface.itemArray[2] = new Item(27);
+            return true;
+        }
+        else if (item.ID == 28){
+            player1.gearInterface.itemArray[2] = new Item(28);
+            return true;
+        }
+
+        // OFF HAND
+        else if (item.ID == 10){
+            player1.gearInterface.itemArray[4] = new Item(10);
+            return true;
+        }
+        else if (item.ID == 11){
+            player1.gearInterface.itemArray[4] = new Item(11);
+            return true;
+        }
+        else if (item.ID == 12){
+            player1.gearInterface.itemArray[4] = new Item(12);
+            return true;
+        }
+        else if (item.ID == 18){
+            player1.gearInterface.itemArray[4] = new Item(18);
+            return true;
+        }
+        else if (item.ID == 19){
+            player1.gearInterface.itemArray[4] = new Item(19);
+            return true;
+        }
+        else if (item.ID == 25){
+            player1.gearInterface.itemArray[4] = new Item(25);
+            return true;
+        }
+        else if (item.ID == 26){
+            player1.gearInterface.itemArray[4] = new Item(26);
+            return true;
+        }
+
+
+
+        return  false;
     }
 
     private void onMouseClickAddAbility(int x, int y) {
@@ -3505,8 +4032,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             abilities[0] = abilityIDToAdd;
         } else if (abilities[1] == 0) {
             abilities[1] = abilityIDToAdd;
-        }
-        else if(abilities[2] == 0) {
+        } else if (abilities[2] == 0) {
             abilities[2] = abilityIDToAdd;
         }
 
@@ -4077,6 +4603,468 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private Item onMouseMovedSelectHoverItem(int x, int y) {
+
+        currentHoverItem = null;
+        currentHoverItemIndex = -1;
+        currentHoverItemColumn = -1;
+        currentHoverItemRow = -1;
+
+        if (inRange(x, 587, 617, true)) {
+
+            currentHoverItemColumn = 1;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 0;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 6;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 12;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 18;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 24;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 30;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 36;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 42;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 48;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 54;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 60;
+
+
+            }
+
+        } else if (inRange(x, 618, 648, true)) {
+
+            currentHoverItemColumn = 2;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 1;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 7;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 13;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 19;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 25;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 31;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 37;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 43;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 49;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 55;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 61;
+
+
+            }
+
+        } else if (inRange(x, 649, 679, true)) {
+
+            currentHoverItemColumn = 3;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 2;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 8;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 14;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 20;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 26;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 32;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 38;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 44;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 50;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+
+
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 56;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 62;
+
+
+            }
+
+        } else if (inRange(x, 680, 710, true)) {
+
+            currentHoverItemColumn = 4;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 3;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 9;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 15;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 21;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 27;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 33;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 39;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 45;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 51;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+
+
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 57;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 63;
+
+
+            }
+        } else if (inRange(x, 711, 741, true)) {
+
+            currentHoverItemColumn = 5;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 4;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 10;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 16;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 22;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 28;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 34;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 40;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 46;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 52;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+
+
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 58;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 64;
+
+
+            }
+
+
+        } else if (inRange(x, 742, 772, true)) {
+
+            currentHoverItemColumn = 6;
+
+
+            if (inRange(y, 176, 206, true)) {
+
+
+                currentHoverItemRow = 1;
+                currentHoverItemIndex = 5;
+
+
+            } else if (inRange(y, 207, 237, true)) {
+
+                currentHoverItemRow = 2;
+                currentHoverItemIndex = 11;
+
+            } else if (inRange(y, 238, 268, true)) {
+
+                currentHoverItemRow = 3;
+                currentHoverItemIndex = 17;
+
+
+            } else if (inRange(y, 269, 299, true)) {
+
+                currentHoverItemRow = 4;
+                currentHoverItemIndex = 23;
+
+
+            } else if (inRange(y, 300, 330, true)) {
+
+                currentHoverItemRow = 5;
+                currentHoverItemIndex = 29;
+
+
+            } else if (inRange(y, 331, 361, true)) {
+
+                currentHoverItemRow = 6;
+                currentHoverItemIndex = 35;
+
+
+            } else if (inRange(y, 362, 392, true)) {
+
+                currentHoverItemRow = 7;
+                currentHoverItemIndex = 41;
+
+
+            } else if (inRange(y, 393, 423, true)) {
+
+                currentHoverItemRow = 8;
+                currentHoverItemIndex = 47;
+
+
+            } else if (inRange(y, 424, 454, true)) {
+
+                currentHoverItemRow = 9;
+                currentHoverItemIndex = 53;
+
+
+            } else if (inRange(y, 455, 485, true)) {
+
+
+                currentHoverItemRow = 10;
+                currentHoverItemIndex = 59;
+
+
+            } else if (inRange(y, 486, 516, true)) {
+
+                currentHoverItemRow = 11;
+                currentHoverItemIndex = 65;
+
+
+            }
+
+
+        }
+        if (x > 156 && x < 156 + 30 && y > 183 && y < 183 + 30) {
+            return player1.playerCrafter.itemArray[9];
+        }
+
+        if (currentHoverItemIndex < 0) {
+            return null;
+        }
+
+        return player1.playerInventory.itemArray[currentHoverItemIndex];
+
+    }
+
     private Tile onMouseClickSelectTile(int x, int y) {
 
         currentTileX = x / 25;
@@ -4117,6 +5105,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         mouseDragX = e.getX();
         mouseDragY = e.getY();
+
+        currentHoverItem = onMouseMovedSelectHoverItem(mouseDragX,mouseDragY);
 
 
     }
