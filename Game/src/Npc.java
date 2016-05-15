@@ -26,7 +26,7 @@ public class Npc extends Entity implements Serializable{
 
     private void setDialogue() {
 
-        dialogue = new String[11];
+        dialogue = new String[12];
 
         switch (this.ai){
             case "DUDE":
@@ -38,9 +38,10 @@ public class Npc extends Entity implements Serializable{
                 dialogue[5] = "I'm not interested";
                 dialogue[6] = "Gather me 10 Wood";
                 dialogue[7] = "Sure";
-                dialogue[8] = "Thanks";
+                dialogue[8] = "Thanks!";
                 dialogue[9] = "Thanks for the wood, here is your reward";
                 dialogue[10] = "Bye!";
+                dialogue[11] = "Have you brought my wood yet?";
                 break;
         }
     }

@@ -1190,7 +1190,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawImage(bufferedImageMap.get("EAST_" + currentDialogueNpc.ai), 104, 523, 50, 90, this);
         g.setColor(Color.green);
         g.setFont(font2);
-        g.drawString(npcDialogue, 182, 506);
+        g.drawString(npcDialogue, 88, 506);
 
         g.setColor(Color.black);
 
@@ -1243,14 +1243,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
          */
 
-        if (currentDialogueNpc.ai == "DUDE") {
+        if (currentDialogueNpc.ai.equals("DUDE")) {
 
             switch (TRIGGER_dialogueState) {
                 case 0:
-                    npcDialogue = currentDialogueNpc.dialogue[0];
-                    playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
-                    playerResponse2 = "- " + currentDialogueNpc.dialogue[2];
-                    playerResponse3 = "- ";
+
+                    if (player1.personalQuestsCompleted.contains(0)){ // )f played already has completed the quest
+                        TRIGGER_dialogueState = 5;
+                    } else {
+                        boolean hasQuest = false;
+                        for (Quest q : player1.personalQuestLog) {
+                            if (q.questID == 0) {
+                                hasQuest = true;
+                            }
+                        }
+                        if (hasQuest) {
+                            TRIGGER_dialogueState = 3;
+                        } else {
+                            npcDialogue = currentDialogueNpc.dialogue[0];
+                            playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
+                            playerResponse2 = "- " + currentDialogueNpc.dialogue[2];
+                            playerResponse3 = "- ";
+                        }
+                    }
+
                     break;
 
                 case 1:
@@ -1258,6 +1274,34 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     playerResponse1 = "- " + currentDialogueNpc.dialogue[4];
                     playerResponse2 = "- " + currentDialogueNpc.dialogue[5];
                     playerResponse3 = "- " + currentDialogueNpc.dialogue[2];
+                    break;
+
+                case 2:
+                    npcDialogue = currentDialogueNpc.dialogue[6];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[7];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[5];
+                    playerResponse3 = "- " + currentDialogueNpc.dialogue[2];
+                    break;
+
+                case 3:
+                    npcDialogue = currentDialogueNpc.dialogue[11];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[2];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[7];
+                    playerResponse3 = "- ";
+                    break;
+
+                case 4:
+                    npcDialogue = currentDialogueNpc.dialogue[9];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[8];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[10];
+                    playerResponse3 = "- ";
+                    break;
+
+                case 5:
+                    npcDialogue = currentDialogueNpc.dialogue[8];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[10];
+                    playerResponse2 = "- ";
+                    playerResponse3 = "- ";
                     break;
 
                 default:
@@ -3207,6 +3251,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             /*
             MOVEMENT AND ORIENTATION
             */
+            case KeyEvent.VK_Q:
+
+                if (player1.personalQuestLog.isEmpty()){
+                    System.out.println("You have no quests");
+                }
+                for (Quest q: player1.personalQuestLog){
+                    System.out.println(q);
+                }
+                break;
             case KeyEvent.VK_CONTROL:
                 controlPressed = true;
                 break;
@@ -4024,6 +4077,75 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         exitDialogue();
                         break;
                 }
+                break;
+            case 2:
+                switch (mousedOverDialogue){
+                    case 1:
+                        boolean hasQuest = false;
+                        for (Quest q : player1.personalQuestLog){
+                            if (q.questID == 0){
+                                hasQuest = true;
+                            }
+                        }
+                        if (!hasQuest){
+                            player1.personalQuestLog.add(new Quest(0,"Gathering Wood","NPC wants you to gather 10 wood for him so he can build a new house","Gather 10 Wood for NPC",new Item[]{new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1)},new ArrayList<Integer>()));
+
+                        }
+                        exitDialogue();
+                        break;
+                    case 2:
+                        exitDialogue();
+                        break;
+
+                    case 3:
+                        exitDialogue();
+                        break;
+                }
+                break;
+
+            case 3:
+                switch (mousedOverDialogue){
+                    case 1:
+                        exitDialogue();
+                        break;
+                    case 2:
+                        if (player1.playerInventory.hasItem(1,10)){
+                            player1.playerInventory.removeItem(1,10);
+                            for(int i = 0; i < player1.personalQuestLog.size(); i++){
+                                if (player1.personalQuestLog.get(i).questID == 0){
+                                    player1.personalQuestLog.remove(i);
+                                    System.out.println("QUEST (id = 0) COMPLETE");
+                                    player1.personalQuestsCompleted.add(0);
+                                    TRIGGER_dialogueState = 4;
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                break;
+
+            case 4:
+                switch (mousedOverDialogue){
+                    case 1:
+                        exitDialogue();
+                        break;
+                    case 2:
+                        exitDialogue();
+                        break;
+                }
+                break;
+
+            case 5:
+                switch (mousedOverDialogue){
+                    case 1:
+                        exitDialogue();
+                        break;
+                }
+
+
+                break;
+
 
         }
 
