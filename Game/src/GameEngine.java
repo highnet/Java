@@ -75,7 +75,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean shiftPressed = false;
     private boolean controlPressed = false;
 
-
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
     private Font font2 = new Font("Consola", Font.BOLD, 16);
     private Font font3 = new Font("Consola", Font.BOLD, 24);
@@ -95,6 +94,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     int rainVector = 1;
     private boolean raining;
     Point[] rainDrops;
+
     int numberOfRainDrops = 10;
     Deque<Point> bufferSplashAnimations = new LinkedList<>();
     private ArrayList<String> tileList = new ArrayList<>();
@@ -125,6 +125,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     int[] abilities = new int[3];
 
+    private boolean stuckInDialogue = false;
+    private Npc currentDialogueNpc = null;
+
+    String npcDialogue = "npcdialogue";
+    String playerResponse1 = "playerresponse1";
+    String playerResponse2 = "playerresponse2";
+    String playerResponse3 = "playerresponse3";
+    int TRIGGER_dialogueState = 0;
+    int mousedOverDialogue = 0;
 
     public GameEngine() {
 
@@ -176,12 +185,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         animationTimer0.start();
 
 
+        generateNpc(currentOverWorld.npcList.size() + 1, 5, 5, 100, Color.GRAY, "DUDE");
+
+
     }
 
     private void loadSpritesReworked() {
 
-        loadBufferedImage("GearWorksLogo.png","GEARWORKS_LOGO");
-        loadBufferedImage("GearWorksLogoSmall.png","GEARWORKS_LOGO_SMALL");
+        loadBufferedImage("EastDude.png", "EAST_DUDE");
+
+        loadBufferedImage("GearWorksLogo.png", "GEARWORKS_LOGO");
+        loadBufferedImage("GearWorksLogoSmall.png", "GEARWORKS_LOGO_SMALL");
 
         loadBufferedImage("GenericShieldBack.png", "GENERIC_SHIELD_BACK");
 
@@ -1032,7 +1046,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         currentOverWorld.npcList.addElement(n);             // works just like generate player but adds generated Npc to currentOverWorld.npclist.
 
-
+        collisionMeshGenerator(); // Perhaps unneeded code but might prove itself useful in the future
     }
 
     private void removeNpc(int ID) {
@@ -1095,17 +1109,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
-
-
         if (mapVisible && !engagedSuccessfully) {
             paintTilesLayer0(g);
+            paintAllNpcs(g);
+            paintPlayerAtCoords(g);
             paintTilesLayer1(g);
-
 
             paintQuickslotGUI(g);
 
             if (raining) {
                 paintRain(g);
+                // paintRain2(g);
                 if (!bufferSplashAnimations.isEmpty()) {
                     paintSplash(g);
                 }
@@ -1144,21 +1158,148 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintCurrentlySelectedItemHighlights(g);
             paintCurrentlySelectedItemOnMouse(g);
         }
-        if ( shiftPressed && currentHoverItem != null ){ // && 5 seconds rested on item
+        if (shiftPressed && currentHoverItem != null) { // && 5 seconds rested on item
 
-          paintInventoryItemTooltip(g);
+            paintInventoryItemTooltip(g);
 
 
         }
 
         if (startMenuVisible) {
             paintStartMenu(g);
-        } else{
-            g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO_SMALL"),15,540,28*2,28*2,this);
+        } else {
+            g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO_SMALL"), 15, 540, 28 * 2, 28 * 2, this);
+        }
+
+        if (stuckInDialogue) {
+            paintDialogueScreen(g);
+
         }
 
 
+    }
 
+    private void paintDialogueScreen(Graphics g) {
+
+        updateDialogueState();
+        updateMouseOverState();
+
+        g.setColor(Color.gray);
+        g.fillRect(85, 495, 400, 110);
+
+        g.drawImage(bufferedImageMap.get("EAST_" + currentDialogueNpc.ai), 104, 523, 50, 90, this);
+        g.setColor(Color.green);
+        g.setFont(font2);
+        g.drawString(npcDialogue, 182, 506);
+
+        g.setColor(Color.black);
+
+        if (mousedOverDialogue == 1) {
+            g.setColor(Color.yellow);
+        }
+        g.drawString(playerResponse1, 197, 526);
+        g.setColor(Color.black);
+        if (mousedOverDialogue == 2) {
+            g.setColor(Color.yellow);
+        }
+        g.drawString(playerResponse2, 197, 556);
+        g.setColor(Color.black);
+        if (mousedOverDialogue == 3) {
+            g.setColor(Color.yellow);
+        }
+
+        g.drawString(playerResponse3, 197, 586);
+        g.setColor(Color.black);
+        g.drawString("#Dialogue State = " + TRIGGER_dialogueState, 355, 503);
+        g.drawString("#MousedOverDialogue = " + mousedOverDialogue, 355, 523);
+    }
+
+    private void updateMouseOverState() {
+
+        if (mouseDragX > 86 && mouseDragX < 496 && mouseDragY > 496 && mouseDragY < 596) { // if mouse is in dialogue window
+
+            if (mouseDragY > 506 && mouseDragY < 539) {
+                mousedOverDialogue = 1;
+            } else if (mouseDragY > 539 && mouseDragY < 571) {
+                mousedOverDialogue = 2;
+            } else if (mouseDragY > 571) {
+                mousedOverDialogue = 3;
+            }
+        } else {
+            mousedOverDialogue = 0;
+        }
+    }
+
+    private void updateDialogueState() {
+
+        /*
+
+        DIALOGUE STATE CHEAT-SHEET
+
+        Dialogue State : Npc Type : Q- "Question" . A1- "Answer1" . A2- "Answer2" . A3- "Answer3". :
+
+        0 : DUDE : Q- "Hello traveller." . A1- "Hello" . A2- "Actually, never mind." . A3- null. :
+
+
+         */
+
+        if (currentDialogueNpc.ai == "DUDE") {
+
+            switch (TRIGGER_dialogueState) {
+                case 0:
+                    npcDialogue = currentDialogueNpc.dialogue[0];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[2];
+                    playerResponse3 = "- ";
+                    break;
+
+                case 1:
+                    npcDialogue = currentDialogueNpc.dialogue[3];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[4];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[5];
+                    playerResponse3 = "- " + currentDialogueNpc.dialogue[2];
+                    break;
+
+                default:
+                    npcDialogue = "- ";
+                    playerResponse1 = "- ";
+                    playerResponse2 = "- ";
+                    playerResponse3 = "- ";
+
+            }
+        }
+
+
+    }
+
+    private void paintRain2(Graphics g) {
+    }
+
+    private void paintPlayerAtCoords(Graphics g) {
+
+        for (int j = 0; j < 24; j++) { // foreach tile outer loop
+            for (int i = 0; i < 32; i++) { // foreach tile inner loop
+
+                if (j == player1.yPos / 25 && i == player1.xPos / 25) {
+                    paintPlayer(g, 1);
+                }
+            }
+        }
+    }
+
+    private void paintAllNpcs(Graphics g) {
+
+        for (int j = 0; j < 24; j++) { // foreach tile outer loop
+            for (int i = 0; i < 32; i++) { // foreach tile inner loop
+
+                for (Npc n : currentOverWorld.npcList) {
+                    if (j == n.yPos / 25 && i == n.xPos / 25) {
+                        paintNpcs(g, n);
+
+                    }
+                }
+            }
+        }
     }
 
     private void paintInventoryItemTooltip(Graphics g) {
@@ -1168,7 +1309,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         int borderWidth = 120;
         int borderHeight = 60;
 
-        if (mouseDragX > 677 && mouseDragY < 767){
+        if (mouseDragX > 677 && mouseDragY < 767) {
             g2d.setColor(Color.lightGray);
             g2d.fillRect(mouseDragX - borderWidth, mouseDragY - borderHeight, borderWidth, borderHeight);
             g2d.setStroke(new BasicStroke(3));
@@ -1178,7 +1319,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             g2d.setColor(Color.red);
             g2d.setFont(font2);
-           // g2d.drawString(String.valueOf(currentHoverItem.ID),mouseDragX + 10,mouseDragY - borderHeight);
+            // g2d.drawString(String.valueOf(currentHoverItem.ID),mouseDragX + 10,mouseDragY - borderHeight);
 
         } else {
             // g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
@@ -1190,7 +1331,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
 
             g2d.setFont(font2);
-            g2d.drawString("ID: " + String.valueOf(currentHoverItem.ID),mouseDragX + 5 , mouseDragY - borderHeight + 15);
+            g2d.drawString("ID: " + String.valueOf(currentHoverItem.ID), mouseDragX + 5, mouseDragY - borderHeight + 15);
         }
     }
 
@@ -1762,19 +1903,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
 
-                if (j == player1.yPos / 25 && i == player1.xPos / 25) {
-                    paintPlayer(g, 1);
-
-                }
-
-                for (Npc n : currentOverWorld.npcList) {
-                    if (j == n.yPos / 25 && i == n.xPos / 25) {
-                        paintNpcs(g, n);
-
-                    }
-                }
-
-
             }
 
         }
@@ -2016,7 +2144,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawString("No world spawned", 87, 220);
         }
 
-        g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO"),0,275,Main.WIDTH,325,this);
+        g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO"), 0, 275, Main.WIDTH, 325, this);
     }
 
 
@@ -2106,6 +2234,31 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 45, this);
 
+        } else if (n.ai.equals("DUDE")) {
+
+            int xOffset = 0;
+            int yOffset = 0;
+
+            switch (n.orientation) {
+                case "NORTH":
+                    xOffset = 0;
+                    yOffset = 0;
+                    break;
+                case "SOUTH":
+                    xOffset = 0;
+                    yOffset = 0;
+                    break;
+                case "WEST":
+                    xOffset = 0;
+                    yOffset = 0;
+
+                    break;
+                case "EAST":
+                    xOffset = 0;
+                    yOffset = +15;
+                    break;
+            }
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 23, 40, this);
         }
 
 
@@ -3125,83 +3278,99 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_UP: // User presses the up key
 
-                loadMovementSound();
+                if (!stuckInDialogue) {
 
-                if (mapVisible && !engagedSuccessfully) {
-                    player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
+                    loadMovementSound();
 
-                    if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
+                    if (mapVisible && !engagedSuccessfully) {
+                        player1.orientation = "NORTH"; // set the player1 orientation state to "NORTH"
+
+                        if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) - 1].occupied) {
 
 
-                        if (player1.yPos / 25 != 1) {
-                            player1.yPos -= movementSpeed; //update ypos
-                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // set's player position to occupied.
-                            // ( needed for npc actions that might occur before a new collision mesh is generated)
-                        } else {
-                            mapChange(0);       // edge detection and map scrolling.
+                            if (player1.yPos / 25 != 1) {
+                                player1.yPos -= movementSpeed; //update ypos
+                                currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true; // set's player position to occupied.
+                                // ( needed for npc actions that might occur before a new collision mesh is generated)
+                            } else {
+                                mapChange(0);       // edge detection and map scrolling.
+                            }
+
+
                         }
-
-
                     }
                 }
                 break;
             case KeyEvent.VK_DOWN: // Tries to move down
 
-                loadMovementSound();
-
-                if (mapVisible && !engagedSuccessfully) {
-                    player1.orientation = "SOUTH";
-
-                    if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
+                if (!stuckInDialogue) {
 
 
-                        if (player1.yPos / 25 != 22) {
-                            player1.yPos += movementSpeed; //update ypos
-                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                        } else {
-                            mapChange(2);       // edge detection.
+                    loadMovementSound();
+
+                    if (mapVisible && !engagedSuccessfully) {
+                        player1.orientation = "SOUTH";
+
+                        if (!currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25) + 1].occupied) {
+
+
+                            if (player1.yPos / 25 != 22) {
+                                player1.yPos += movementSpeed; //update ypos
+                                currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                            } else {
+                                mapChange(2);       // edge detection.
+                            }
+
                         }
-
                     }
                 }
                 break;
             case KeyEvent.VK_LEFT: // Tries to move left
-                loadMovementSound();
-
-                if (mapVisible && !engagedSuccessfully) {
-                    player1.orientation = "WEST";
-
-                    if (!currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                if (!stuckInDialogue) {
 
 
-                        if (player1.xPos / 25 != 1) {
-                            player1.xPos -= movementSpeed; //update ypos
-                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                        } else {
-                            mapChange(3);          // edge detection.
+                    loadMovementSound();
+
+                    if (mapVisible && !engagedSuccessfully) {
+                        player1.orientation = "WEST";
+
+                        if (!currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+
+
+                            if (player1.xPos / 25 != 1) {
+                                player1.xPos -= movementSpeed; //update ypos
+                                currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                            } else {
+                                mapChange(3);          // edge detection.
+                            }
+
+
                         }
-
-
                     }
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Tries to move right
-                loadMovementSound();
 
-                if (mapVisible && !engagedSuccessfully) {
-                    player1.orientation = "EAST";
-
-                    if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                if (!stuckInDialogue) {
 
 
-                        if (player1.xPos / 25 != 30) {
-                            player1.xPos += movementSpeed; //update ypos
-                            currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
-                        } else {
-                            mapChange(1);
+                    loadMovementSound();
+
+                    if (mapVisible && !engagedSuccessfully) {
+                        player1.orientation = "EAST";
+
+                        if (!currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+
+
+                            if (player1.xPos / 25 != 30) {
+                                player1.xPos += movementSpeed; //update ypos
+                                currentOverWorld.tilemap[player1.xPos / 25][player1.yPos / 25].occupied = true;
+                            } else {
+                                mapChange(1);
+                            }
+
+
                         }
-
-
                     }
                 }
                 break;
@@ -3649,7 +3818,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         }
-        if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (!stuckInDialogue && (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
             if (mapVisible) {
                 tick();
             }
@@ -3743,8 +3912,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (e.getButton() == MouseEvent.BUTTON3) { // ON LEFT MOUSE CLICK
 
 
-            if (inventoryMenuVisible){
-                onMouseClickEquipItems(x,y);
+            if (inventoryMenuVisible) {
+                onMouseClickEquipItems(x, y);
             }
             currentItem = null;
             currentItemIndex = 0;
@@ -3753,6 +3922,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } else if (e.getButton() == MouseEvent.BUTTON1) { // ON RIGHT MOUSE CLICK
+
+
+            if (craftingMenuVisible) {
+                putCurrentItemIntoCraftingInterface(x, y);
+            }
 
             if (inventoryMenuVisible) {
                 currentItem = onMouseClickSelectItem(x, y);
@@ -3787,9 +3961,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         }
-        if (craftingMenuVisible && currentItem != null) {
-            putCurrentItemIntoCraftingInterface(x, y);
-        }
+
 
         if (!inventoryMenuVisible && !debugMenuVisible && !startMenuVisible) {
             currentTile = onMouseClickSelectTile(x, y);
@@ -3799,6 +3971,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (attackStyleChooserVisible) {
             onMouseClickAddAbility(x, y);
         }
+
+        onMouseClickInteractWithNpc(x, y);
+
+        if (stuckInDialogue && mousedOverDialogue != 0) {
+            changeDialogueState();
+        }
+
     /*
     QUICKSLOT GUI INTERFACE
     */
@@ -3812,8 +3991,83 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void changeDialogueState() {
+
+        switch (TRIGGER_dialogueState) {
+            case 0:
+                switch (mousedOverDialogue) {
+                    case 1:
+                        TRIGGER_dialogueState = 1;
+                        break;
+
+                    case 2:
+                        exitDialogue();
+                        break;
+
+                    case 3:
+
+                        break;
+                }
+                break;
+
+            case 1:
+                switch (mousedOverDialogue){
+                    case 1:
+                        TRIGGER_dialogueState = 2;
+                        break;
+
+                    case 2:
+                        exitDialogue();
+                        break;
+
+                    case 3:
+                        exitDialogue();
+                        break;
+                }
+
+        }
+
+
+    }
+
+    private void exitDialogue() {
+        stuckInDialogue = false;
+        currentDialogueNpc = null;
+        TRIGGER_dialogueState = 0;
+        mousedOverDialogue = 0;
+        npcDialogue = "npcdialogue";
+        playerResponse1 = "playerresponse1";
+        playerResponse2 = "playerresponse2";
+        playerResponse3 = "playerresponse3";
+
+    }
+
+    private void onMouseClickInteractWithNpc(int x, int y) {
+
+
+        for (Npc n : currentOverWorld.npcList) {
+
+            if (n.ai == "DUDE") {
+                if (((player1.xPos / 25) == (n.xPos / 25)) &&
+                        (((player1.yPos / 25) == ((n.yPos / 25) - 1)) ||
+                                ((player1.yPos / 25) == ((n.yPos / 25) + 1))) ||
+                        ((player1.yPos / 25) == (n.yPos / 25)) &&
+                                (((player1.xPos / 25) == ((n.xPos / 25) - 1)) ||
+                                        ((player1.xPos / 25) == ((n.xPos / 25) + 1)))) {
+                    if ((x / 25) == (n.xPos / 25) && (y / 25) == (n.yPos / 25)) {
+                        loadChopSound(); // Todo: Add an "interact with npc" soundclip.
+                        stuckInDialogue = true;
+                        currentDialogueNpc = n;
+
+                    }
+                }
+            }
+
+        }
+    }
+
     private void onMouseClickEquipItems(int x, int y) {
-        Item newItem = onMouseClickSelectItem(x,y);
+        Item newItem = onMouseClickSelectItem(x, y);
         if (newItem != null) {
 
             // MAINHAND
@@ -3890,121 +4144,99 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     }
                 }
             }
-            }
         }
+    }
 
 
     private boolean equipItem(Item item) {
         // MAIN HAND WEAPONS
-        if (item.ID == 13){
+        if (item.ID == 13) {
             player1.gearInterface.itemArray[5] = new Item(13);
             return true;
-        }
-        else if (item.ID == 9){
+        } else if (item.ID == 9) {
             player1.gearInterface.itemArray[5] = new Item(9);
             return true;
-        }
-        else if (item.ID == 20){
+        } else if (item.ID == 20) {
             player1.gearInterface.itemArray[5] = new Item(20);
             return true;
-        }
-        else if (item.ID == 31){
+        } else if (item.ID == 31) {
             player1.gearInterface.itemArray[5] = new Item(31);
             return true;
         }
         //  CHEST ARMOR
-        else if (item.ID == 6){
+        else if (item.ID == 6) {
             player1.gearInterface.itemArray[1] = new Item(6);
             return true;
-        }
-        else if (item.ID == 16){
+        } else if (item.ID == 16) {
             player1.gearInterface.itemArray[1] = new Item(16);
             return true;
-        }
-        else if (item.ID == 17){
+        } else if (item.ID == 17) {
             player1.gearInterface.itemArray[1] = new Item(17);
             return true;
-        }
-        else if (item.ID == 23){
+        } else if (item.ID == 23) {
             player1.gearInterface.itemArray[1] = new Item(23);
             return true;
-        }
-        else if (item.ID == 24){
+        } else if (item.ID == 24) {
             player1.gearInterface.itemArray[1] = new Item(24);
             return true;
-        }
-        else if (item.ID == 29){
+        } else if (item.ID == 29) {
             player1.gearInterface.itemArray[1] = new Item(29);
             return true;
-        }
-        else if (item.ID == 30){
+        } else if (item.ID == 30) {
             player1.gearInterface.itemArray[1] = new Item(30);
             return true;
         }
 
         // LEG ARMOR
-        else if (item.ID == 7){
+        else if (item.ID == 7) {
             player1.gearInterface.itemArray[2] = new Item(7);
             return true;
-        }
-        else if (item.ID == 14){
+        } else if (item.ID == 14) {
             player1.gearInterface.itemArray[2] = new Item(14);
             return true;
-        }
-        else if (item.ID == 15){
+        } else if (item.ID == 15) {
             player1.gearInterface.itemArray[2] = new Item(15);
             return true;
-        }
-        else if (item.ID == 21){
+        } else if (item.ID == 21) {
             player1.gearInterface.itemArray[2] = new Item(21);
             return true;
-        }
-        else if (item.ID == 22){
+        } else if (item.ID == 22) {
             player1.gearInterface.itemArray[2] = new Item(22);
             return true;
-        }
-        else if (item.ID == 27){
+        } else if (item.ID == 27) {
             player1.gearInterface.itemArray[2] = new Item(27);
             return true;
-        }
-        else if (item.ID == 28){
+        } else if (item.ID == 28) {
             player1.gearInterface.itemArray[2] = new Item(28);
             return true;
         }
 
         // OFF HAND
-        else if (item.ID == 10){
+        else if (item.ID == 10) {
             player1.gearInterface.itemArray[4] = new Item(10);
             return true;
-        }
-        else if (item.ID == 11){
+        } else if (item.ID == 11) {
             player1.gearInterface.itemArray[4] = new Item(11);
             return true;
-        }
-        else if (item.ID == 12){
+        } else if (item.ID == 12) {
             player1.gearInterface.itemArray[4] = new Item(12);
             return true;
-        }
-        else if (item.ID == 18){
+        } else if (item.ID == 18) {
             player1.gearInterface.itemArray[4] = new Item(18);
             return true;
-        }
-        else if (item.ID == 19){
+        } else if (item.ID == 19) {
             player1.gearInterface.itemArray[4] = new Item(19);
             return true;
-        }
-        else if (item.ID == 25){
+        } else if (item.ID == 25) {
             player1.gearInterface.itemArray[4] = new Item(25);
             return true;
-        }
-        else if (item.ID == 26){
+        } else if (item.ID == 26) {
             player1.gearInterface.itemArray[4] = new Item(26);
             return true;
         }
 
 
-
-        return  false;
+        return false;
     }
 
     private void onMouseClickAddAbility(int x, int y) {
@@ -5106,8 +5338,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         mouseDragX = e.getX();
         mouseDragY = e.getY();
 
-        currentHoverItem = onMouseMovedSelectHoverItem(mouseDragX,mouseDragY);
-
+        currentHoverItem = onMouseMovedSelectHoverItem(mouseDragX, mouseDragY);
 
     }
 
@@ -5149,5 +5380,3 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 }
-
-
