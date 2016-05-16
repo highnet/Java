@@ -3785,11 +3785,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
 
             case KeyEvent.VK_4:
+                if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
+                    saveCustomWorld("WORLD0" + currentOverWorld.idX + "0" + currentOverWorld.idY);
+                } else if (currentOverWorld.idX < 10) {
+                    saveCustomWorld("WORLD0" + currentOverWorld.idX + currentOverWorld.idY);
+                } else if (currentOverWorld.idY < 10) {
+                    saveCustomWorld("WORLD" + currentOverWorld.idX + "0" + currentOverWorld.idY);
+                } else {
+                  saveCustomWorld("WORLD" + currentOverWorld.idX + currentOverWorld.idY);
+                }
 
-                String nameW;
+                System.out.println(currentOverWorld.idX +"   "+currentOverWorld.idY);
 
-                nameW = getUserInput();
-                saveCustomWorld(nameW);
+
                 break;
 
             case KeyEvent.VK_5:
