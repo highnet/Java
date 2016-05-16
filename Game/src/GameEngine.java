@@ -24,7 +24,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 2;  // Defines Overworld dimensions
+    private int worldSize = 20;  // Defines Overworld dimensions
     private Overworld currentOverWorld = null;
 
     private Tile currentTile = null;
@@ -33,6 +33,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int tileBrushIndex = 0;
     private String tileBrush = "grass";
+
+    private int npcBrushIndex = 0;
+    private String npcBrush = "SHEEP";
 
 
     private Item currentItem = null;
@@ -74,6 +77,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private boolean shiftPressed = false;
     private boolean controlPressed = false;
+    private boolean altPressed = false;
 
     private Font font1 = new Font("Consola", Font.PLAIN, 8);
     private Font font2 = new Font("Consola", Font.BOLD, 16);
@@ -98,6 +102,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     int numberOfRainDrops = 10;
     Deque<Point> bufferSplashAnimations = new LinkedList<>();
     private ArrayList<String> tileList = new ArrayList<>();
+    private ArrayList<String> npcList = new ArrayList<>();
 
     AudioInputStream audioInputStream;
     Clip movementSound;
@@ -170,6 +175,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadSpritesReworked();
 
         indexTiles();
+        indexNpc();
 
 
         loadMenuSound();
@@ -184,8 +190,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
+        generateNpc(800,23,5,50,Color.black,"DUDE");
 
-        generateNpc(currentOverWorld.npcList.size() + 1, 5, 5, 100, Color.GRAY, "DUDE");
+
 
 
     }
@@ -1754,10 +1761,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void paintPalleteMenu(Graphics g) {
         g.setColor(Color.lightGray);
-        g.fillRect(62, 15, 150, 80);
+        g.fillRect(62, 15, 250, 80);
         g.drawImage(bufferedImageMap.get("ARROW_UP"), 80, 20, 30, 30, this);
         g.drawImage(bufferedImageMap.get("ARROW_DOWN"), 80, 50, 30, 30, this);
+        g.drawImage(bufferedImageMap.get("ARROW_UP"), 197, 20, 30, 30, this);
+        g.drawImage(bufferedImageMap.get("ARROW_DOWN"), 197, 50, 30, 30, this);
         g.drawImage(bufferedImageMap.get(tileList.get(tileBrushIndex)), 132, 44, 30, 30, this);
+        g.drawImage(bufferedImageMap.get("EAST_"+npcList.get(npcBrushIndex)), 250, 44, 30, 30, this);
     }
 
     private void paintCraftingMenu(Graphics g) {
@@ -3251,6 +3261,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             /*
             MOVEMENT AND ORIENTATION
             */
+
+
+            case KeyEvent.VK_H:
+
+                int x = getUserInputInt();
+                int y = getUserInputInt();
+
+               String ai = getUserInput();
+
+
+
+                System.out.println(ai);
+
+
+
+                generateNpc(currentOverWorld.npcList.size()+1,x,y,50,Color.BLACK,ai);
+
+
+
+
             case KeyEvent.VK_Q:
 
                 if (player1.personalQuestLog.isEmpty()){
@@ -3266,6 +3296,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             case KeyEvent.VK_SHIFT:
                 shiftPressed = true;
+                break;
+
+            case KeyEvent.VK_ALT:
+                altPressed = true;
                 break;
 
             case KeyEvent.VK_0:
@@ -3947,6 +3981,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_CONTROL:
                 controlPressed = false;
                 break;
+
+            case KeyEvent.VK_ALT:
+                altPressed = false;
+                break;
         }
     }
 
@@ -3993,10 +4031,25 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 rotateTileBrush(false);
             }
 
+            if (debugMenuVisible && x > 196 && x < 228 && y > 23 && y < 50) {
+                rotateNpcBrush(true);
+            }
+
+            if (debugMenuVisible && x > 196 && x < 228 && y > 55 && y < 81) {
+                rotateNpcBrush(false);
+            }
+
             if (shiftPressed && controlPressed) {
                 currentTileX = x / 25;
                 currentTileY = y / 25;
                 currentOverWorld.tilemap[currentTileX][currentTileY].type = tileBrush;
+
+            }
+
+            if (shiftPressed && altPressed) {
+                currentTileX = x / 25;
+                currentTileY = y / 25;
+                generateNpc(currentOverWorld.npcList.size()+1,currentTileX,currentTileY,50,Color.black,npcBrush.toUpperCase());
 
             }
 
@@ -4169,7 +4222,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (Npc n : currentOverWorld.npcList) {
 
-            if (n.ai == "DUDE") {
+            if (n.ai.equals("DUDE")) {
                 if (((player1.xPos / 25) == (n.xPos / 25)) &&
                         (((player1.yPos / 25) == ((n.yPos / 25) - 1)) ||
                                 ((player1.yPos / 25) == ((n.yPos / 25) + 1))) ||
@@ -4419,6 +4472,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         tileBrushIndex = 0;
     }
 
+    private void indexNpc() {
+        npcList.add("SHEEP");
+        npcList.add("CHASER");
+        npcList.add("DUDE");
+
+
+        npcBrushIndex = 0;
+    }
+
 
     private void rotateTileBrush(Boolean up) {
 
@@ -4445,6 +4507,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         tileBrush = tileList.get(tileBrushIndex).toLowerCase();
 
     }
+
+    private void rotateNpcBrush(Boolean up) {
+
+        if (up) {
+
+
+            if (npcBrushIndex == npcList.size() - 1) {
+                npcBrushIndex = 0;
+
+            } else {
+                npcBrushIndex++;
+            }
+
+        } else {
+
+
+            if (npcBrushIndex == 0) {
+                npcBrushIndex = npcList.size() - 1;
+            } else {
+                npcBrushIndex--;
+            }
+        }
+
+        npcBrush = npcList.get(npcBrushIndex).toLowerCase();
+    }
+
 
 
     private void putCurrentItemIntoCraftingInterface(int x, int y) {
@@ -5484,7 +5572,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         while (stringIn.hasNext()) {
             if (stringIn.hasNextLine()) {
-                return stringIn.next();
+                return stringIn.nextLine();
+            } else {
+                System.out.println("invalid input");
+                stringIn.next();
+            }
+        }
+        return null;
+    }
+
+    public static Integer getUserInputInt() {
+        Scanner stringIn = new Scanner(System.in);
+
+        System.out.println("please enters string:");
+
+        while (stringIn.hasNext()) {
+            if (stringIn.hasNextInt()) {
+                return stringIn.nextInt();
             } else {
                 System.out.println("invalid input");
                 stringIn.next();
