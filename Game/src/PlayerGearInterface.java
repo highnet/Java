@@ -8,11 +8,11 @@ public class PlayerGearInterface {
 
         itemArray = new Item[6];
         itemArray[0] = new Item(0); // HEAD ZONE Todo: add Items
-        itemArray[1] = new Item(24); // CHEST ZONE
-        itemArray[2] = new Item(22); // PANTS ZONE
+        itemArray[1] = new Item(6); // CHEST ZONE
+        itemArray[2] = new Item(7); // PANTS ZONE
         itemArray[3] = new Item(0); // Todo: BOOTS ZONE (NOT YET IMPLEMENTED) / add items
-        itemArray[4] = new Item(19); // OFFHAND
-        itemArray[5] = new Item(31); // MAINHAND
+        itemArray[4] = new Item(0); // OFFHAND
+        itemArray[5] = new Item(0); // MAINHAND
 
     }
 

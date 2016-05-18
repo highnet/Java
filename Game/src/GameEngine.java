@@ -101,8 +101,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     int numberOfRainDrops = 10;
     Deque<Point> bufferSplashAnimations = new LinkedList<>();
-    private ArrayList<String> tileList = new ArrayList<>();
-    private ArrayList<String> npcList = new ArrayList<>();
+    private ArrayList<String> BrushTileList = new ArrayList<>();
+    private ArrayList<String> brushNpcList = new ArrayList<>();
 
     AudioInputStream audioInputStream;
     Clip movementSound;
@@ -157,7 +157,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void startUp() {
         rnglist = rngSeeder();          // Loads pre-generated RNG numbers from file to a  Vector.
 
-        generatePlayer();               // Player is created.
+        generatePlayer();// Player is created.
+
+        for (int j = 0 ; j < 10; j++) {
+            for (int i = 0; i < 64; i++) {
+                if (player1.playerInventory.itemArray[i].ID == 0) {
+                    player1.playerInventory.itemArray[i].ID = 1;
+                    break;
+                }
+            }
+        }
+
+
 
         //   currentItem = player1.playerInventory.itemArray[0];
 
@@ -190,7 +201,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
-        generateNpc(800,23,5,50,Color.black,"DUDE");
 
 
 
@@ -199,7 +209,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void loadSpritesReworked() {
 
-        loadBufferedImage("EastDude.png", "EAST_DUDE");
+        loadBufferedImage("RaggedShirt.png","RAGGEDSHIRT");
+
+        loadBufferedImage("EastLumberjack.png", "EAST_LUMBERJACK");
+        loadBufferedImage("EastCastleGuard.png", "EAST_CASTLEGUARD");
 
         loadBufferedImage("GearWorksLogo.png", "GEARWORKS_LOGO");
         loadBufferedImage("GearWorksLogoSmall.png", "GEARWORKS_LOGO_SMALL");
@@ -251,6 +264,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("RatskinPantsPlayerModelEast.png", "RATSKIN_PANTS_PLAYERMODEL_EAST");
         loadBufferedImage("RatskinPantsPlayerModelNorth.png", "RATSKIN_PANTS_PLAYERMODEL_NORTH");
         loadBufferedImage("RatskinPantsPlayerModelWest.png", "RATSKIN_PANTS_PLAYERMODEL_WEST");
+
+        loadBufferedImage("RaggedShirtPlayerModelSouth.png","RAGGED_SHIRT_PLAYERMODEL_SOUTH");
+        loadBufferedImage("RaggedShirtPlayerModelEast.png","RAGGED_SHIRT_PLAYERMODEL_EAST");
+        loadBufferedImage("RaggedShirtPlayerModelWest.png","RAGGED_SHIRT_PLAYERMODEL_WEST");
+        loadBufferedImage("RaggedShirtPlayerModelNorth.png","RAGGED_SHIRT_PLAYERMODEL_NORTH");
 
         loadBufferedImage("BrownPlatebodyPlayerModelEast.png", "BROWN_PLATEBODY_PLAYERMODEL_EAST");
         loadBufferedImage("BrownPlatebodyPlayerModelWest.png", "BROWN_PLATEBODY_PLAYERMODEL_WEST");
@@ -959,6 +977,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
                 dummyWorld();
                 readWorld(x, y);
+
+                for (Npc n: currentOverWorld.npcList){
+                    n =  new Npc(n.ID,n.xPos,n.yPos,n.HP,Color.black,n.ai);   // refreshes all loaded nps. with newly constructed versions. to avoid bugs related to out dated npcs.
+                }
             }
         }
 
@@ -1118,8 +1140,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (mapVisible && !engagedSuccessfully) {
             paintTilesLayer0(g);
-            paintAllNpcs(g);
-            paintPlayerAtCoords(g);
             paintTilesLayer1(g);
 
             paintQuickslotGUI(g);
@@ -1165,7 +1185,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintCurrentlySelectedItemHighlights(g);
             paintCurrentlySelectedItemOnMouse(g);
         }
-        if (shiftPressed && currentHoverItem != null) { // && 5 seconds rested on item
+        if (shiftPressed && currentHoverItem != null && inventoryMenuVisible) { // && 5 seconds rested on item
 
             paintInventoryItemTooltip(g);
 
@@ -1245,26 +1265,37 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         Dialogue State : Npc Type : Q- "Question" . A1- "Answer1" . A2- "Answer2" . A3- "Answer3". :
 
-        0 : DUDE : Q- "Hello traveller." . A1- "Hello" . A2- "Actually, never mind." . A3- null. :
+        0 : LUMBERJACK : Q- "Hello traveller." . A1- "Hello" . A2- "Actually, never mind." . A3- null. :
 
 
          */
 
-        if (currentDialogueNpc.ai.equals("DUDE")) {
+        if (currentDialogueNpc.ai.equals("LUMBERJACK")) {
 
             switch (TRIGGER_dialogueState) {
                 case 0:
 
-                    if (player1.personalQuestsCompleted.contains(0)){ // )f played already has completed the quest
+                    boolean hasQuest0 = false;
+                    boolean hasQuest1 = false;
+
+                    for (Quest q : player1.personalQuestLog) {
+                        if (q.questID == 0) {
+                            hasQuest0 = true;
+                        }
+                        if (q.questID == 1) {
+                            hasQuest1 = true;
+                        }
+
+                    }
+
+
+                    if (player1.personalQuestsCompleted.contains(0)&& !hasQuest1){ // )f played already has completed the quest
                         TRIGGER_dialogueState = 5;
                     } else {
-                        boolean hasQuest = false;
-                        for (Quest q : player1.personalQuestLog) {
-                            if (q.questID == 0) {
-                                hasQuest = true;
-                            }
-                        }
-                        if (hasQuest) {
+
+                        if (hasQuest1){
+                             TRIGGER_dialogueState = 9;
+                        } else if (hasQuest0) {
                             TRIGGER_dialogueState = 3;
                         } else {
                             npcDialogue = currentDialogueNpc.dialogue[0];
@@ -1305,8 +1336,34 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     break;
 
                 case 5:
-                    npcDialogue = currentDialogueNpc.dialogue[8];
-                    playerResponse1 = "- " + currentDialogueNpc.dialogue[10];
+                    npcDialogue = currentDialogueNpc.dialogue[20];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[2];
+                    playerResponse3 = "- ";
+                    break;
+
+                case 6:
+                    npcDialogue = currentDialogueNpc.dialogue[3];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[4];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[5];
+                    playerResponse3 = "- " + currentDialogueNpc.dialogue[2];
+                    break;
+                case 7:
+                    npcDialogue = currentDialogueNpc.dialogue[18];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[7];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[5];
+                    playerResponse3 = "- ";
+                    break;
+                case 8:
+                    npcDialogue = currentDialogueNpc.dialogue[19];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[7];
+                    playerResponse2 = "- ";
+                    playerResponse3 = "- ";
+                    break;
+
+                case 9:
+                    npcDialogue = currentDialogueNpc.dialogue[21];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[7];
                     playerResponse2 = "- ";
                     playerResponse3 = "- ";
                     break;
@@ -1318,40 +1375,69 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     playerResponse3 = "- ";
 
             }
+        } else if (currentDialogueNpc.ai.equals("CASTLEGUARD")) {
+            switch (TRIGGER_dialogueState) {
+                case 0:
+
+
+                    boolean hasQuest1 = false;
+
+                    for (Quest q : player1.personalQuestLog) {
+                        if (q.questID == 1) {
+                            hasQuest1 = true;
+                        }
+
+                    }
+
+
+                    if (false) { // )f played already has completed the quest
+
+                    } else {
+
+                        if (hasQuest1) {
+                            TRIGGER_dialogueState = 1;
+                        } else {
+                            npcDialogue = currentDialogueNpc.dialogue[0];
+                            playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
+                            playerResponse2 = "- " ;
+                            playerResponse3 = "- ";
+                        }
+                    }
+
+                    break;
+
+                case 1:
+                    npcDialogue = currentDialogueNpc.dialogue[2];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[3];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[4] ;
+                    playerResponse3 = "- ";
+                    break;
+                case 2:
+                    npcDialogue = currentDialogueNpc.dialogue[5];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[6];
+                    playerResponse2 = "- " + currentDialogueNpc.dialogue[4];
+                    playerResponse3 = "- ";
+                    break;
+                case 3:
+                    npcDialogue = currentDialogueNpc.dialogue[0];
+                    playerResponse1 = "- " + currentDialogueNpc.dialogue[1];
+                    playerResponse2 = "- " ;
+                    playerResponse3 = "- ";
+                    break;
+
+            }
         }
 
 
-    }
+
+        }
 
     private void paintRain2(Graphics g) {
     }
 
-    private void paintPlayerAtCoords(Graphics g) {
 
-        for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 0; i < 32; i++) { // foreach tile inner loop
 
-                if (j == player1.yPos / 25 && i == player1.xPos / 25) {
-                    paintPlayer(g, 1);
-                }
-            }
-        }
-    }
 
-    private void paintAllNpcs(Graphics g) {
-
-        for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 0; i < 32; i++) { // foreach tile inner loop
-
-                for (Npc n : currentOverWorld.npcList) {
-                    if (j == n.yPos / 25 && i == n.xPos / 25) {
-                        paintNpcs(g, n);
-
-                    }
-                }
-            }
-        }
-    }
 
     private void paintInventoryItemTooltip(Graphics g) {
 
@@ -1532,7 +1618,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         switch (player1.gearInterface.itemArray[1].ID) { // CHEST ZONE
             case 6:
-                g.drawImage(bufferedImageMap.get("RATSKINCHEST"), 663, 542, 25, 25, this);
+                g.drawImage(bufferedImageMap.get("RAGGEDSHIRT"), 661, 545, 30, 30, this);
                 break;
             case 24:
                 g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED"), 663, 542, 25, 25, this);
@@ -1766,8 +1852,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawImage(bufferedImageMap.get("ARROW_DOWN"), 80, 50, 30, 30, this);
         g.drawImage(bufferedImageMap.get("ARROW_UP"), 197, 20, 30, 30, this);
         g.drawImage(bufferedImageMap.get("ARROW_DOWN"), 197, 50, 30, 30, this);
-        g.drawImage(bufferedImageMap.get(tileList.get(tileBrushIndex)), 132, 44, 30, 30, this);
-        g.drawImage(bufferedImageMap.get("EAST_"+npcList.get(npcBrushIndex)), 250, 44, 30, 30, this);
+        g.drawImage(bufferedImageMap.get(BrushTileList.get(tileBrushIndex)), 132, 44, 30, 30, this);
+        g.drawImage(bufferedImageMap.get("EAST_"+ brushNpcList.get(npcBrushIndex)), 250, 44, 30, 30, this);
     }
 
     private void paintCraftingMenu(Graphics g) {
@@ -1889,6 +1975,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "woodfloordoorwest":
                         g.drawImage(bufferedImageMap.get("WOODFLOORDOORWEST"), i * 25, j * 25, 25, 25, this);
                         break;
+
+                    case "openwoodfloordooreast":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORSOUTH"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "openwoodfloordoornorth":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOOREAST"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "openwoodfloordoorsouth":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORWEST"), i * 25, j * 25, 25, 25, this);
+                        break;
+                    case "openwoodfloordoorwest":
+                        g.drawImage(bufferedImageMap.get("WOODFLOORDOORNORTH"), i * 25, j * 25, 25, 25, this);
+                        break;
+
+
+
+
                     case "woodenfencehorizontal":
                         g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
                         break;
@@ -1924,7 +2027,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 0; i < 32; i++) { // foreach tile inner loop
+            for (int i = 31; i > 0; i--) { // foreach tile inner loop
 
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
@@ -1954,7 +2057,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
 
 
+
                 }
+                if (player1.xPos / 25 == i && player1.yPos / 25 == j){
+                        paintPlayer(g,1);
+                }
+
+                for (Npc n : currentOverWorld.npcList) {
+                    if (j == n.yPos / 25 && i == n.xPos / 25) {
+                        paintNpcs(g, n);
+
+                    }
+                }
+
 
 
             }
@@ -2081,7 +2196,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             } else if (player1.playerInventory.itemArray[i].ID == 5) {
                 g.drawImage(bufferedImageMap.get("RATSKINHOOD"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             } else if (player1.playerInventory.itemArray[i].ID == 6) {
-                g.drawImage(bufferedImageMap.get("RATSKINCHEST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+                g.drawImage(bufferedImageMap.get("RAGGEDSHIRT"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             } else if (player1.playerInventory.itemArray[i].ID == 7) {
                 g.drawImage(bufferedImageMap.get("RATSKINPANTS"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             } else if (player1.playerInventory.itemArray[i].ID == 8) {
@@ -2288,7 +2403,32 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 30, 45, this);
 
-        } else if (n.ai.equals("DUDE")) {
+        } else if (n.ai.equals("LUMBERJACK")) {
+
+            int xOffset = 0;
+            int yOffset = 0;
+
+            switch (n.orientation) {
+                case "NORTH":
+                    xOffset = 0;
+                    yOffset = 0;
+                    break;
+                case "SOUTH":
+                    xOffset = 0;
+                    yOffset = 0;
+                    break;
+                case "WEST":
+                    xOffset = 0;
+                    yOffset = 0;
+
+                    break;
+                case "EAST":
+                    xOffset = 0;
+                    yOffset = +15;
+                    break;
+            }
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 23, 40, this);
+        } else if (n.ai.equals("CASTLEGUARD")) {
 
             int xOffset = 0;
             int yOffset = 0;
@@ -2314,6 +2454,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
             g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 23, 40, this);
         }
+
 
 
     }
@@ -2531,6 +2672,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
                 case "SOUTH": {
                     switch (player1.gearInterface.itemArray[1].ID) { // SOUTH-FACING ARMOR RENDERING UNIT
+                        case 6:
+                            g.drawImage(bufferedImageMap.get("RAGGED_SHIRT_PLAYERMODEL_SOUTH"),player1.xPos - 3, player1.yPos - 20,25 * magnitude, 40 *magnitude, this);
+                            break;
                         case 24:
                             g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
@@ -2556,6 +2700,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 case "EAST": {
                     switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
+                        case 6:
+                            g.drawImage(bufferedImageMap.get("RAGGED_SHIRT_PLAYERMODEL_EAST"),player1.xPos - 3, player1.yPos - 20,25 * magnitude, 40 *magnitude, this);
+                            break;
                         case 24:
                             g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_EAST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
@@ -2579,7 +2726,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
                 case "NORTH": {
-                    switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
+                    switch (player1.gearInterface.itemArray[1].ID) { // NORTH-FACING ARMOR RENDERING UNIT
+                        case 6:
+                            g.drawImage(bufferedImageMap.get("RAGGED_SHIRT_PLAYERMODEL_NORTH"),player1.xPos - 3, player1.yPos - 20,25 * magnitude, 40 *magnitude, this);
+                            break;
                         case 24:
                             g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_NORTH"), player1.xPos - 4, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
@@ -2602,7 +2752,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     break;
                 }
                 case "WEST": {
-                    switch (player1.gearInterface.itemArray[1].ID) { // EAST-FACING ARMOR RENDERING UNIT
+                    switch (player1.gearInterface.itemArray[1].ID) { // WEST-FACING ARMOR RENDERING UNIT
+                        case 6:
+                            g.drawImage(bufferedImageMap.get("RAGGED_SHIRT_PLAYERMODEL_WEST"),player1.xPos - 3, player1.yPos - 20,25 * magnitude, 40 *magnitude, this);
+                            break;
                         case 24:
                             g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_WEST"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
@@ -2631,6 +2784,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             switch (player1.orientation) { // SOUTH-FACING RENDERING UNIT
                 case "SOUTH": {
                     switch (player1.gearInterface.itemArray[1].ID) { // SOUTH-FACING SHIELD RENDERING UNIT
+                        case 6:
+                            g.drawImage(bufferedImageMap.get("RAGGED_SHIRT_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
+                            break;
                         case 24:
                             g.drawImage(bufferedImageMap.get("GREEN_PLATEBODY_TRIMMED_PLAYERMODEL_SOUTH"), player1.xPos - 3, player1.yPos - 20, 25 * magnitude, 40 * magnitude, this);
                             break;
@@ -3020,7 +3176,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                     r = rotateRng();
 
-                    if (r > 98) {
+                    if (r > 98 &&    currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25].type.equals( "grass")) {
                         currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25].type = "dirt";
                         currentOverWorld.tilemap[n.xPos / 25][n.yPos / 25].growth = 0;
                     }
@@ -3264,22 +3420,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             case KeyEvent.VK_H:
-
-                int x = getUserInputInt();
-                int y = getUserInputInt();
-
-               String ai = getUserInput();
-
-
-
-                System.out.println(ai);
-
-
-
-                generateNpc(currentOverWorld.npcList.size()+1,x,y,50,Color.BLACK,ai);
-
-
-
+                break;
 
             case KeyEvent.VK_Q:
 
@@ -3832,6 +3973,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                      */
                     if (inputString.substring(0, 7).equals("add inv")) {
                         if (inputString.length() == 9) {
+
                             for (int i = 0; i < 64; i++) {
                                 if (player1.playerInventory.itemArray[i].ID == 0) {
                                     player1.playerInventory.itemArray[i].ID = Integer.valueOf(inputString.substring(8, 9));
@@ -3938,8 +4080,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 audioInputStream = AudioSystem.getAudioInputStream(Step2);
             } else if (stepCounter == 2) {
                 audioInputStream = AudioSystem.getAudioInputStream(Step3);
-            } else if (stepCounter == 3) {
-                audioInputStream = AudioSystem.getAudioInputStream(Step4);
             }
 
 
@@ -4079,6 +4219,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (!inventoryMenuVisible && !debugMenuVisible && !startMenuVisible) {
             currentTile = onMouseClickSelectTile(x, y);
+            onMouseClickInteractWithNpc(x, y);
+            onMouseClickOpenDoor(x,y);
+
         }
 
 
@@ -4086,7 +4229,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             onMouseClickAddAbility(x, y);
         }
 
-        onMouseClickInteractWithNpc(x, y);
+
+
+
 
         if (stuckInDialogue && mousedOverDialogue != 0) {
             changeDialogueState();
@@ -4106,111 +4251,203 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void changeDialogueState() {
+        if (currentDialogueNpc.ai.equals("LUMBERJACK")) {
+            switch (TRIGGER_dialogueState) {
+                case 0:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            TRIGGER_dialogueState = 1;
+                            break;
 
-        switch (TRIGGER_dialogueState) {
-            case 0:
-                switch (mousedOverDialogue) {
-                    case 1:
-                        TRIGGER_dialogueState = 1;
-                        break;
+                        case 2:
+                            exitDialogue();
+                            break;
 
-                    case 2:
-                        exitDialogue();
-                        break;
+                        case 3:
 
-                    case 3:
+                            break;
+                    }
+                    break;
 
-                        break;
-                }
-                break;
+                case 1:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            TRIGGER_dialogueState = 2;
+                            break;
 
-            case 1:
-                switch (mousedOverDialogue){
-                    case 1:
-                        TRIGGER_dialogueState = 2;
-                        break;
+                        case 2:
+                            exitDialogue();
+                            break;
 
-                    case 2:
-                        exitDialogue();
-                        break;
-
-                    case 3:
-                        exitDialogue();
-                        break;
-                }
-                break;
-            case 2:
-                switch (mousedOverDialogue){
-                    case 1:
-                        boolean hasQuest = false;
-                        for (Quest q : player1.personalQuestLog){
-                            if (q.questID == 0){
-                                hasQuest = true;
-                            }
-                        }
-                        if (!hasQuest){
-                            player1.personalQuestLog.add(new Quest(0,"Gathering Wood","NPC wants you to gather 10 wood for him so he can build a new house","Gather 10 Wood for NPC",new Item[]{new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1),new Item(1)},new ArrayList<Integer>()));
-
-                        }
-                        exitDialogue();
-                        break;
-                    case 2:
-                        exitDialogue();
-                        break;
-
-                    case 3:
-                        exitDialogue();
-                        break;
-                }
-                break;
-
-            case 3:
-                switch (mousedOverDialogue){
-                    case 1:
-                        exitDialogue();
-                        break;
-                    case 2:
-                        if (player1.playerInventory.hasItem(1,10)){
-                            player1.playerInventory.removeItem(1,10);
-                            for(int i = 0; i < player1.personalQuestLog.size(); i++){
-                                if (player1.personalQuestLog.get(i).questID == 0){
-                                    player1.personalQuestLog.remove(i);
-                                    System.out.println("QUEST (id = 0) COMPLETE");
-                                    player1.personalQuestsCompleted.add(0);
-                                    TRIGGER_dialogueState = 4;
+                        case 3:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            boolean hasQuest = false;
+                            for (Quest q : player1.personalQuestLog) {
+                                if (q.questID == 0) {
+                                    hasQuest = true;
                                 }
                             }
-                        }
-                        break;
-                }
+                            if (!hasQuest) {
+                                player1.personalQuestLog.add(new Quest(0, "Gathering Wood", "NPC wants you to gather 10 wood for him so he can build a new house", "Gather 10 Wood for NPC", new Item[]{new Item(1), new Item(1), new Item(1), new Item(1), new Item(1), new Item(1), new Item(1), new Item(1), new Item(1), new Item(1)}, new ArrayList<Integer>()));
 
+                            }
+                            exitDialogue();
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+
+                        case 3:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            exitDialogue();
+                            break;
+                        case 2:
+                            if (player1.playerInventory.hasItem(1, 10)) {
+                                player1.playerInventory.removeItem(1, 10);
+                                for (int i = 0; i < player1.personalQuestLog.size(); i++) {
+                                    if (player1.personalQuestLog.get(i).questID == 0) {
+                                        player1.personalQuestLog.remove(i);
+                                        System.out.println("QUEST (id = 0) COMPLETE");
+                                        player1.personalQuestsCompleted.add(0);
+                                        TRIGGER_dialogueState = 4;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+
+                    break;
+
+                case 4:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            exitDialogue();
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    switch (mousedOverDialogue) {
+                        case 1:
+
+                            TRIGGER_dialogueState = 6;
+
+                            break;
+                        case 2:
+                            TRIGGER_dialogueState = 6;
+                            break;
+                    }
                 break;
+                case 6:
+                    switch (mousedOverDialogue) {
+                        case 1:
+                            TRIGGER_dialogueState = 7;
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+                        case 3:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
 
-            case 4:
-                switch (mousedOverDialogue){
-                    case 1:
-                        exitDialogue();
-                        break;
-                    case 2:
-                        exitDialogue();
-                        break;
-                }
-                break;
+                case 7:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            player1.personalQuestLog.add(new  Quest(1,"Meet the castle","Take the wood bundle to the castle doors","Take the wood to the castle",new Item[1],new ArrayList<Integer>()));
+                            TRIGGER_dialogueState = 8;
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
 
-            case 5:
-                switch (mousedOverDialogue){
-                    case 1:
-                        exitDialogue();
-                        break;
-                }
+                case 8:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+                case 9:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
 
 
-                break;
 
+            }
+
+        } else if (currentDialogueNpc.ai.equals("CASTLEGUARD")){
+            switch (TRIGGER_dialogueState) {
+                case 0:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            TRIGGER_dialogueState = 2;
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (mousedOverDialogue){
+                        case 1:
+
+                            for (int i = 0; i < player1.personalQuestLog.size(); i++) {
+                                if (player1.personalQuestLog.get(i).questID == 1) {
+                                    player1.personalQuestLog.remove(i);
+                                    System.out.println("QUEST (id = 1) COMPLETE");
+                                    player1.personalQuestsCompleted.add(1);
+                                    TRIGGER_dialogueState = 3;
+                                }
+                            }
+
+                            break;
+                        case 2:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (mousedOverDialogue){
+                        case 1:
+                            exitDialogue();
+                            break;
+                    }
+                    break;
+
+            }
 
         }
-
-
     }
 
     private void exitDialogue() {
@@ -4230,7 +4467,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (Npc n : currentOverWorld.npcList) {
 
-            if (n.ai.equals("DUDE")) {
+            if (n.ai.equals("LUMBERJACK") || n.ai.equals("CASTLEGUARD")) {
                 if (((player1.xPos / 25) == (n.xPos / 25)) &&
                         (((player1.yPos / 25) == ((n.yPos / 25) - 1)) ||
                                 ((player1.yPos / 25) == ((n.yPos / 25) + 1))) ||
@@ -4247,6 +4484,106 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
         }
+    }
+
+    private void onMouseClickOpenDoor(int x,int y){
+
+        switch (currentOverWorld.tilemap[x/25][y/25].type){
+
+
+            case "woodfloordooreast":
+
+            if (player1.yPos/25 == y/25){
+                if (player1.xPos/25 == x/25 + 1 || player1.xPos/25 == x/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "openwoodfloordooreast";
+                }
+            }
+                tick();
+                break;
+
+
+            case "woodfloordoorwest" :
+            if (player1.yPos/25 == y/25){
+                if (player1.xPos/25 == x/25 + 1 || player1.xPos/25 == x/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "openwoodfloordoorwest";
+                }
+            }
+                tick();
+                break;
+
+            case "woodfloordoornorth" :
+
+            if (player1.xPos/25 == x/25){
+                if (player1.yPos/25 == y/25 + 1 || player1.yPos/25 == y/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "openwoodfloordoornorth";
+                }
+            }
+                tick();
+                break;
+
+            case "woodfloordoorsouth":
+
+
+            if (player1.xPos/25 == x/25){
+                if (player1.yPos/25 == y/25 + 1 || player1.yPos/25 == y/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "openwoodfloordoorsouth";
+                }
+            }
+                tick();
+
+             break;
+
+            case "openwoodfloordooreast":
+
+
+            if (player1.yPos/25 == y/25){
+                if (player1.xPos/25 == x/25 + 1 || player1.xPos/25 == x/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "woodfloordooreast";
+                }
+            }
+                tick();
+                break;
+
+            case "openwoodfloordoorwest":
+
+
+
+            if (player1.yPos/25 == y/25){
+                if (player1.xPos/25 == x/25 + 1 || player1.xPos/25 == x/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "woodfloordoorwest";
+                }
+            }
+                tick();
+                break;
+
+            case "openwoodfloordoornorth":
+
+
+
+            if (player1.xPos/25 == x/25){
+                if (player1.yPos/25 == y/25 + 1 || player1.yPos/25 == y/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "woodfloordoornorth";
+                }
+            }
+                tick();
+                break;
+
+            case "openwoodfloordoorsouth":
+
+            if (player1.xPos/25 == x/25){
+                if (player1.yPos/25 == y/25 + 1 || player1.yPos/25 == y/25 - 1){
+                    currentOverWorld.tilemap[x/25][y/25].type = "woodfloordoorsouth";
+                }
+            }
+                tick();
+                break;
+
+
+
+        }
+
+
+
     }
 
     private void onMouseClickEquipItems(int x, int y) {
@@ -4456,34 +4793,35 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void indexTiles() {
-        tileList.add("SAND");
-        tileList.add("GRASS");
-        tileList.add("STONE");
-        tileList.add("DIRT");
-        tileList.add("PLANKWALL");
-        tileList.add("RAKEDDIRT");
-        tileList.add("WOODFLOOR");
-        tileList.add("TREE");
-        tileList.add("WATER");
-        tileList.add("STONEPATHGRASS");
-        tileList.add("WOODFLOORDOORNORTH");
-        tileList.add("WOODFLOORDOOREAST");
-        tileList.add("WOODFLOORDOORSOUTH");
-        tileList.add("WOODFLOORDOORWEST");
-        tileList.add("WOODENFENCEHORIZONTAL");
-        tileList.add("WOODENFENCEVERTICAL");
-        tileList.add("WOODENFENCENWCORNER");
-        tileList.add("WOODENFENCENECORNER");
-        tileList.add("WOODENFENCESECORNER");
-        tileList.add("WOODENFENCESWCORNER");
+        BrushTileList.add("SAND");
+        BrushTileList.add("GRASS");
+        BrushTileList.add("STONE");
+        BrushTileList.add("DIRT");
+        BrushTileList.add("PLANKWALL");
+        BrushTileList.add("RAKEDDIRT");
+        BrushTileList.add("WOODFLOOR");
+        BrushTileList.add("TREE");
+        BrushTileList.add("WATER");
+        BrushTileList.add("STONEPATHGRASS");
+        BrushTileList.add("WOODFLOORDOORNORTH");
+        BrushTileList.add("WOODFLOORDOOREAST");
+        BrushTileList.add("WOODFLOORDOORSOUTH");
+        BrushTileList.add("WOODFLOORDOORWEST");
+        BrushTileList.add("WOODENFENCEHORIZONTAL");
+        BrushTileList.add("WOODENFENCEVERTICAL");
+        BrushTileList.add("WOODENFENCENWCORNER");
+        BrushTileList.add("WOODENFENCENECORNER");
+        BrushTileList.add("WOODENFENCESECORNER");
+        BrushTileList.add("WOODENFENCESWCORNER");
 
         tileBrushIndex = 0;
     }
 
     private void indexNpc() {
-        npcList.add("SHEEP");
-        npcList.add("CHASER");
-        npcList.add("DUDE");
+        brushNpcList.add("SHEEP");
+        brushNpcList.add("CHASER");
+        brushNpcList.add("LUMBERJACK");
+        brushNpcList.add("CASTLEGUARD");
 
 
         npcBrushIndex = 0;
@@ -4495,7 +4833,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (up) {
 
 
-            if (tileBrushIndex == tileList.size() - 1) {
+            if (tileBrushIndex == BrushTileList.size() - 1) {
                 tileBrushIndex = 0;
 
             } else {
@@ -4506,13 +4844,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             if (tileBrushIndex == 0) {
-                tileBrushIndex = tileList.size() - 1;
+                tileBrushIndex = BrushTileList.size() - 1;
             } else {
                 tileBrushIndex--;
             }
         }
 
-        tileBrush = tileList.get(tileBrushIndex).toLowerCase();
+        tileBrush = BrushTileList.get(tileBrushIndex).toLowerCase();
 
     }
 
@@ -4521,7 +4859,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (up) {
 
 
-            if (npcBrushIndex == npcList.size() - 1) {
+            if (npcBrushIndex == brushNpcList.size() - 1) {
                 npcBrushIndex = 0;
 
             } else {
@@ -4532,13 +4870,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             if (npcBrushIndex == 0) {
-                npcBrushIndex = npcList.size() - 1;
+                npcBrushIndex = brushNpcList.size() - 1;
             } else {
                 npcBrushIndex--;
             }
         }
 
-        npcBrush = npcList.get(npcBrushIndex).toLowerCase();
+        npcBrush = brushNpcList.get(npcBrushIndex).toLowerCase();
     }
 
 

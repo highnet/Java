@@ -12,7 +12,7 @@ public class Item {
     ID : 3 : SAND
     ID : 4 : PLANKS_WALL
     ID : 5 : RATSKINHOOD
-    ID : 6 : RATSKINCHEST
+    ID : 6 : RAGGEDSHIRT
     ID : 7 : RATSKINPANTS
     ID : 8 : RATSKIN_BOOTS // NOT YET IMPLEMENTED
     ID : 9 : WOODEN_CLUB
