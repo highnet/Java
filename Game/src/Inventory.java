@@ -78,4 +78,12 @@ public class Inventory {
     }
 
 
+    public void addItem(int itemID) {
+        for (int i = 0 ; i < this.itemArray.length-1; i++){
+            if (this.itemArray[i].ID == 0){
+                this.itemArray[i].ID = itemID;
+                break;
+            }
+        }
+    }
 }

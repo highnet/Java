@@ -38,6 +38,7 @@ public class Item {
     ID : 29 : BROWN_PLATEBODY
     ID : 30 : BROWN_PLATEBODY_TRIMMED
     ID : 31 : RED_DAGGER
+    ID : 32 : LUMBERJACK_AXE;
      */
 
 

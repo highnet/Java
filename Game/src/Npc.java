@@ -51,7 +51,7 @@ public class Npc extends Entity implements Serializable{
                 dialogue[21] = "Go deliver that wood before I get in trouble with lord Randiq!!";
                 break;
             case "CASTLEGUARD":
-                dialogue[0] = "Go away";
+                dialogue[0] = "Here is your payment (+7 GOLD), Go away";
                 dialogue[1] = "Ok.....";
                 dialogue[2] = "What do you want here ?";
                 dialogue[3] = "I have a delivery of wood.";

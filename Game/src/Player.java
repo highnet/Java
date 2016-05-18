@@ -15,6 +15,7 @@ public class Player extends Entity {
     ArrayList<Quest> personalQuestLog;
     ArrayList<Integer> personalQuestTriggers;
     ArrayList<Integer> personalQuestsCompleted;
+    int gold;
 
     public Player(int setID,int setxPos, int setyPos, int setInventorySize, float setHP, Color setColor){
 
@@ -27,6 +28,7 @@ public class Player extends Entity {
         personalQuestLog = new ArrayList<>();
         personalQuestTriggers = new ArrayList<>();
         personalQuestsCompleted = new ArrayList<>();
+        this.gold = 0;
 
     }
 
