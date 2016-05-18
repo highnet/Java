@@ -147,7 +147,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void startUp() {
 
-        renderer = new Renderer();
+
 
         rnglist = rngSeeder();          // Loads pre-generated RNG numbers from file to a  Vector.
 
@@ -1081,7 +1081,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         if (mapVisible && !engagedSuccessfully) {
-            renderer.paintTilesLayer0(g,bufferedImageMap,currentOverWorld,this);
+           paintTilesLayer0(g);
 
             paintTilesLayer1(g);
 
