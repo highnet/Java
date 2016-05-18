@@ -28,10 +28,14 @@ public class Npc extends Entity implements Serializable{
 
         dialogue = new String[22];
 
+
+
         switch (this.ai){
             case "LUMBERJACK":
+
+
                 dialogue[0] = "Hello traveller.";
-                dialogue[1] = "Hello.";
+                dialogue[1] = "Hello. ";
                 dialogue[2] = "Actually, never mind.";
                 dialogue[3] = "I have a quest for you!";
                 dialogue[4] = "Sure, what is it?";
@@ -51,12 +55,12 @@ public class Npc extends Entity implements Serializable{
                 dialogue[21] = "Go deliver that wood before I get in trouble with lord Randiq!!";
                 break;
             case "CASTLEGUARD":
-                dialogue[0] = "Here is your payment (+7 GOLD), Go away";
+                dialogue[0] = "Get lost";
                 dialogue[1] = "Ok.....";
                 dialogue[2] = "What do you want here ?";
                 dialogue[3] = "I have a delivery of wood.";
                 dialogue[4] = "Actually, never mind.";
-                dialogue[5] = "Well, what took you so long. \n Hand it over !!";
+                dialogue[5] = "Well, what took you so long. \n Hand it over !! \n Here is your payment";
                 dialogue[6] = "Here you go.";
                 break;
         }
