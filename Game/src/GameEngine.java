@@ -9,9 +9,6 @@ import java.io.*;
 import java.util.*;
 
 
-/**
- * Created by bokense on 25-Mar-16.
- */
 
 
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
@@ -19,8 +16,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int movementSpeed = 25;
 
     private Vector<Integer> rnglist;
-
-    private String playerInput = null;
 
     private int gameSpeed = 1;
 
@@ -44,9 +39,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentItemColumn = 0;
 
     private Item currentHoverItem = null;
-    private int currentHoverItemIndex = 0;
-    private int currentHoverItemRow = 0;
-    private int currentHoverItemColumn = 0;
 
 
     private int actionTick = 0;  // Ticker for player actions.
@@ -79,17 +71,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean controlPressed = false;
     private boolean altPressed = false;
 
-    private Font font1 = new Font("Consola", Font.PLAIN, 8);
-    private Font font2 = new Font("Consola", Font.BOLD, 16);
-    private Font font3 = new Font("Consola", Font.BOLD, 24);
+    private Font font1_8 = new Font("Consola", Font.PLAIN, 8);
+    private Font font2_16 = new Font("Consola", Font.BOLD, 16);
+    private Font font3_24 = new Font("Consola", Font.BOLD, 24);
+
+    private Font font4_22 = new Font("Arial",Font.BOLD,22);
+    private Font font4_20 = new Font("Arial",Font.BOLD,20);
 
     private Overworld[][] overWorld = new Overworld[worldSize][worldSize];
-
-    private boolean runFlag = false;
-
-    private boolean paintScreen;
-
-    private double delta = 0.04;
 
     double nextTime = (double) System.nanoTime() / 1000000000.0;
 
@@ -110,7 +99,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     Clip woodsSound;
     Clip menuSound;
 
-    private int stepCounter = 0;
     private boolean rainSoundLoaded = false;
     private boolean woodsSoundLoaded = false;
     private boolean menuSoundLoaded = false;
@@ -125,6 +113,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean TRIGGER_endOfCombat = false;
     private int storeXPos = 0;
     private int storeYPos = 0;
+    private String storeOrientation = "";
     private boolean attackStyleChooserVisible = false;
 
 
@@ -139,6 +128,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     String playerResponse3 = "playerresponse3";
     int TRIGGER_dialogueState = 0;
     int mousedOverDialogue = 0;
+
+    Renderer renderer = null;
 
     public GameEngine() {
 
@@ -155,6 +146,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void startUp() {
+
+        renderer = new Renderer();
+
         rnglist = rngSeeder();          // Loads pre-generated RNG numbers from file to a  Vector.
 
         generatePlayer();// Player is created.
@@ -194,8 +188,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         raining = true;
 
         generateRainPattern();
-
-        runFlag = true;
 
         timer.start();
         animationTimer0.start();
@@ -356,8 +348,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bi = ImageIO.read((new File("Data/GFX/" + filePath)));
             bufferedImageMap.put(syntaxName, bi);
 
-        } catch (IOException e) {
-            bi = null;
+        } catch (IOException ignored) {
         }
     }
 
@@ -630,56 +621,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             bufferedImageMap.put("WEST_CHASER", westZombie);
 
 
-        } catch (IOException e) {
-            greenBuckler = null;
-            blueDagger = null;
-            blueBucklerTrimmed = null;
-            blueBuckler = null;
-            woodenClubW = null;
-            woodenClubE = null;
-            woodenShield = null;
-            eastPlayer = null;
-            northPlayer = null;
-            westPlayer = null;
-            southPlayer = null;
-            sand = null;
-            woodenFenceNECorner = null;
-            woodenFenceSECorner = null;
-            woodenFenceSWCorner = null;
-            woodenFenceNWCorner = null;
-            ratSkinChest = null;
-            ratSkinPants = null;
-            WoodFloorDoorNorth = null;
-            WoodFloorDoorEast = null;
-            WoodFloorDoorSouth = null;
-            WoodFloorDoorWest = null;
-            errorImg = null;
-            northFrog = null;
-            southFrog = null;
-            eastFrog = null;
-            westFrog = null;
-            grass = null;
-            dirt = null;
-            rakedDirt = null;
-            plankWall = null;
-            woodFloor = null;
-            tree = null;
-            stone = null;
-            inventoryLumber = null;
-            northZombie = null;
-            southZombie = null;
-            eastZombie = null;
-            westZombie = null;
-            northSheep = null;
-            southSheep = null;
-            eastSheep = null;
-            westSheep = null;
-            upArrow = null;
-            downArrow = null;
-            water = null;
-            ratSkinHood = null;
-            woodenFenceHorizontal = null;
-            woodenFenceVertical = null;
+        } catch (IOException ignored) {
+
 
         }
 
@@ -690,8 +633,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         // convert the time to seconds
         double currTime = (double) System.nanoTime() / 1000000000.0;
 
+        boolean paintScreen;
         if (currTime >= nextTime) {
             // assign the time for the next update
+            double delta = 0.04;
             nextTime += delta;
             paintScreen = true;
 
@@ -736,13 +681,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         Vector<Integer> rnglist = new Vector<>();         // creates a Vector of type int to store RNG values.
 
         try {
-            Scanner input = new Scanner(file);              // creates a scanning stream pointing to file.
-            while (input.hasNext()) {                               // loops until file has no more text numbers.
-                rng = input.nextInt();                              // loads next integer in list.
 
-                rnglist.add(rng);                                           // adds the loaded integer to vector.
+            Scanner input = null;              // creates a scanning stream pointing to file.
+            if (file != null) {
+                input = new Scanner(file);
             }
-            input.close();                                  // closes stream.
+            if (input != null) {
+                while (input.hasNext()) {                               // loops until file has no more text numbers.
+                    rng = input.nextInt();                              // loads next integer in list.
+
+                    rnglist.add(rng);                                           // adds the loaded integer to vector.
+                }
+            }
+            if (input != null) {
+                input.close();                                  // closes stream.
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -982,7 +935,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 dummyWorld();
                 readWorld(x, y);
 
-                for (Npc n : currentOverWorld.npcList) {
+                for (Npc n : currentOverWorld.npcList) { // Todo; this does nothing atm
                     n = new Npc(n.ID, n.xPos, n.yPos, n.HP, Color.black, n.ai);   // refreshes all loaded nps. with newly constructed versions. to avoid bugs related to out dated npcs.
                 }
             }
@@ -1039,12 +992,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             in.close();
             fileIn.close();
             System.out.println("Data/CustomMaps/" + name + ".ser");
-        } catch (IOException i) {
+        } catch (IOException | ClassNotFoundException i) {
             i.printStackTrace();
-            return;
-        } catch (ClassNotFoundException c) {
-            c.printStackTrace();
-            return;
         }
 
     }
@@ -1080,20 +1029,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         currentOverWorld.npcList.addElement(n);             // works just like generate player but adds generated Npc to currentOverWorld.npclist.
 
         collisionMeshGenerator(); // Perhaps unneeded code but might prove itself useful in the future
-    }
-
-    private void removeNpc(int ID) {
-
-        int i;
-
-        currentOverWorld.npcList.removeElementAt(ID);   // deletes selected npc.
-
-        for (i = ID; i < currentOverWorld.npcList.size(); i++) {                  // fixes ID/index of remaining npc's in npclist.
-            currentNpc = currentOverWorld.npcList.elementAt(i);
-            currentNpc.ID--;
-
-        }
-
     }
 
     private void populateWorld() {
@@ -1138,12 +1073,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         if (engagedSuccessfully) {
+
             paintCombatSequence(g);
+
+
         }
 
 
         if (mapVisible && !engagedSuccessfully) {
-            paintTilesLayer0(g);
+            renderer.paintTilesLayer0(g,bufferedImageMap,currentOverWorld,this);
+
             paintTilesLayer1(g);
 
             paintQuickslotGUI(g);
@@ -1156,10 +1095,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
             }
 
-            if (attackStyleChooserVisible) {
-                paintAttackStyleChooser(g);
-                paintChosenAbilities(g);
-            }
+
 
         }
 
@@ -1168,6 +1104,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintTileLines(g);
             paintDebugMenu(g);
             paintPalleteMenu(g);
+        }
+
+        if (stuckInDialogue) {
+            paintDialogueScreen(g);
+
+        }
+
+        if (attackStyleChooserVisible) {
+            paintAttackStyleChooser(g);
+            paintChosenAbilities(g);
         }
 
         if (inventoryMenuVisible && !engagedSuccessfully) {
@@ -1202,58 +1148,71 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawImage(bufferedImageMap.get("GEARWORKS_LOGO_SMALL"), 15, 540, 28 * 2, 28 * 2, this);
         }
 
-        if (stuckInDialogue) {
-            paintDialogueScreen(g);
 
-        }
 
 
     }
 
     private void paintDialogueScreen(Graphics g) {
 
+        Graphics2D g2d = (Graphics2D) g;
+
         updateDialogueState();
         updateMouseOverState();
 
-        g.setColor(Color.gray);
-        g.fillRect(85, 495, 400, 110);
+        g2d.setColor(Color.black);
+        g2d.fillRect(0,395,800, 600-395);
 
-        g.drawImage(bufferedImageMap.get("EAST_" + currentDialogueNpc.ai), 104, 523, 50, 90, this);
-        g.setColor(Color.green);
-        g.setFont(font2);
-        g.drawString(npcDialogue, 88, 506);
+        g2d.setColor(Color.white);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.drawRoundRect(0,395,800,205,20,20);
+        g2d.setStroke(new BasicStroke(1));
 
-        g.setColor(Color.black);
+        g2d.drawImage(bufferedImageMap.get("EAST_" + currentDialogueNpc.ai), 16, 419, 100, 180, this);
+        g2d.setColor(Color.white);
+        g2d.setFont(font4_22);
+        g2d.drawString(npcDialogue, 116, 419);
+       // g2d.drawString("H (placeholder)", 116, 446);
+
+        g2d.setColor(Color.gray);
+
+        g2d.setFont(font4_20);
 
         if (mousedOverDialogue == 1) {
-            g.setColor(Color.yellow);
+            g2d.setColor(Color.yellow);
         }
-        g.drawString(playerResponse1, 197, 526);
-        g.setColor(Color.black);
+        g2d.drawString(playerResponse1, 151, 464);
+    //    g2d.drawString("H (placeholder)", 151, 489);
+        g2d.setColor(Color.gray);
         if (mousedOverDialogue == 2) {
-            g.setColor(Color.yellow);
+            g2d.setColor(Color.yellow);
         }
-        g.drawString(playerResponse2, 197, 556);
-        g.setColor(Color.black);
+        g2d.drawString(playerResponse2, 151, 515);
+   //     g2d.drawString("H (placeholder)", 151, 541);
+
+        g2d.setColor(Color.gray);
         if (mousedOverDialogue == 3) {
-            g.setColor(Color.yellow);
+            g2d.setColor(Color.yellow);
         }
 
-        g.drawString(playerResponse3, 197, 586);
-        g.setColor(Color.black);
-        g.drawString("#Dialogue State = " + TRIGGER_dialogueState, 355, 503);
-        g.drawString("#MousedOverDialogue = " + mousedOverDialogue, 355, 523);
+        g2d.drawString(playerResponse3, 151, 567);
+   //     g2d.drawString("H (placeholder)", 151, 593);
+        g2d.setColor(Color.red);
+        g2d.setFont(font1_8);
+        g2d.drawString("#Dialogue State = " + TRIGGER_dialogueState, 711, 408);
+        g2d.drawString("#MousedOverDialogue = " + mousedOverDialogue, 698, 424);
     }
+
 
     private void updateMouseOverState() {
 
-        if (mouseDragX > 86 && mouseDragX < 496 && mouseDragY > 496 && mouseDragY < 596) { // if mouse is in dialogue window
+        if (mouseDragY > 393) { // if mouse is in dialogue window
 
-            if (mouseDragY > 506 && mouseDragY < 539) {
+            if (mouseDragY > 450 && mouseDragY < 494) {
                 mousedOverDialogue = 1;
-            } else if (mouseDragY > 539 && mouseDragY < 571) {
+            } else if (mouseDragY > 494 && mouseDragY < 544) {
                 mousedOverDialogue = 2;
-            } else if (mouseDragY > 571) {
+            } else if (mouseDragY > 544) {
                 mousedOverDialogue = 3;
             }
         } else {
@@ -1453,10 +1412,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             g2d.setColor(Color.black);
             g2d.drawRect(mouseDragX - borderWidth, mouseDragY - borderHeight, borderWidth, borderHeight);
-
-            g2d.setColor(Color.red);
-            g2d.setFont(font2);
-            // g2d.drawString(String.valueOf(currentHoverItem.ID),mouseDragX + 10,mouseDragY - borderHeight);
+            g2d.setFont(font2_16);
+             g2d.drawString("ID: " +String.valueOf(currentHoverItem.ID),mouseDragX - borderWidth + 5,mouseDragY - borderHeight + 17);
 
         } else {
             // g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
@@ -1467,8 +1424,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setColor(Color.black);
             g2d.drawRect(mouseDragX, mouseDragY - borderHeight, borderWidth, borderHeight);
 
-            g2d.setFont(font2);
-            g2d.drawString("ID: " + String.valueOf(currentHoverItem.ID), mouseDragX + 5, mouseDragY - borderHeight + 15);
+            g2d.setFont(font2_16);
+            g2d.drawString("ID: " + String.valueOf(currentHoverItem.ID), mouseDragX + 5, mouseDragY - borderHeight + 17);
         }
     }
 
@@ -1521,7 +1478,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.lightGray);
         g.fillRect(25, 356, 300, 120);
         g.setColor(Color.black);
-        g.setFont(font2);
+        g.setFont(font2_16);
         g.drawString("Choose your skills", 25, 376);
 
         g.drawString("Active Skills", 25, 433);
@@ -1601,7 +1558,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.drawRect(693, 542, 25, 25);
         g.drawRect(633, 542, 25, 25);
 
-        g.setFont(font1);
+        g.setFont(font1_8);
 
 
         switch (player1.gearInterface.itemArray[0].ID) { // HELMET ZONE
@@ -1873,7 +1830,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.fillRect(151, 233, 59, 15); // "CRAFT BUTTON"
         g.fillRect(151,253,71,15); // "RETURN" BUTTON
 
-        g.setFont(font2);
+        g.setFont(font2_16);
         g.drawString("Crafting", 34, 142);
         int counter = 0;
         int row = 0;
@@ -1900,7 +1857,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         g.drawRect(157, 183, 30, 30);
         g.setColor(Color.white);
-        g.setFont(font2);
+        g.setFont(font2_16);
         g.drawString("CRAFT", 153, 247);
         g.drawString("CANCEL", 153, 266);
 
@@ -2171,7 +2128,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         g.setColor(Color.lightGray);
         g.fillRect(575, 149, 200, 600);
-        g.setFont(font3);
+        g.setFont(font3_24);
         g.setColor(Color.black);
         g.drawString("Inventory", 585, 167);
 
@@ -2299,7 +2256,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.gray);
         g.fillRect(24, 450, 300, 124);
         g.setColor(Color.black);
-        g.setFont(font2);
+        g.setFont(font2_16);
         g.drawString("player1 TrueCoords: (" + player1.xPos + ", " + player1.yPos + ")", 37, 465);
         g.drawString("player1 TileCoords: (" + (player1.xPos / 25) + ", " + (player1.yPos / 25) + ")", 37, 490);
 
@@ -2318,7 +2275,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.gray);
         g.fillRect(24, 1, 750, 600);
         g.setColor(Color.black);
-        g.setFont(font2);
+        g.setFont(font2_16);
         g.drawString("0 : Generate world ( overwrites all saves in Maps folder.) / close menu", 87, 88);
         g.drawString("1 : Load map from files", 87, 122);
         g.drawString("9 : Load Map ( test function )", 87, 157);
@@ -2337,7 +2294,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.setColor(Color.gray);
         g.fillRect(363, 452, 300, 100);
         g.setColor(Color.black);
-        g.setFont(font2);
+        g.setFont(font2_16);
 
         if (currentTile != null) {
             g.drawString(currentTile.type, 373, 468);
@@ -3137,7 +3094,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void paintTileCoordinates(Graphics g) {
-        g.setFont(font1);
+        g.setFont(font1_8);
         g.setColor(Color.black);
 
         for (int i = 0; i < 32; i++) {
@@ -3450,6 +3407,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (TRIGGER_endOfCombat) {
             player1.xPos = storeXPos;
             player1.yPos = storeYPos;
+            player1.orientation = storeOrientation;
             TRIGGER_endOfCombat = false;
             engagedSuccessfully = false;
             return true;
@@ -3861,13 +3819,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_F:
                 System.out.println("F- fighting");
 
-                String harvestedItem = "";
                 if (player1.orientation.equals("EAST")) {
 
                     for (Npc n : currentOverWorld.npcList) {
                         if (player1.xPos / 25 + 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25) {
                             currentNpc = n;
                             engagedSuccessfully = true;
+                            storeOrientation = player1.orientation;
                             storeXPos = player1.xPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                             storeYPos = player1.yPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
 
@@ -3884,6 +3842,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         if (player1.xPos / 25 - 1 == n.xPos / 25 && player1.yPos / 25 == n.yPos / 25) {
                             currentNpc = n;
                             engagedSuccessfully = true;
+                            storeOrientation = player1.orientation;
+
                             storeXPos = player1.xPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                             storeYPos = player1.yPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                         }
@@ -3899,6 +3859,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         if (player1.yPos / 25 - 1 == n.yPos / 25 && player1.xPos / 25 == n.xPos / 25) {
                             currentNpc = n;
                             engagedSuccessfully = true;
+                            storeOrientation = player1.orientation;
+
                             storeXPos = player1.xPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                             storeYPos = player1.yPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                         }
@@ -3915,6 +3877,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             currentNpc = n;
 
                             engagedSuccessfully = true;
+                            storeOrientation = player1.orientation;
+
                             storeXPos = player1.xPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                             storeYPos = player1.yPos; // STORES WHERE THE COMBAT WAS INITIATED IN ORDER TO RETURN THE PLAYER TO THAT COORDINATE
                         }
@@ -3925,19 +3889,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 }
 
                 System.out.println(engagedSuccessfully);
-                if (engagedSuccessfully) { // Iff the tile is flagged to be successfully harvested, find an empty slot and fill it with a given item.
+                if (engagedSuccessfully) {
                     System.out.println("engaged");
 
 
-                    System.out.println("you hit the " + currentNpc.ai + " for 20 damage");
-                    currentNpc.HP = currentNpc.HP - 20;
-                    //     tick();
+                    currentNpc.HP -= 20;
 
                     if (currentNpc.HP < 0) {
-                        System.out.println("the " + currentNpc.ai + " dies");
-                        removeNpc(currentNpc.ID);
                         TRIGGER_endOfCombat = true;
-
+                        currentNpc.HP = 100F;
                     }
 
 
@@ -4125,7 +4085,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         File Step4 = new File("Data/Sound/Step4.wav");
 
 
-        stepCounter = rotateRng() % 3;
+        int stepCounter = rotateRng() % 3;
 
         try {
 
@@ -4560,6 +4520,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if ((x / 25) == (n.xPos / 25) && (y / 25) == (n.yPos / 25)) {
                         loadChopSound(); // Todo: Add an "interact with npc" soundclip.
                         stuckInDialogue = true;
+
                         currentDialogueNpc = n;
 
                     }
@@ -5497,13 +5458,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private Item onMouseMovedSelectHoverItem(int x, int y) {
 
         currentHoverItem = null;
-        currentHoverItemIndex = -1;
-        currentHoverItemColumn = -1;
-        currentHoverItemRow = -1;
+        int currentHoverItemIndex = -1;
+        int currentHoverItemRow = -1;
 
         if (inRange(x, 587, 617, true)) {
-
-            currentHoverItemColumn = 1;
 
 
             if (inRange(y, 176, 206, true)) {
@@ -5575,8 +5533,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         } else if (inRange(x, 618, 648, true)) {
 
-            currentHoverItemColumn = 2;
-
 
             if (inRange(y, 176, 206, true)) {
 
@@ -5647,8 +5603,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
         } else if (inRange(x, 649, 679, true)) {
-
-            currentHoverItemColumn = 3;
 
 
             if (inRange(y, 176, 206, true)) {
@@ -5722,8 +5676,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         } else if (inRange(x, 680, 710, true)) {
 
-            currentHoverItemColumn = 4;
-
 
             if (inRange(y, 176, 206, true)) {
 
@@ -5794,8 +5746,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             }
         } else if (inRange(x, 711, 741, true)) {
-
-            currentHoverItemColumn = 5;
 
 
             if (inRange(y, 176, 206, true)) {
@@ -5869,8 +5819,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } else if (inRange(x, 742, 772, true)) {
-
-            currentHoverItemColumn = 6;
 
 
             if (inRange(y, 176, 206, true)) {
@@ -6054,4 +6002,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         return (i < upper && i > lower);
     }
 
+
 }
+
