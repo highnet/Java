@@ -19,7 +19,7 @@ public class Tile implements Serializable {
         this.farmable = farmable;
         this.occupied = occupied;
 
-        if (this.type.equals("t0stone")) {
+        if (this.type.equals("t0stone") || this.type.equals("t1stone") || this.type.equals("t2stone") || this.type.equals("t3stone") || this.type.equals("t4stone")) {
             rockPermutation = (int) (Math.random() * 2);
         } else if (this.type.equals("grass")) {
             this.grassPermutation = (int) (Math.random() * 12);

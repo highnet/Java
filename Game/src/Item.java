@@ -38,9 +38,14 @@ public class Item {
     ID : 29 : BROWN_PLATEBODY
     ID : 30 : BROWN_PLATEBODY_TRIMMED
     ID : 31 : RED_DAGGER
-    ID : 32 : LUMBERJACK_AXE;
-     */
+    ID : 32 : LUMBERJACK_AXE
+    ID : 33 : MINER_PICKAXE
+    ID : 34 : YELLOW_ORE
+    ID : 35 : BLUE_ORE
+    ID : 36 : GREEN_ORE
+    ID : 37 : RED_ORE
 
+*/
 
     int ID;
 
