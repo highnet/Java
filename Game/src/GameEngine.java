@@ -59,7 +59,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private boolean inventoryMenuVisible = false;
 
-    private boolean startMenuVisible = true;
+    private boolean startMenuVisible = false;
 
     private boolean viewMenuVisible = false;
 
@@ -129,7 +129,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     int TRIGGER_dialogueState = 0;
     int mousedOverDialogue = 0;
 
-    Renderer renderer = null;
 
     public GameEngine() {
 
@@ -153,13 +152,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         generatePlayer();// Player is created.
 
+
+
+
         for (int j = 0; j < 10; j++) {
-            for (int i = 0; i < 64; i++) {
-                if (player1.playerInventory.itemArray[i].ID == 0) {
-                    player1.playerInventory.itemArray[i].ID = 1;
-                    break;
-                }
-            }
+            player1.playerInventory.addItem(1);
         }
 
 
@@ -192,8 +189,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
+        fillWorld();
+
+        loadRainSound();
+        loadWoodsSound();
 
         generateTestingEnvironment0();
+
+        worldExists = true;
+        startMenuVisible = false;               // this is how the menu hides other windows.
+        mapVisible = true;
 
 
     }
@@ -878,7 +883,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
                 dummyWorld();                               // initializes current Overworld tilemap.
-                generateWorldImproved();                    // generates RNG world and serializes to file.
+         //       generateWorldImproved();                    // generates RNG world and serializes to file.
                 if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
                     System.out.println("World0" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
                 } else if (currentOverWorld.idX < 10) {
@@ -888,7 +893,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 } else {
                     System.out.println("World" + currentOverWorld.idX + currentOverWorld.idY + " generated");
                 }
-                populateWorld();                        // initializes and populates currentOverWorld.npclist with RNG Npc's.
+           //     populateWorld();                        // initializes and populates currentOverWorld.npclist with RNG Npc's.
                 saveWorld();
             }
 
@@ -1120,7 +1125,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
 
-        if (mapVisible && !engagedSuccessfully) {
+        if (!engagedSuccessfully) {
            paintTilesLayer0(g);
 
             paintTilesLayer1(g);
@@ -2317,9 +2322,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g.fillRect(24, 1, 750, 600);
         g.setColor(Color.black);
         g.setFont(font2_16);
-        g.drawString("0 : Generate world ( overwrites all saves in Maps folder.) / close menu", 87, 88);
-        g.drawString("1 : Load map from files", 87, 122);
-        g.drawString("9 : Load Map ( test function )", 87, 157);
+
 
         if (worldExists) {
             g.drawString("World ready", 87, 220);
@@ -3497,61 +3500,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 altPressed = true;
                 break;
 
-            case KeyEvent.VK_0:
-
-                currentTile = null;
-
-                if (worldExists) {
-                    if (startMenuVisible) {
-                        startMenuVisible = false;               // this is how the menu hides other windows.
-
-                        if (!rainSoundLoaded && !woodsSoundLoaded) {
-                            loadRainSound();
-                            loadWoodsSound();
-                        }
-
-                        mapVisible = true;
-
-                        break;
-                    } else {
-                        startMenuVisible = true;
-
-                        mapVisible = false;
-                        inventoryMenuVisible = false;
-                        debugMenuVisible = false;
-                        craftingMenuVisible = false;
-
-                        break;
-                    }
-                } else if (startMenuVisible) {
-                    fillWorld();
-                    worldExists = true;
-                    startMenuVisible = false;               // this is how the menu hides other windows.
-                    mapVisible = true;
-
-                    if (!rainSoundLoaded && !woodsSoundLoaded) {
-                        loadRainSound();
-                        loadWoodsSound();
-                    }
-                    break;
-                } else {
-                    startMenuVisible = true;
-
-                    mapVisible = false;
-                    inventoryMenuVisible = false;
-                    debugMenuVisible = false;
-                    craftingMenuVisible = false;
-
-                    break;
-                }
-
-
-            case KeyEvent.VK_9:
-
-                readWorld(1, 1);    // loads world11.
-                System.out.println(currentOverWorld.idX + currentOverWorld.idY);
-
-                break;
             case KeyEvent.VK_C:
 
                 craftingMenuVisible = !craftingMenuVisible;
@@ -3784,9 +3732,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         }
                     }
                     break;
-                } else if (startMenuVisible){
-                    reloadOverWorld();
-                    worldExists = true;
                 }
 
             /*
