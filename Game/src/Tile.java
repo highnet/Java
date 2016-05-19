@@ -9,6 +9,7 @@ public class Tile implements Serializable {
     boolean farmable;
     boolean occupied;
     int growth;
+    int grassPermutation;
 
     public Tile(String type, boolean farmable, boolean occupied) { // Constructor for a custom tile type
         this.type = type;
@@ -18,6 +19,7 @@ public class Tile implements Serializable {
 
     public Tile() {
         this("grass",false,false);
+        this.grassPermutation = (int) (Math.random() * 12);
     } // Constructor for default tiles of tiletype grass
 
 }
