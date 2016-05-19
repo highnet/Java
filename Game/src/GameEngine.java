@@ -88,7 +88,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean raining;
     Point[] rainDrops;
 
-    int numberOfRainDrops = 10;
+    int numberOfRainDrops = 15;
     Deque<Point> bufferSplashAnimations = new LinkedList<>();
     private ArrayList<String> BrushTileList = new ArrayList<>();
     private ArrayList<String> brushNpcList = new ArrayList<>();
@@ -192,10 +192,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
+
+        generateTestingEnvironment0();
+
+
+    }
+
+    private void generateTestingEnvironment0() {
+
+
         generateNpc(currentOverWorld.npcList.size() + 1, 5, 5, 10, Color.black, "LUMBERJACK");
         generateNpc(currentOverWorld.npcList.size() + 1, 5, 8, 10, Color.black, "CASTLEGUARD");
         generateNpc(currentOverWorld.npcList.size() + 1, 5, 11, 10, Color.black, "CHEF");
-
 
     }
 
@@ -214,7 +222,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("Grass10.png","GRASS10");
         loadBufferedImage("Grass11.png","GRASS11");
 
+        loadBufferedImage("T0Stone0.png","T0STONE0");
+        loadBufferedImage("T0Stone1.png","T0STONE1");
+
         loadBufferedImage("T1Stone0.png","T1STONE0");
+        loadBufferedImage("T1Stone1.png","T1STONE1");
+
+        loadBufferedImage("T2Stone0.png","T2STONE0");
+        loadBufferedImage("T2Stone1.png","T2STONE1");
+
+        loadBufferedImage("T3Stone0.png","T3STONE0");
+        loadBufferedImage("T3Stone1.png","T3STONE1");
+
+        loadBufferedImage("T4Stone0.png","T4STONE0");
+        loadBufferedImage("T4Stone1.png","T4STONE1");
+
+
 
 
 
@@ -769,7 +792,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
                 if (r > 98) {
-                    currentOverWorld.tilemap[i][j].type = "stone";
+                    currentOverWorld.tilemap[i][j].type = "t0stone";
+                    currentOverWorld.tilemap[i][j].rockPermutation = (int) (Math.random() * 2);
                 }
 
                 if (currentOverWorld.tilemap[i][j].type.equals("rakeddirt")) {                   // Makes all rakedDirt farmable
@@ -789,7 +813,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             for (j = 0; j < 24; j++) {                      // and flag any non passable tiles as occupied. flag every passable tile as !occupied.
 
                 currentOverWorld.tilemap[i][j].occupied = (currentOverWorld.tilemap[i][j].type.equals("tree")) ||
-                        (currentOverWorld.tilemap[i][j].type.equals("stone")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t0stone")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("water")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodfloordoornorth")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodfloordooreast")) ||
@@ -1729,7 +1753,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
         }
         if (currentItem.ID == 2) {
-            g.drawImage(bufferedImageMap.get("STONE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+            g.drawImage(bufferedImageMap.get("T0STONE0"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
         }
         if (currentItem.ID == 3) {
             g.drawImage(bufferedImageMap.get("SAND"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
@@ -1864,7 +1888,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (player1.playerCrafter.itemArray[i].ID == 1) {
                 g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), 34 + (counter * 30), 149 + (row * 30), 25, 22, this);
             } else  if (player1.playerCrafter.itemArray[i].ID == 2) {
-                g.drawImage(bufferedImageMap.get("STONE"), 34 + (counter * 30), 149 + (row * 30), 25, 22, this);
+                g.drawImage(bufferedImageMap.get("T0STONE0"), 34 + (counter * 30), 149 + (row * 30), 25, 22, this);
             }
 
             counter++;
@@ -1919,7 +1943,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
                         g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
                         break;
-                    case "stone":
+                    case "t0stone":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
@@ -2015,8 +2039,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "tree":
                         g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
                         break;
-                    case "stone":
-                        g.drawImage(bufferedImageMap.get("T1STONE0"), i * 25, j * 25 - 5, 25, 25, this);     // draws a tree
+                    case "t0stone":
+                        g.drawImage(bufferedImageMap.get("T0STONE" + String.valueOf(currentOverWorld.tilemap[i][j].rockPermutation)), i * 25, j * 25 - 5, 25, 25, this);     // draws a tree
                         break;
                     case "woodenfencehorizontal":
                         g.drawImage(bufferedImageMap.get("WOODENFENCEHORIZONTAL"), i * 25, j * 25, 25, 25, this);
@@ -2166,7 +2190,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (player1.playerInventory.itemArray[i].ID == 1) {
                 g.drawImage(bufferedImageMap.get("INVENTORY_LUMBER"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
             } else if (player1.playerInventory.itemArray[i].ID == 2) {
-                g.drawImage(bufferedImageMap.get("T1STONE0"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
+                g.drawImage(bufferedImageMap.get("T0STONE0"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
 
             } else if (player1.playerInventory.itemArray[i].ID == 3) {
                 g.drawImage(bufferedImageMap.get("SAND"), 593 + (counter * 30) - 5, 183 + (row * 30) - 5, 25, 25, this);
@@ -3698,7 +3722,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             harvestedSuccessfully = true;
 
                         }
-                        if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("stone")) {
+                        if (player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("t0stone")) {
                             currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "dirt";
                             harvestedItem = "cobblestone";
                             currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].farmable = true;
@@ -3712,7 +3736,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             harvestedSuccessfully = true;
 
                         }
-                        if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("stone")) {
+                        if (player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("t0stone")) {
                             currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "dirt";
                             harvestedItem = "cobblestone";
                             currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].farmable = true;
@@ -3724,7 +3748,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             harvestedSuccessfully = true;
                             harvestedItem = "lumber";
                         }
-                        if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("stone")) {
+                        if (player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("t0stone")) {
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "dirt";
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].farmable = true;
                             harvestedSuccessfully = true;
@@ -3735,7 +3759,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             harvestedItem = "lumber";
                             harvestedSuccessfully = true;
                         }
-                        if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("stone")) {
+                        if (player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("t0stone")) {
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "dirt";
                             harvestedItem = "cobblestone";
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].farmable = true;
@@ -3774,24 +3798,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 if (currentItem != null && currentItem.ID == 2) {
                     if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "stone";
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "t0stone";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "stone";
+                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "t0stone";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     }
 
                     if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "stone";
+                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "t0stone";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
 
                     } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "stone";
+                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "t0stone";
                         player1.playerInventory.itemArray[currentItemIndex].ID = 0;
                         tick();
                     }
@@ -4856,7 +4880,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void indexTiles() {
         BrushTileList.add("SAND");
         BrushTileList.add("GRASS");
-        BrushTileList.add("STONE");
+        BrushTileList.add("T0STONE0");
+        BrushTileList.add("T0STONE1");
         BrushTileList.add("DIRT");
         BrushTileList.add("PLANKWALL");
         BrushTileList.add("RAKEDDIRT");
