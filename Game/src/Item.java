@@ -44,6 +44,15 @@ public class Item {
     ID : 35 : BLUE_ORE
     ID : 36 : GREEN_ORE
     ID : 37 : RED_ORE
+    ID : 38 : YELLOW_PICKAXE
+    ID : 39 : BLUE_PICKAXE
+    ID : 40 : GREEN_PICKAXE
+    ID : 41 : RED_PICKAXE
+    ID : 42 : YELLOW_BAR
+    ID : 43 : BLUE_BAR
+    ID : 44 : GREEN_BAR
+    ID : 45 : RED_BAR
+    ID : 46 : FARMER_SHOVEL
 
 */
 

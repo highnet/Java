@@ -19,6 +19,7 @@ public class Player extends Entity {
     int questPoints;
     int miningXP;
     int woodcuttingXP;
+    public int farmingExperience;
 
     public Player(int setID,int setxPos, int setyPos, int setInventorySize, float setHP, Color setColor){
 

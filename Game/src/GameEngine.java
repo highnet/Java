@@ -179,7 +179,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
-      fillWorld(); // comment this out if you want a 1v1 test overworld (drastically reduces bootup time)
+        //    fillWorld();
 
         loadRainSound();
         loadWoodsSound();
@@ -208,13 +208,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         generateNpc(currentOverWorld.npcList.size() + 1, 5, 8, 10, Color.black, "CASTLEGUARD");
         generateNpc(currentOverWorld.npcList.size() + 1, 5, 11, 10, Color.black, "CHEF");
 
-        currentOverWorld.tilemap[10][10] = new Tile("t0stone", false, true);
-        currentOverWorld.tilemap[11][10] = new Tile("t1stone", false, true);
-        currentOverWorld.tilemap[12][10] = new Tile("t2stone", false, true);
-        currentOverWorld.tilemap[13][10] = new Tile("t3stone", false, true);
-        currentOverWorld.tilemap[14][10] = new Tile("t4stone", false, true);
+        currentOverWorld.tilemap[10][10] = new Tile("t0stone", false, true, false);
+        currentOverWorld.tilemap[11][10] = new Tile("t1stone", false, true, false);
+        currentOverWorld.tilemap[12][10] = new Tile("t2stone", false, true, false);
+        currentOverWorld.tilemap[13][10] = new Tile("t3stone", false, true, false);
+        currentOverWorld.tilemap[14][10] = new Tile("t4stone", false, true, false);
 
+        generate1x2Rock(17, 10, "t0stone_1x2");
 
+        generate1x2Rock(19, 10, "t1stone_1x2");
+
+        generate1x2Rock(21, 10, "t2stone_1x2");
+
+        currentOverWorld.tilemap[15][15] = new Tile("furnace", false, false, true);
+
+        currentOverWorld.tilemap[16][15] = new Tile("cookingpot", false, false, true);
+
+    }
+
+    private void generate1x2Rock(int x, int y, String rockType) {
+
+        if (!currentOverWorld.tilemap[x][y].occupied && !currentOverWorld.tilemap[x + 1][y].occupied && !currentOverWorld.tilemap[x][y - 1].occupied && !currentOverWorld.tilemap[x + 1][y + 1].occupied) {
+            currentOverWorld.tilemap[x][y] = new Tile(rockType + "_a", false, true, false);
+            currentOverWorld.tilemap[x + 1][y] = new Tile(rockType + "_b", false, true, false);
+        }
     }
 
     private void loadSpritesReworked() {
@@ -232,14 +249,36 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("Grass10.png", "GRASS10");
         loadBufferedImage("Grass11.png", "GRASS11");
 
+        loadBufferedImage("T0Stone0_1x2.png", "T0STONE0_1x2");
+        loadBufferedImage("T0Stone1_1x2.png", "T0STONE1_1x2");
+
+        loadBufferedImage("T1Stone0_1x2.png", "T1STONE0_1x2");
+        loadBufferedImage("T1Stone1_1x2.png", "T1STONE1_1x2");
+
+        loadBufferedImage("T2Stone0_1x2.png", "T2STONE0_1x2");
+        loadBufferedImage("T2Stone1_1x2.png", "T2STONE1_1x2");
+
         loadBufferedImage("Cobblestone.png", "COBBLESTONE");
         loadBufferedImage("YellowOre.png", "YELLOW_ORE");
         loadBufferedImage("BlueOre.png", "BLUE_ORE");
         loadBufferedImage("GreenOre.png", "GREEN_ORE");
         loadBufferedImage("RedOre.png", "RED_ORE");
 
-        loadBufferedImage("Stone0Exhausted", "STONE0_EXHAUSTED");
-        loadBufferedImage("Stone1Exhausted", "STONE1_EXHAUSTED");
+        loadBufferedImage("YellowOre.png", "YELLOW_ORE");
+        loadBufferedImage("BlueOre.png", "BLUE_ORE");
+        loadBufferedImage("GreenOre.png", "GREEN_ORE");
+        loadBufferedImage("RedOre.png", "RED_ORE");
+
+        loadBufferedImage("YellowBar.png", "YELLOW_BAR");
+        loadBufferedImage("BlueBar.png", "BLUE_BAR");
+        loadBufferedImage("GreenBar.png", "GREEN_BAR");
+        loadBufferedImage("RedBar.png", "RED_BAR");
+
+        loadBufferedImage("FurnaceUnlit.png", "FURNACE_UNLIT");
+        loadBufferedImage("FurnaceLit.png", "FURNACE_LIT");
+
+        loadBufferedImage("CookingPot.png", "COOKING_POT");
+
 
         loadBufferedImage("T0Stone0.png", "T0STONE0");
         loadBufferedImage("T0Stone1.png", "T0STONE1");
@@ -256,12 +295,29 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("T4Stone0.png", "T4STONE0");
         loadBufferedImage("T4Stone1.png", "T4STONE1");
 
+        loadBufferedImage("FarmerShovelE.png", "FARMER_SHOVEL_EAST");
+        loadBufferedImage("FarmerShovelW.png", "FARMER_SHOVEL_WEST");
+
+        loadBufferedImage("WaterCanE.png", "WATER_CAN_EAST");
+        loadBufferedImage("WaterCanW.png", "WATER_CAN_WEST");
 
         loadBufferedImage("LumberjackAxeE.png", "LUMBERJACK_AXE_EAST");
         loadBufferedImage("LumberjackAxeW.png", "LUMBERJACK_AXE_WEST");
 
         loadBufferedImage("MinerPickaxeE.png", "MINER_PICKAXE_EAST");
         loadBufferedImage("MinerPickaxeW.png", "MINER_PICKAXE_WEST");
+
+        loadBufferedImage("YellowPickaxeE.png", "YELLOW_PICKAXE_EAST");
+        loadBufferedImage("YellowPickaxeW.png", "YELLOW_PICKAXE_WEST");
+
+        loadBufferedImage("BluePickaxeE.png", "BLUE_PICKAXE_EAST");
+        loadBufferedImage("BluePickaxeW.png", "BLUE_PICKAXE_WEST");
+
+        loadBufferedImage("GreenPickaxeE.png", "GREEN_PICKAXE_EAST");
+        loadBufferedImage("GreenPickaxeW.png", "GREEN_PICKAXE_WEST");
+
+        loadBufferedImage("RedPickaxeE.png", "RED_PICKAXE_EAST");
+        loadBufferedImage("RedPickaxeW.png", "RED_PICKAXE_WEST");
 
         loadBufferedImage("EastChef.png", "EAST_CHEF");
         loadBufferedImage("RaggedShirt.png", "RAGGEDSHIRT");
@@ -825,7 +881,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void collisionMeshGenerator() {
+    private void
+    collisionMeshGenerator() {
         int i;
         int j;
         for (i = 0; i < 32; i++) {                          // First, iterate through the entire tilemap of the current Overworld
@@ -848,6 +905,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         (currentOverWorld.tilemap[i][j].type.equals("woodenfencenwcorner")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodenfencesecorner")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("woodenfenceswcorner")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t0stone_1x2_a")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t0stone_1x2_b")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t1stone_1x2_a")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t1stone_1x2_b")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t2stone_1x2_a")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("t2stone_1x2_b")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("furnace")) ||
+                        (currentOverWorld.tilemap[i][j].type.equals("cookingpot")) ||
                         (currentOverWorld.tilemap[i][j].type.equals("plankwall"));
             }
 
@@ -1752,6 +1817,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case 33:
                 g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), 633, 543, 25, 25, this);
                 break;
+            case 38:
+                g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 39:
+                g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 40:
+                g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 41:
+                g.drawImage(bufferedImageMap.get("RED_PICKAXE_WEST"), 633, 543, 25, 25, this);
+                break;
+            case 46:
+                g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), 633, 543, 25, 25, this);
+                break;
             case 0:
                 break;
             default:
@@ -1885,6 +1965,34 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         if (currentItem.ID == 37) {
             g.drawImage(bufferedImageMap.get("RED_ORE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
         }
+        if (currentItem.ID == 38) {
+            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 39) {
+            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 40) {
+            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 41) {
+            g.drawImage(bufferedImageMap.get("RED_PICKAXE"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 42) {
+            g.drawImage(bufferedImageMap.get("YELLOW_BAR"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 43) {
+            g.drawImage(bufferedImageMap.get("BLUE_BAR"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 44) {
+            g.drawImage(bufferedImageMap.get("GREEN_BAR"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 45) {
+            g.drawImage(bufferedImageMap.get("RED_BAR"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+        if (currentItem.ID == 46) {
+            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL"), mouseDragX - 10, mouseDragY - 14, 20, 20, this);
+        }
+
 
     }
 
@@ -1950,6 +2058,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g.drawImage(bufferedImageMap.get("LUMBERJACK_AXE_WEST"), 157, 183, 30, 30, this);
         } else if (player1.playerCrafter.itemArray[9].ID == 33) {
             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), 157, 183, 30, 30, this);
+        } else if (player1.playerCrafter.itemArray[9].ID == 35) {
+            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), 157, 183, 30, 30, this);
         }
     }
 
@@ -2065,6 +2175,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "woodenfenceswcorner":
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
                         break;
+                    case "t0stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t0stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t1stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t1stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t2stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t2stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "furnace":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "cookingpot":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
                     default:
                         g.setColor(Color.red);
                         g.drawString("ERR", i * 25, j * 25 + 25);
@@ -2122,8 +2256,27 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     case "woodenfencesecorner":
                         g.drawImage(bufferedImageMap.get("WOODENFENCESECORNER"), i * 25, j * 25, 25, 25, this);
                         break;
+                    case "t0stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("T0STONE" + currentOverWorld.tilemap[i][j].rockPermutation + "_1x2"), i * 25 + 5, j * 25 - 8, 35, 35, this);
+                        break;
+                    case "t1stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("T1STONE" + currentOverWorld.tilemap[i][j].rockPermutation + "_1x2"), i * 25 + 5, j * 25 - 8, 35, 35, this);
+                        break;
+                    case "t2stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("T2STONE" + currentOverWorld.tilemap[i][j].rockPermutation + "_1x2"), i * 25, j * 25 - 8, 35, 35, this);
+                        break;
+                    case "furnace":
+                        if (currentOverWorld.tilemap[i][j].activeState) {
+                            g.drawImage(bufferedImageMap.get("FURNACE_LIT"), i * 25, j * 25 - 25, this);
+                        } else {
+                            g.drawImage(bufferedImageMap.get("FURNACE_UNLIT"), i * 25, j * 25 - 25, this);
 
+                        }
+                        break;
 
+                    case "cookingpot":
+                        g.drawImage(bufferedImageMap.get("COOKING_POT"), i * 25, j * 25, 25, 25, this);
+                        break;
                 }
                 if (player1.xPos / 25 == i && player1.yPos / 25 == j) {
                     paintPlayer(g, 1);
@@ -2324,6 +2477,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 g.drawImage(bufferedImageMap.get("GREEN_ORE"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             } else if (player1.playerInventory.itemArray[i].ID == 37) {
                 g.drawImage(bufferedImageMap.get("RED_ORE"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 38) {
+                g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 39) {
+                g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 40) {
+                g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 41) {
+                g.drawImage(bufferedImageMap.get("RED_PICKAXE_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 42) {
+                g.drawImage(bufferedImageMap.get("YELLOW_BAR"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 43) {
+                g.drawImage(bufferedImageMap.get("BLUE_BAR"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 44) {
+                g.drawImage(bufferedImageMap.get("GREEN_BAR"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 45) {
+                g.drawImage(bufferedImageMap.get("RED_BAR"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
+            } else if (player1.playerInventory.itemArray[i].ID == 46) {
+                g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_EAST"), 593 + (counter * 30), 183 + (row * 30), 25, 25, this);
             }
             g.setColor(Color.black);
             g.drawRect(587 + (counter * 30), 176 + (row * 30), 30, 30);
@@ -2508,7 +2679,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     yOffset = +18;
                     break;
             }
-            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 23, 40, this);
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 40,40, this);
         } else if (n.ai.equals("CASTLEGUARD")) {
 
             int xOffset = 0;
@@ -2530,10 +2701,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     break;
                 case "EAST":
                     xOffset = 0;
-                    yOffset = +15;
+                    yOffset = +18;
                     break;
             }
-            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 23, 40, this);
+            g.drawImage(bufferedImageMap.get(n.orientation + "_" + n.ai), n.xPos - xOffset, n.yPos - yOffset, 40, 40, this);
         } else if (n.ai.equals("CHEF")) {
 
             int xOffset = 0;
@@ -2943,6 +3114,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         case 33:
                             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
                             break;
+                        case 38:
+                            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 39:
+                            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 40:
+                            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 41:
+                            g.drawImage(bufferedImageMap.get("RED_PICKAXE_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 46:
+                            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), player1.xPos - 15, player1.yPos - 13, 25 * magnitude, 25 * magnitude, this);
+                            break;
                     }
 
                     break;
@@ -2968,6 +3154,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         case 33:
                             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
                             break;
+                        case 38:
+                            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 39:
+                            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 40:
+                            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 41:
+                            g.drawImage(bufferedImageMap.get("RED_PICKAXE_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 46:
+                            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_EAST"), player1.xPos + 5, player1.yPos - 15, 25 * magnitude, 25 * magnitude, this);
+                            break;
+
                     }
                     break;
                 }
@@ -2992,6 +3194,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         case 33:
                             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
                             break;
+                        case 38:
+                            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 39:
+                            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 40:
+                            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 41:
+                            g.drawImage(bufferedImageMap.get("RED_PICKAXE_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 46:
+                            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), player1.xPos - 17, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
                     }
                     break;
                 }
@@ -3014,6 +3231,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             break;
                         case 33:
                             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 38:
+                            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 39:
+                            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 40:
+                            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 41:
+                            g.drawImage(bufferedImageMap.get("RED_PICKAXE_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 46:
+                            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), player1.xPos - 14, player1.yPos - 12, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
@@ -3042,6 +3274,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             break;
                         case 33:
                             g.drawImage(bufferedImageMap.get("MINER_PICKAXE_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 38:
+                            g.drawImage(bufferedImageMap.get("YELLOW_PICKAXE_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 39:
+                            g.drawImage(bufferedImageMap.get("BLUE_PICKAXE_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 40:
+                            g.drawImage(bufferedImageMap.get("GREEN_PICKAXE_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 41:
+                            g.drawImage(bufferedImageMap.get("RED_PICKAXE_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
+                            break;
+                        case 46:
+                            g.drawImage(bufferedImageMap.get("FARMER_SHOVEL_WEST"), player1.xPos - 70, player1.yPos - 5, 25 * magnitude, 25 * magnitude, this);
                             break;
                     }
                 }
@@ -3734,11 +3981,31 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_1: // keyboard press 1 -> attempt to harvest block
 
                 currentItem = null;
+                int xOffsetCheck = 0;
+                int yOffsetCheck = 0;
+
+                if (player1.orientation.equals("NORTH")) {
+                    yOffsetCheck = -1;
+                } else if (player1.orientation.equals("EAST")) {
+                    xOffsetCheck = 1;
+                } else if (player1.orientation.equals("SOUTH")) {
+                    yOffsetCheck = -1;
+                } else if (player1.orientation.equals("WEST")) {
+                    xOffsetCheck = -1;
+                }
 
                 if (!startMenuVisible) {
                     System.out.println("1- Block Harvesting");
 
-                    if (!player1.playerInventory.isFull()) { // Allows harvesting process to happen only if the inventory isnt full.
+
+                    if (!player1.playerInventory.isFull() && (
+                            currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("t0stone") ||
+                                    currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("t1stone") ||
+                                    currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("t2stone") ||
+                                    currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("t3stone") ||
+                                    currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("tree")
+                    )
+                            ) { // Allows harvesting process to happen only if the inventory isnt full and if the tile is a harvestable tile
 
                         boolean harvestedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
                         String harvestedItem = "";
@@ -3776,23 +4043,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         */
 
                         else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("t1stone")) {
-                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25+1][(player1.yPos )].rockPermutation;
-                            currentOverWorld.tilemap[player1.xPos / 25+1][(player1.yPos / 25)] = new Tile("t0stone",false,true);
-                            currentOverWorld.tilemap[player1.xPos / 25+1][(player1.yPos / 25 )].rockPermutation = storeRockPermutation;
+                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos)].rockPermutation;
+                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)] = new Tile("t0stone", false, true, false);
+                            currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].rockPermutation = storeRockPermutation;
                             harvestedItem = "yellow ore";
                             player1.miningXP += 55;
                             harvestedSuccessfully = true;
                         } else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("t1stone")) {
 
-                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25-1][(player1.yPos )].rockPermutation;
-                            currentOverWorld.tilemap[player1.xPos / 25-1][(player1.yPos / 25)] = new Tile("t0stone",false,true);
-                            currentOverWorld.tilemap[player1.xPos / 25-1][(player1.yPos / 25 )].rockPermutation = storeRockPermutation;
+                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos)].rockPermutation;
+                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)] = new Tile("t0stone", false, true, false);
+                            currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].rockPermutation = storeRockPermutation;
                             harvestedItem = "yellow ore";
                             player1.miningXP += 55;
                             harvestedSuccessfully = true;
                         } else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("NORTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type.equals("t1stone")) {
                             int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].rockPermutation;
-                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)] = new Tile("t0stone",false,true);
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)] = new Tile("t0stone", false, true, false);
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].rockPermutation = storeRockPermutation;
                             harvestedSuccessfully = true;
                             harvestedItem = "yellow ore";
@@ -3800,7 +4067,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         } else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("SOUTH") && currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type.equals("t1stone")) {
 
                             int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].rockPermutation;
-                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)] = new Tile("t0stone",false,true);
+                            currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)] = new Tile("t0stone", false, true, false);
                             currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].rockPermutation = storeRockPermutation;
                             player1.miningXP += 55;
                             harvestedItem = "yellow ore";
@@ -3844,13 +4111,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                                         loadChopSound();
                                         player1.playerInventory.itemArray[i].ID = 1;
                                         break;
-                                    }
-                                  else  if (harvestedItem.equals("cobblestone")) {
+                                    } else if (harvestedItem.equals("cobblestone")) {
                                         player1.playerInventory.itemArray[i].ID = 2;
                                         break;
-                                    }
-
-                                    else  if (harvestedItem.equals("yellow ore")) {
+                                    } else if (harvestedItem.equals("yellow ore")) {
                                         player1.playerInventory.itemArray[i].ID = 34;
                                         break;
                                     }
@@ -3858,67 +4122,81 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             }
                             tick();
                         }
+                    } else if ((currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("dirt")) || (currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("grass"))) {
+                        if (player1.gearInterface.itemArray[5].ID == 46 && (currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("dirt"))) {
+                            currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type = "rakeddirt";
+                            player1.farmingExperience += 1;
+                        } else if (player1.gearInterface.itemArray[5].ID == 46 && (currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type.equals("grass"))) {
+                            System.out.println("x");
+                            currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type = "dirt";
+                            player1.farmingExperience += 1;
+                        }
+                        break;
                     }
-                    break;
                 }
+
 
             /*
             ITEM PLACEMENT
              */
 
 
-            case KeyEvent.VK_2:
+                    case KeyEvent.VK_2:
 
-                if (currentItem != null && currentItem.ID == 2) {
-                    if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "t0stone";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                        if (currentItem != null && currentItem.ID == 2) {
+                            if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "t0stone";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "t0stone";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                            } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "t0stone";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    }
+                            }
 
-                    if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "t0stone";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                            if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "t0stone";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "t0stone";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
-                    }
+                            } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "t0stone";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
+                            }
 
-                } else if (currentItem != null && currentItem.ID == 4) {
-                    if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankwall";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                        } else if (currentItem != null && currentItem.ID == 4) {
+                            if (player1.orientation.equals("NORTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 - 1)].type = "plankwall";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "plankwall";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                            } else if (player1.orientation.equals("EAST") && !currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type = "plankwall";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    }
+                            }
 
-                    if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "plankwall";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                            if (player1.orientation.equals("SOUTH") && !currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25][(player1.yPos / 25 + 1)].type = "plankwall";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
-                        currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "plankwall";
-                        player1.playerInventory.itemArray[currentItemIndex].ID = 0;
-                        tick();
+                            } else if (player1.orientation.equals("WEST") && !currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].occupied) {
+                                currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type = "plankwall";
+                                player1.playerInventory.itemArray[currentItemIndex].ID = 0;
+                                tick();
 
-                    }
+                            }
 
-                }
+                        }
+                        break;
+
+
+            case KeyEvent.VK_3:
 
                 break;
 
@@ -4046,7 +4324,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 tick();
                 break;
 
-            case KeyEvent.VK_3:
+            case KeyEvent.VK_P:
 
                 String nameR;
 
@@ -4317,31 +4595,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
             if (shiftPressed && controlPressed) {
-                currentTileX = x / 25;
-                currentTileY = y / 25;
-                currentOverWorld.tilemap[currentTileX][currentTileY].type = tileBrush;
 
-                if (tileBrush.equals("t0stone0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t0stone", false, true);
-                } else if (tileBrush.equals("grass0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("grass", false, true);
-                } else if (tileBrush.equals("t1stone0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t1stone", false, true);
-                } else if (tileBrush.equals("t2stone0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t2stone", false, true);
-                } else if (tileBrush.equals("t3stone0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t3stone", false, true);
-                } else if (tileBrush.equals("t4stone0")) {
-                    currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t4stone", false, true);
-                }
-
+                paintWithTileBrush(x, y);
             }
 
             if (shiftPressed && altPressed) {
-                currentTileX = x / 25;
-                currentTileY = y / 25;
-                generateNpc(currentOverWorld.npcList.size() + 1, currentTileX, currentTileY, 50, Color.black, npcBrush.toUpperCase());
-
+                paintWithNpcBrush(x, y);
             }
 
 
@@ -4391,6 +4650,49 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
     }
+
+    private void paintWithNpcBrush(int x, int y) {
+        currentTileX = x / 25;
+        currentTileY = y / 25;
+        generateNpc(currentOverWorld.npcList.size() + 1, currentTileX, currentTileY, 50, Color.black, npcBrush.toUpperCase());
+    }
+
+
+    private void paintWithTileBrush(int x, int y) {
+        currentTileX = x / 25;
+        currentTileY = y / 25;
+        currentOverWorld.tilemap[currentTileX][currentTileY].type = tileBrush;
+        if (tileBrush.equals("t0stone0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t0stone", false, true, false);
+        } else if (tileBrush.equals("grass0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("grass", false, true, false);
+        } else if (tileBrush.equals("t1stone0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t1stone", false, true, false);
+        } else if (tileBrush.equals("t2stone0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t2stone", false, true, false);
+        } else if (tileBrush.equals("t3stone0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t3stone", false, true, false);
+        } else if (tileBrush.equals("t4stone0")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t4stone", false, true, false);
+        } else if (tileBrush.equals("t0stone0_1x2")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t0stone_1x2_a", false, true, false);
+            currentOverWorld.tilemap[currentTileX + 1][currentTileY] = new Tile("t0stone_1x2_b", false, true, false);
+        } else if (tileBrush.equals("t1stone0_1x2")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t1stone_1x2_a", false, true, false);
+            currentOverWorld.tilemap[currentTileX + 1][currentTileY] = new Tile("t1stone_1x2_b", false, true, false);
+        } else if (tileBrush.equals("t2stone0_1x2")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("t2stone_1x2_a", false, true, false);
+            currentOverWorld.tilemap[currentTileX + 1][currentTileY] = new Tile("t1stone_1x2_b", false, true, false);
+        } else if (tileBrush.equals("furnace_unlit")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("furnace", false, true, false);
+        } else if (tileBrush.equals("furnace_lit")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("furnace", false, true, true);
+        } else if (tileBrush.equals("cookingpot")) {
+            currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("cookingpot", false, true, true);
+        }
+
+    }
+
 
     private void returnAllItemsFromCraftingInterface() {
 
@@ -4760,7 +5062,13 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     newItem.ID == 20 ||
                     newItem.ID == 31 ||
                     newItem.ID == 32 ||
-                    newItem.ID == 33)) {
+                    newItem.ID == 33 ||
+                    newItem.ID == 38 ||
+                    newItem.ID == 39 ||
+                    newItem.ID == 40 ||
+                    newItem.ID == 41 ||
+                    newItem.ID == 46
+            )) {
                 Item oldItem = player1.gearInterface.itemArray[5];
                 if (equipItem(newItem)) {
                     for (int i = 0; i < player1.playerInventory.itemArray.length; i++) {
@@ -4853,6 +5161,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             return true;
         } else if (item.ID == 33) {
             player1.gearInterface.itemArray[5] = new Item(33);
+            return true;
+        } else if (item.ID == 38) {
+            player1.gearInterface.itemArray[5] = new Item(38);
+            return true;
+        } else if (item.ID == 39) {
+            player1.gearInterface.itemArray[5] = new Item(39);
+            return true;
+        } else if (item.ID == 40) {
+            player1.gearInterface.itemArray[5] = new Item(40);
+            return true;
+        } else if (item.ID == 41) {
+            player1.gearInterface.itemArray[5] = new Item(41);
+            return true;
+        } else if (item.ID == 46) {
+            player1.gearInterface.itemArray[5] = new Item(46);
             return true;
         }
         //  CHEST ARMOR
@@ -4965,8 +5288,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void indexTiles() {
+        BrushTileList.add("FURNACE_UNLIT");
+        BrushTileList.add("COOKING_POT");
+        BrushTileList.add("FURNACE_LIT");
         BrushTileList.add("SAND");
         BrushTileList.add("GRASS0");
+        BrushTileList.add("T0STONE0_1x2");
+        BrushTileList.add("T1STONE0_1x2");
+        BrushTileList.add("T2STONE0_1x2");
         BrushTileList.add("T0STONE0");
         BrushTileList.add("T1STONE0");
         BrushTileList.add("T2STONE0");
