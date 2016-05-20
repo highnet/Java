@@ -179,7 +179,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
-        //    fillWorld();
+      fillWorld(); // comment this out if you want a 1v1 test overworld (drastically reduces bootup time)
 
         loadRainSound();
         loadWoodsSound();
