@@ -16,7 +16,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private int gameSpeed = 1;
 
-    private int worldSize = 20;  // Defines Overworld dimensions
+    private int worldSize = 1;  // Defines Overworld dimensions
     private Overworld currentOverWorld = null;
 
     private Tile currentTile = null;
@@ -179,7 +179,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         animationTimer0.start();
 
-        //    fillWorld();
+            fillWorld();
 
         loadRainSound();
         loadWoodsSound();
@@ -966,7 +966,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 currentOverWorld = overWorld[x][y];         // moves currentOverWorlds pointer.
                 dummyWorld();                               // initializes current Overworld tilemap.
-                //       generateWorldImproved();                    // generates RNG world and serializes to file.
+                      generateWorldImproved();                    // generates RNG world and serializes to file.
                 if (currentOverWorld.idX < 10 && currentOverWorld.idY < 10) {
                     System.out.println("World0" + currentOverWorld.idX + "0" + currentOverWorld.idY + " generated");
                 } else if (currentOverWorld.idX < 10) {
@@ -3989,13 +3989,16 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 } else if (player1.orientation.equals("EAST")) {
                     xOffsetCheck = 1;
                 } else if (player1.orientation.equals("SOUTH")) {
-                    yOffsetCheck = -1;
+                    yOffsetCheck = 1;
                 } else if (player1.orientation.equals("WEST")) {
                     xOffsetCheck = -1;
                 }
 
                 if (!startMenuVisible) {
                     System.out.println("1- Block Harvesting");
+
+
+                    System.out.println(currentOverWorld.tilemap[player1.xPos / 25 + xOffsetCheck][(player1.yPos / 25 + yOffsetCheck)].type);
 
 
                     if (!player1.playerInventory.isFull() && (
@@ -4009,6 +4012,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                         boolean harvestedSuccessfully = false; // flag to determine real-time whether the key press triggers a successful harvest action
                         String harvestedItem = "";
+
+                        System.out.println("XXX");
                         /*
                         T0STONE GATHERING
                         */
@@ -4043,7 +4048,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         */
 
                         else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("EAST") && currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].type.equals("t1stone")) {
-                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos)].rockPermutation;
+                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25 + 1)].rockPermutation;
                             currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)] = new Tile("t0stone", false, true, false);
                             currentOverWorld.tilemap[player1.xPos / 25 + 1][(player1.yPos / 25)].rockPermutation = storeRockPermutation;
                             harvestedItem = "yellow ore";
@@ -4051,7 +4056,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                             harvestedSuccessfully = true;
                         } else if (player1.gearInterface.itemArray[5].ID == 33 && player1.orientation.equals("WEST") && currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].type.equals("t1stone")) {
 
-                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos)].rockPermutation;
+                            int storeRockPermutation = currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25 - 1)].rockPermutation;
                             currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)] = new Tile("t0stone", false, true, false);
                             currentOverWorld.tilemap[player1.xPos / 25 - 1][(player1.yPos / 25)].rockPermutation = storeRockPermutation;
                             harvestedItem = "yellow ore";
