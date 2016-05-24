@@ -277,7 +277,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("FurnaceUnlit.png", "FURNACE_UNLIT");
         loadBufferedImage("FurnaceLit.png", "FURNACE_LIT");
 
-        loadBufferedImage("CookingPot.png", "COOKING_POT");
+        loadBufferedImage("CookingPot.png", "COOKINGPOT");
 
 
         loadBufferedImage("T0Stone0.png", "T0STONE0");
@@ -750,7 +750,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         boolean paintScreen;
         if (currTime >= nextTime) {
             // assign the time for the next update
-            double delta = 0.04;
+            double delta = 0.033;           // delta = 1 / DESIRED FPS.
             nextTime += delta;
             paintScreen = true;
 
@@ -2079,6 +2079,51 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
 
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
+
+                    case "woodenfencehorizontal":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencevertical":
+                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencenwcorner":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencenecorner":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfencesecorner":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "woodenfenceswcorner":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t0stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t0stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t1stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t1stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t2stone_1x2_a":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "t2stone_1x2_b":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "furnace":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+                    case "cookingpot":
+                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
+                        break;
+
+
                     case "grass":
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
@@ -2096,7 +2141,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
+
                         break;
                     case "t0stone":
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
@@ -2157,48 +2202,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
 
 
-                    case "woodenfencehorizontal":
-                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "woodenfencevertical":
-                        g.drawImage(bufferedImageMap.get("GRASS"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "woodenfencenwcorner":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "woodenfencenecorner":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "woodenfencesecorner":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "woodenfenceswcorner":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t0stone_1x2_a":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t0stone_1x2_b":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t1stone_1x2_a":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t1stone_1x2_b":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t2stone_1x2_a":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "t2stone_1x2_b":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "furnace":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
-                    case "cookingpot":
-                        g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        break;
                     default:
                         g.setColor(Color.red);
                         g.drawString("ERR", i * 25, j * 25 + 25);
@@ -2216,7 +2219,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 31; i > 0; i--) { // foreach tile inner loop
+            for (int i = 31; i >= 0; i--) { // foreach tile inner loop
 
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
@@ -2275,7 +2278,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         break;
 
                     case "cookingpot":
-                        g.drawImage(bufferedImageMap.get("COOKING_POT"), i * 25, j * 25, 25, 25, this);
+                        g.drawImage(bufferedImageMap.get("COOKINGPOT"), i * 25, j * 25, 25, 25, this);
                         break;
                 }
                 if (player1.xPos / 25 == i && player1.yPos / 25 == j) {
@@ -4330,11 +4333,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 break;
 
             case KeyEvent.VK_P:
-
-                String nameR;
-
-                nameR = getUserInput();
-                readCustomWorld(nameR);
                 break;
 
             case KeyEvent.VK_4:
@@ -5294,7 +5292,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void indexTiles() {
         BrushTileList.add("FURNACE_UNLIT");
-        BrushTileList.add("COOKING_POT");
+        BrushTileList.add("COOKINGPOT");
         BrushTileList.add("FURNACE_LIT");
         BrushTileList.add("SAND");
         BrushTileList.add("GRASS0");
