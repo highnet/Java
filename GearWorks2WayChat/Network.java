@@ -33,7 +33,6 @@ public class Network {
 
 
         String str = "";
-        System.out.print("Getting records from the table...");
         Statement stmt = null;
 
         try {
@@ -64,13 +63,13 @@ public class Network {
             e.printStackTrace();
         }
         try {
-             str = rs != null ? rs.getNString(1) : "";
+           str = rs != null ? rs.getString(1) : "";
 
         } catch (SQLException e) {
-            e.printStackTrace();
+           e.printStackTrace();
         }
 
-        System.out.println(str);
+
         return str;
     }
 
@@ -78,7 +77,6 @@ public class Network {
 
         String input = GUIEngine.getUserInput();
 
-        System.out.println("Inserting records into the table...");
         Statement stmt = null;
         try {
             stmt = this.conn.createStatement();
@@ -106,7 +104,6 @@ public class Network {
             e.printStackTrace();
         }
 
-        System.out.println("Inserted records into the table...");
 
     }
 
