@@ -12,9 +12,6 @@ import java.util.*;
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
 
 
-    private int gameSpeed = 1;
-
-
     private Timer timer; // GAME CLOCK TIMER
 
     private Timer drawTimer; //
@@ -70,11 +67,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void startUp() {
         System.out.println("STARTUP");
-
-
-        drawTimer = new Timer(200, this);
-        revealTimer = new Timer(400, this);
+        drawTimer = new Timer(400, this);
+        revealTimer = new Timer(900, this);
         endDuelTimer = new Timer(1000,this);
+        int gameSpeed = 1;
         timer = new Timer(gameSpeed, this);
         mouseDragX = 0;
         mouseDragY = 0;
