@@ -51,6 +51,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private Card mouseDragCardPointer;
     private int mouseDragCardIndexPointer;
+    private boolean phaseDebugMode;
 
     public GameEngine() {
         addMouseListener(this);
@@ -84,6 +85,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         mouseDragCardPointer = null;
         mouseDragCardIndexPointer = -1;
         mousedOverState = -1;
+        phaseDebugMode = false;
 
 
         //     Network network = new Network();
@@ -210,7 +212,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (duelHandler.drawPhase1) {
 
-            System.out.println("duelHandler.drawPhase1");
+            if (phaseDebugMode){
+                System.out.println("duelHandler.drawPhase1");
+            }
             // MY SLOTS
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 162, 409, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 322, 409, this);
@@ -234,7 +238,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (duelHandler.playphase1_waitingOnPlay) {
-            System.out.println("duelHandler.playphase1_waitingOnPlay");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_waitingOnPlay");
+            }
             // MY SLOTS
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 162, 409, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 322, 409, this);
@@ -308,7 +314,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         if (duelHandler.playphase1_revealCards_0) {
-            System.out.println("duelHandler.playphase1_revealCards_0");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_0");
+            }
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
@@ -366,7 +374,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_1) {
-            System.out.println("duelHandler.playphase1_revealCards_1");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_1");
+            }
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
@@ -421,8 +431,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_2) {
-
-            System.out.println("duelHandler.playphase1_revealCards_2");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_2");
+            }
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
@@ -487,8 +498,10 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_3) {
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_3");
+            }
 
-            System.out.println("duelHandler.playphase1_revealCards_3");
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -549,8 +562,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_4) {
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_4");
+            }
 
-            System.out.println("duelHandler.playphase1_revealCards_4");
+
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -616,7 +632,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_5) {
-            System.out.println("duelHandler.playphase1_revealCards_5");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_5");
+            }
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -678,7 +696,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_6) {
-            System.out.println("duelHandler.playphase1_revealCards_6");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_6");
+            }
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -744,7 +764,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_7) {
-            System.out.println("duelHandler.playphase1_revealCards_7");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_7");
+            }
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -810,7 +832,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playphase1_revealCards_8 || duelHandler.drawPhase2 || duelHandler.mulliganOptionPhase) {
-            System.out.println("duelHandler.playphase1_revealCards_8 or duelHandler.drawPhase2 or duelHandler.mulliganOptionPhase");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playphase1_revealCards_8 or duelHandler.drawPhase2 or duelHandler.mulliganOptionPhase");
+            }
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 569, this);
@@ -875,7 +899,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } else if (duelHandler.playPhase2_waitingOnPlay) {
-            System.out.println("duelHandler.playPhase2_waitingOnPlay");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_waitingOnPlay");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -981,8 +1007,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             g2d.setComposite(alcom);
         } else if (duelHandler.playPhase2_revealCards_0) {
-
-            System.out.println("duelHandler.playPhase2_revealCards_0");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_0");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1072,8 +1099,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playPhase2_revealCards_1) {
-
-            System.out.println("duelHandler.playPhase2_revealCards_1");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_1");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1165,7 +1193,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playPhase2_revealCards_2) {
-            System.out.println("duelHandler.playPhase2_revealCards_2");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_2");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1258,8 +1288,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playPhase2_revealCards_3) {
-
-            System.out.println("duelHandler.playPhase2_revealCards_3");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_3");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1358,7 +1389,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playPhase2_revealCards_4) {
-            System.out.println("duelHandler.playPhase2_revealCards_4");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_4");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getName().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1457,8 +1490,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
         } else if (duelHandler.playPhase2_revealCards_5) {
-
-            System.out.println("duelHandler.playPhase2_revealCards_5");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_5");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
@@ -1562,7 +1596,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         } else if (duelHandler.playPhase2_revealCards_6 || duelHandler.resolveGamePhase) {
-            System.out.println("duelHandler.playPhase2_revealCards_6 or  duelHandler.resolveGamePhase");
+            if (phaseDebugMode) {
+                System.out.println("duelHandler.playPhase2_revealCards_6 or  duelHandler.resolveGamePhase");
+            }
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
             if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);

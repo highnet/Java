@@ -1848,9 +1848,7 @@ public class DuelHandler implements ActionListener {
                     cardPlayed.currentValue += 3;
                 }
                 ///
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
+
                 break;
             case 2:
                 if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
@@ -1860,12 +1858,7 @@ public class DuelHandler implements ActionListener {
                     cardPlayed.currentValue += 3;
                 }
                 ///
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
+
                 break;
             case 3:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -1878,15 +1871,7 @@ public class DuelHandler implements ActionListener {
                     cardPlayed.currentValue += 3;
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
+
                 break;
             case 4:
 
@@ -1903,18 +1888,6 @@ public class DuelHandler implements ActionListener {
                     cardPlayed.currentValue += 3;
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
 
                 break;
             case 5:
@@ -1936,21 +1909,6 @@ public class DuelHandler implements ActionListener {
                 }
 ///
 
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
                 break;
             case 6:
 
@@ -1974,26 +1932,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
 
-                }
-                break;
             case 7:
 
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2024,33 +1963,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
 
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
                 break;
             case 8:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2087,39 +2000,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
 
-                }
-
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
                 break;
             case 9:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2156,38 +2037,7 @@ public class DuelHandler implements ActionListener {
                 }
                 ///
 
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
 
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
                 break;
             case 10:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2231,46 +2081,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
 
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
                 break;
             case 11:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2318,50 +2129,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
 
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
                 break;
             case 12:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2413,54 +2181,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
 
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
-                if (this.getBoard_p1_human()[5].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 3;
-
-                }
                 break;
             case 13:
                 if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
@@ -2516,58 +2237,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-                }
-                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p2_cpu()[6].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-
-                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
-                if (this.getBoard_p1_human()[5].getName().equals("Randiq")) {
-                    cardPlayed.currentValue += 4;
-
-                }
+               
                 break;
         }
     }

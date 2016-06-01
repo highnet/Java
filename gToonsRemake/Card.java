@@ -21,8 +21,6 @@ public class Card {
 
         switch (cardType){
             case "Tree":
-
-
                 this.color = "green";
                 this.baseValue = 4;
                 this.effectText[0] = "+1 for each green";
@@ -134,6 +132,11 @@ public class Card {
 
     public void setEffectText(String[] effectText) {
         this.effectText = effectText;
+    }
+
+     @Override
+    public String toString (){
+        return  "[" + this.getName() + "]";
     }
 
 }
