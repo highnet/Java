@@ -61,7 +61,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         startUp();
 
 
-
     }
 
 
@@ -69,7 +68,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         System.out.println("STARTUP");
         drawTimer = new Timer(400, this);
         revealTimer = new Timer(2000, this);
-        endDuelTimer = new Timer(1000,this);
+        endDuelTimer = new Timer(10000, this);
         int gameSpeed = 1;
         timer = new Timer(gameSpeed, this);
         mouseDragX = 0;
@@ -87,9 +86,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         mousedOverState = -1;
 
 
-
-
-   //     Network network = new Network();
+        //     Network network = new Network();
         bufferedImageMap = new HashMap<>();
 
         loadSprites();
@@ -97,8 +94,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         timer.start();
         drawTimer.start();
 
-        p1_human = new Player("Highnet", new LinkedList<>(),(int)(Math.random() * (5) + 1));
-        p2_cpu = new Player("Kirk43", new LinkedList<>(),(int)(Math.random() * (5) + 1));
+        p1_human = new Player("Highnet", new LinkedList<>(), (int) (Math.random() * (5) + 1));
+        p2_cpu = new Player("Kirk43", new LinkedList<>(), (int) (Math.random() * (5) + 1));
 
         generateDecks();
 
@@ -114,24 +111,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (int i = 0; i < 20; i++) {
 
-            int rand = (int) (Math.random() * 3);
+            int rand = (int) (Math.random() * 5);
             System.out.println(rand);
 
             if (rand == 0) {
                 deck1.add(new Card("Lumberjack"));
-            } else  if (rand == 1){
+            } else if (rand == 1) {
                 deck1.add(new Card("Tree"));
 
-            } else if (rand == 2){
+            } else if (rand == 2) {
                 deck1.add(new Card("Guard"));
+            } else if (rand == 3) {
+                deck1.add(new Card("Randiq"));
+            } else if (rand == 4) {
+                deck1.add(new Card("LumberjackAxe"));
             }
 
         }
 
 
-
         p1_human.setDecklist(deck1);
-
 
 
     }
@@ -185,8 +184,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 }
             }
-
-
 
 
         }
@@ -269,7 +266,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
             if (!duelHandler.getBoard_p1_human()[0].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-                if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")){
+                if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
@@ -277,7 +274,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
             if (!duelHandler.getBoard_p1_human()[1].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-                if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")){
+                if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
@@ -287,7 +284,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (!duelHandler.getBoard_p1_human()[2].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-                if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")){
+                if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
@@ -297,7 +294,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (!duelHandler.getBoard_p1_human()[3].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-                if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")){
+                if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -332,9 +329,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 642, 204, this);
 
 
-
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
@@ -342,7 +338,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
@@ -350,7 +346,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
@@ -358,7 +354,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -381,7 +377,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
@@ -400,21 +396,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
             g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
             g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -436,14 +432,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
             g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if (duelHandler.getBoard_p2_cpu()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p2_cpu()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
@@ -463,7 +459,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
@@ -471,7 +467,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
@@ -479,7 +475,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -501,23 +497,22 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
             g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if (duelHandler.getBoard_p2_cpu()[0].getColor().equals("black")){
+            if (duelHandler.getBoard_p2_cpu()[0].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
             g2d.setColor(Color.black);
 
 
-
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[1].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
@@ -536,14 +531,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[2].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
             g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")){
+            if (duelHandler.getBoard_p1_human()[3].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -564,26 +559,33 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
+                g2d.setColor(Color.white);
+            }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
 
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
+            g2d.setColor(Color.black);
 
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
@@ -596,18 +598,18 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
-        alcom = AlphaComposite.getInstance(
+            g2d.setColor(Color.black);
+            alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 1f);
 
 
@@ -623,36 +625,36 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
 
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -664,11 +666,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 1f);
 
@@ -685,41 +687,41 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if (duelHandler.getBoard_p2_cpu()[2].getColor().equals("black")){
+            if (duelHandler.getBoard_p2_cpu()[2].getColor().equals("black")) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -731,7 +733,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
@@ -751,48 +753,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -817,53 +819,53 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD_DARK"), 557, 44, this);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
 
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 1f);
@@ -875,53 +877,53 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } else if (duelHandler.playPhase2_waitingOnPlay) {
             System.out.println("duelHandler.playPhase2_waitingOnPlay");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 237, 44, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 397, 44, this);
@@ -949,25 +951,28 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
             if (!duelHandler.getBoard_p1_human()[4].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-                if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+                if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 270, 708);
+                g2d.setColor(Color.black);
             }
             if (!duelHandler.getBoard_p1_human()[5].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-                if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+                if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 430, 708);
+                g2d.setColor(Color.black);
             }
 
             if (!duelHandler.getBoard_p1_human()[6].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-                if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+                if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                     g2d.setColor(Color.white);
                 }
                 g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 593, 708);
+                g2d.setColor(Color.black);
             }
 
             alcom = AlphaComposite.getInstance(
@@ -979,53 +984,54 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             System.out.println("duelHandler.playPhase2_revealCards_0");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -1033,20 +1039,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 397, 569, this);
@@ -1066,59 +1075,59 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             System.out.println("duelHandler.playPhase2_revealCards_1");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -1126,21 +1135,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.setComposite(alcom);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 237, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 557, 569, this);
@@ -1156,66 +1167,66 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } else if (duelHandler.playPhase2_revealCards_2) {
             System.out.println("duelHandler.playPhase2_revealCards_2");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -1224,16 +1235,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 557, 569, this);
 
@@ -1249,71 +1261,71 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             System.out.println("duelHandler.playPhase2_revealCards_3");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
-
-            g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 397, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            g2d.setColor(Color.black);
+            g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[5].getName()), 397, 44, this);
+            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[5].getCurrentValue()), 427, 180);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -1322,16 +1334,17 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
-            g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            g2d.setColor(Color.black);
+            g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 397, 569, this);
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 557, 569, this);
 
@@ -1347,76 +1360,77 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } else if (duelHandler.playPhase2_revealCards_4) {
             System.out.println("duelHandler.playPhase2_revealCards_4");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getName().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getName().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[5].getName()), 397, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[5].getCurrentValue()), 427, 180);
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
 
@@ -1425,11 +1439,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 557, 569, this);
 
@@ -1446,83 +1460,83 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             System.out.println("duelHandler.playPhase2_revealCards_5");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[5].getName()), 397, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[5].getCurrentValue()), 427, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[6].getName()), 557, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[6].getCurrentValue()), 590, 180);
-
+            g2d.setColor(Color.black);
 
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 0.5f);
@@ -1532,11 +1546,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), 557, 569, this);
 
@@ -1550,90 +1564,90 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         } else if (duelHandler.playPhase2_revealCards_6 || duelHandler.resolveGamePhase) {
             System.out.println("duelHandler.playPhase2_revealCards_6 or  duelHandler.resolveGamePhase");
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[0].getName()), 162, 409, this);
-            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[0].getCurrentValue()), 196, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[0].getName()), 162, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[0].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[0].getCurrentValue()), 196, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[1].getName()), 322, 409, this);
-            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[1].getCurrentValue()), 359, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[1].getName()), 322, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[1].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[1].getCurrentValue()), 355, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[2].getName()), 482, 409, this);
-            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[2].getCurrentValue()), 516, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[2].getName()), 482, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[2].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[2].getCurrentValue()), 515, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[3].getName()), 642, 409, this);
-            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[3].getCurrentValue()), 676, 547);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[3].getName()), 642, 204, this);
-            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[3].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[3].getCurrentValue()), 674, 341);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[4].getName()), 237, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[4].getCurrentValue()), 267, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[4].getName()), 237, 569, this);
-            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[4].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[4].getCurrentValue()), 266, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[5].getName()), 397, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[5].getCurrentValue()), 427, 180);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[5].getName()), 397, 569, this);
-            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[5].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[5].getCurrentValue()), 429, 706);
-
+            g2d.setColor(Color.black);
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p2_cpu()[6].getName()), 557, 44, this);
-            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p2_cpu()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p2_cpu()[6].getCurrentValue()), 590, 180);
-
+            g2d.setColor(Color.black);
 
             g2d.drawImage(bufferedImageMap.get(duelHandler.getBoard_p1_human()[6].getName()), 557, 569, this);
-            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))){
+            if ((duelHandler.getBoard_p1_human()[6].getColor().equals("black"))) {
                 g2d.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getBoard_p1_human()[6].getCurrentValue()), 587, 706);
-
+            g2d.setColor(Color.black);
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, 1f);
 
@@ -1733,7 +1747,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         Graphics2D g2d = (Graphics2D) g;
 
 
-
         if (mousedOverState <= -1) {
             g.drawImage(bufferedImageMap.get("EMPTY_CARD"), 848, 33, this);
         }
@@ -1764,7 +1777,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             g2d.drawString("- " + duelHandler.getHand_p1_human()[mousedOverState].getSubtype(), 845, 289);
 
 
-            if (duelHandler.getHand_p1_human()[mousedOverState].getColor().equals("black")){
+            if (duelHandler.getHand_p1_human()[mousedOverState].getColor().equals("black")) {
                 g.setColor(Color.white);
             }
             g2d.drawString(String.valueOf(duelHandler.getHand_p1_human()[mousedOverState].getBaseValue()), 880, 171);
@@ -1804,7 +1817,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row1, cardSize, cardSize, this);
 
                 } else {
-                    if(duelHandler.getHand_p1_human()[0].getColor().equals("black")){
+                    if (duelHandler.getHand_p1_human()[0].getColor().equals("black")) {
                         g.setColor(Color.white);
                     }
                     g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[0].getName()), col1, row1, cardSize, cardSize, this);
@@ -1822,7 +1835,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (duelHandler.getHand_p1_human()[1].getName().equals("null")) {
                         g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row1, cardSize, cardSize, this);
                     } else {
-                        if(duelHandler.getHand_p1_human()[1].getColor().equals("black")){
+                        if (duelHandler.getHand_p1_human()[1].getColor().equals("black")) {
                             g.setColor(Color.white);
                         }
                         g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[1].getName()), col2, row1, cardSize, cardSize, this);
@@ -1840,7 +1853,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (duelHandler.getHand_p1_human()[2].getName().equals("null")) {
                         g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row2, cardSize, cardSize, this);
                     } else {
-                        if(duelHandler.getHand_p1_human()[2].getColor().equals("black")){
+                        if (duelHandler.getHand_p1_human()[2].getColor().equals("black")) {
                             g.setColor(Color.white);
                         }
                         g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[2].getName()), col1, row2, cardSize, cardSize, this);
@@ -1857,7 +1870,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (duelHandler.getHand_p1_human()[3].getName().equals("null")) {
                         g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row2, cardSize, cardSize, this);
                     } else {
-                        if(duelHandler.getHand_p1_human()[3].getColor().equals("black")){
+                        if (duelHandler.getHand_p1_human()[3].getColor().equals("black")) {
                             g.setColor(Color.white);
                         }
                         g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[3].getName()), col2, row2, cardSize, cardSize, this);
@@ -1874,7 +1887,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (duelHandler.getHand_p1_human()[4].getName().equals("null")) {
                         g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row3, cardSize, cardSize, this);
                     } else {
-                        if(duelHandler.getHand_p1_human()[4].getColor().equals("black")){
+                        if (duelHandler.getHand_p1_human()[4].getColor().equals("black")) {
                             g.setColor(Color.white);
                         }
                         g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[4].getName()), col1, row3, cardSize, cardSize, this);
@@ -1892,7 +1905,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     if (duelHandler.getHand_p1_human()[5].getName().equals("null")) {
                         g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row3, cardSize, cardSize, this);
                     } else {
-                        if(duelHandler.getHand_p1_human()[5].getColor().equals("black")){
+                        if (duelHandler.getHand_p1_human()[5].getColor().equals("black")) {
                             g.setColor(Color.white);
                         }
                         g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[5].getName()), col2, row3, cardSize, cardSize, this);
@@ -1908,7 +1921,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row1, cardSize, cardSize, this);
 
             } else {
-                if(duelHandler.getHand_p1_human()[0].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[0].getColor().equals("black")) {
                     g.setColor(Color.white);
                 }
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[0].getName()), col1, row1, cardSize, cardSize, this);
@@ -1920,7 +1933,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (duelHandler.getHand_p1_human()[1].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row1, cardSize, cardSize, this);
             } else {
-                if(duelHandler.getHand_p1_human()[1].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[1].getColor().equals("black")) {
                     g.setColor(Color.white);
                 }
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[1].getName()), col2, row1, cardSize, cardSize, this);
@@ -1931,7 +1944,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (duelHandler.getHand_p1_human()[2].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row2, cardSize, cardSize, this);
             } else {
-                if(duelHandler.getHand_p1_human()[2].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[2].getColor().equals("black")) {
                     g.setColor(Color.white);
                 }
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[2].getName()), col1, row2, cardSize, cardSize, this);
@@ -1942,7 +1955,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (duelHandler.getHand_p1_human()[3].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row2, cardSize, cardSize, this);
             } else {
-                if(duelHandler.getHand_p1_human()[3].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[3].getColor().equals("black")) {
                     g.setColor(Color.white);
                 }
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[3].getName()), col2, row2, cardSize, cardSize, this);
@@ -1953,7 +1966,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (duelHandler.getHand_p1_human()[4].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col1, row3, cardSize, cardSize, this);
             } else {
-                if(duelHandler.getHand_p1_human()[4].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[4].getColor().equals("black")) {
                     g.setColor(Color.white);
 
                 }
@@ -1965,7 +1978,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (duelHandler.getHand_p1_human()[5].getName().equals("null")) {
                 g2d.drawImage(bufferedImageMap.get("EMPTY_CARD"), col2, row3, cardSize, cardSize, this);
             } else {
-                if(duelHandler.getHand_p1_human()[5].getColor().equals("black")){
+                if (duelHandler.getHand_p1_human()[5].getColor().equals("black")) {
                     g.setColor(Color.white);
                 }
                 g2d.drawImage(bufferedImageMap.get(duelHandler.getHand_p1_human()[5].getName()), col2, row3, cardSize, cardSize, this);
@@ -1981,9 +1994,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private void paintBackground(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-      //  g2d.drawImage(bufferedImageMap.get("background"),0,0,this);
+        //  g2d.drawImage(bufferedImageMap.get("background"),0,0,this);
 
-       g2d.drawImage(bufferedImageMap.get("nobackground2"),0,0,this);
+        g2d.drawImage(bufferedImageMap.get("nobackground2"), 0, 0, this);
 
         g2d.setColor(Color.black);
 
@@ -2020,18 +2033,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g2d.drawString(String.valueOf(duelHandler.getYellowCount_p2_cpu()), 91, 167);
 
 
-        g2d.drawImage(bufferedImageMap.get("UserIcon" + p1_human.playerIconID),10,639,53,53,this);
+        g2d.drawImage(bufferedImageMap.get("UserIcon" + p1_human.playerIconID), 10, 639, 53, 53, this);
 
-        g2d.drawImage(bufferedImageMap.get("UserIcon" + p2_cpu.playerIconID),7,48,53,53,this);
+        g2d.drawImage(bufferedImageMap.get("UserIcon" + p2_cpu.playerIconID), 7, 48, 53, 53, this);
 
 
         g2d.setFont(font5);
         g2d.setColor(Color.black);
         g2d.drawString(String.valueOf(duelHandler.getScore_p1_human()), 10, 492);
         g2d.drawString(String.valueOf(duelHandler.getScore_p2_cpu()), 10, 371);
-
-
-
 
 
     }
@@ -2053,7 +2063,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 trigger_endDuel = false;
                 duelInProgress = false;
                 startUp(); // RESTATS THE DUELHANDLER ((FRESH GAME))
-
 
 
             }
@@ -2200,7 +2209,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     duelHandler.playPhase2_revealCards_5 = false;
                     duelHandler.playPhase2_revealCards_6 = true;
                     duelHandler.assignPoints("p1_human", 13);
-                } else if (duelHandler.playPhase2_revealCards_6) {
+                } else {
                     duelHandler.playPhase2_revealCards_6 = false;
                     duelHandler.playPhase2 = false;
                     revealTimer.stop();
@@ -2213,24 +2222,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             }
 
 
-            if (e.getSource() == timer && duelHandler.resolveGamePhase){
+            if (e.getSource() == timer && duelHandler.resolveGamePhase) {
 
                 endDuelTimer.start();
 
-                if (duelHandler.getScore_p1_human() > duelHandler.getScore_p2_cpu()){
+                if (duelHandler.getScore_p1_human() > duelHandler.getScore_p2_cpu()) {
                     helperTextPointer_MiddleScreen = "YOU WIN";
                 }
 
-                if (duelHandler.getScore_p1_human() < duelHandler.getScore_p2_cpu()){
+                if (duelHandler.getScore_p1_human() < duelHandler.getScore_p2_cpu()) {
                     helperTextPointer_MiddleScreen = "YOU LOSE";
                 }
 
-                if (duelHandler.getScore_p1_human() == duelHandler.getScore_p2_cpu()){
+                if (duelHandler.getScore_p1_human() == duelHandler.getScore_p2_cpu()) {
                     helperTextPointer_MiddleScreen = "IT'S A DRAW";
                 }
             }
 
-            if (e.getSource() == endDuelTimer){
+            if (e.getSource() == endDuelTimer) {
 
                 endDuelTimer.stop();
                 trigger_endDuel = true;
@@ -2285,10 +2294,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             case KeyEvent.VK_X:
 
 
-
         }
     }
-
 
 
     @Override
@@ -2367,7 +2374,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void onMouseClickConfirmPlayphase1(int x, int y) {
-     //   g.drawRect(614, 364, 53, 28);
+        //   g.drawRect(614, 364, 53, 28);
         if (x > 614 && x < 668 && y > 364 && y < 394) {
             duelHandler.playphase1_waitingOnPlay = false;
             duelHandler.playphase1_revealCards_0 = true;
@@ -2598,7 +2605,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void loadSprites() {
 
-       loadBufferedImage("nobackground2.png","nobackground2");
+        loadBufferedImage("nobackground2.png", "nobackground2");
         loadBufferedImage("1.png", "1");
         loadBufferedImage("2.png", "2");
         loadBufferedImage("3.png", "3");
@@ -2608,10 +2615,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("Tree.png", "Tree");
         loadBufferedImage("Guard.png", "Guard");
         loadBufferedImage("Lumberjack.png", "Lumberjack");
+        loadBufferedImage("Randiq.png", "Randiq");
+        loadBufferedImage("LumberjackAxe.png", "LumberjackAxe");
+
         loadBufferedImage("forestry_icon.png", "forestry_icon");
         loadBufferedImage("plant_icon.png", "plant_icon");
         loadBufferedImage("human_icon.png", "human_icon");
-        loadBufferedImage("imperial_icon.png","imperial_icon");
+        loadBufferedImage("imperial_icon.png", "imperial_icon");
+        loadBufferedImage("tool_icon.png", "tool_icon");
 
         loadBufferedImage("UserIcon1.png", "UserIcon1");
         loadBufferedImage("UserIcon2.png", "UserIcon2");

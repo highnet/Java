@@ -32,12 +32,40 @@ public class Card {
                 break;
             case "Lumberjack":
                 this.color = "red";
-                this.baseValue = 6;
+                this.baseValue = 5;
                 this.effectText[0] = "+3 for each ";
                 this.effectText[1] = "tree";
                 this.archetype = "forestry";
                 this.subtype = "human";
                 break;
+
+            case "Guard":
+                this.color ="black";
+                this.baseValue = 6;
+                this.effectText[0] = "+3 for each Guard";
+                this.effectText[1] = "";
+                this.archetype = "imperial";
+                this.subtype = "human";
+                break;
+
+            case "Randiq":
+                this.color = "black";
+                this.baseValue = 9;
+                this.effectText[0] = "+2 to all Imperials";
+                this.effectText[1] = "-2 to all White Cards";
+                this.archetype = "imperial";
+                this.subtype = "human";
+                break;
+
+            case "LumberjackAxe":
+                this.color = "green";
+                this.baseValue = 3;
+                this.effectText[0] = "+2 for each Forestry";
+                this.effectText[1] = "+1 for each Lumberjack";
+                this.archetype = "forestry";
+                this.subtype = "tool";
+                break;
+
 
             case "null":
 

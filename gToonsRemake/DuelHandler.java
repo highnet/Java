@@ -274,65 +274,66 @@ public class DuelHandler implements ActionListener {
 
     }
 
+
     private void executeScript(String player, int revealCardsPhase) {
 
         if (revealCardsPhase == 0) {
             Card cardPlayed = this.getBoard_p1_human()[0];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 1) {
             Card cardPlayed = this.getBoard_p2_cpu()[0];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 2) {
             Card cardPlayed = this.getBoard_p1_human()[1];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 3) {
 
             Card cardPlayed = this.getBoard_p2_cpu()[1];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 4) {
             Card cardPlayed = this.getBoard_p1_human()[2];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 5) {
             Card cardPlayed = this.getBoard_p2_cpu()[2];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 6) {
             Card cardPlayed = this.getBoard_p1_human()[3];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 7) {
             Card cardPlayed = this.getBoard_p2_cpu()[3];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 8) {
             Card cardPlayed = this.getBoard_p2_cpu()[4];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 9) {
             Card cardPlayed = this.getBoard_p1_human()[4];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 10) {
             Card cardPlayed = this.getBoard_p2_cpu()[5];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 11) {
             Card cardPlayed = this.getBoard_p1_human()[5];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 12) {
             Card cardPlayed = this.getBoard_p2_cpu()[6];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         } else if (revealCardsPhase == 13) {
             Card cardPlayed = this.getBoard_p1_human()[6];
             cardScriptFork(cardPlayed, player, revealCardsPhase);
-            executeAbsorbFinalValueScript(player, cardPlayed);
+            executeRecalculateBoardValues(revealCardsPhase);
         }
     }
 
@@ -344,15 +345,2381 @@ public class DuelHandler implements ActionListener {
         } else if (cardPlayed.getName().equals("Lumberjack")) {
             executeLumberjackScript(player, cardPlayed, revealCardsPhase);
 
+        } else if (cardPlayed.getName().equals("Guard")) {
+            executeGuardScript(player, cardPlayed, revealCardsPhase);
+        } else if (cardPlayed.getName().equals("Randiq")){
+            executeRandiqScript(player, cardPlayed, revealCardsPhase);
+
+        } else if (cardPlayed.getName().equals("LumberjackAxe")){
+            executeLumberjackAxeScript(player, cardPlayed, revealCardsPhase);
 
         }
     }
 
-    private void executeAbsorbFinalValueScript(String player, Card cardPlayed) {
+    private void executeLumberjackAxeScript(String player, Card cardPlayed, int revealCardsPhase) {
         if (player.equals("p1_human")) {
-            score_p1_human += cardPlayed.getCurrentValue(); // assign base value of card
+            greenCount_p2_cpu++;
+
         } else if (player.equals("p2_cpu")) {
-            score_p2_cpu += cardPlayed.getCurrentValue();
+            greenCount_p2_cpu++;
+        }
+
+        switch (revealCardsPhase) {
+            case 0:
+                break;
+            case 1:
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+               ///
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                
+                break;
+            case 2:
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                break;
+            case 3:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+
+                break;
+            case 4:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+
+                break;
+            case 5:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                break;
+            case 6:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 7:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 8:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 9:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 10:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 11:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 12:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+            case 13:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Lumberjack")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("forestry")) {
+                    cardPlayed.currentValue += 1;
+
+                }
+                break;
+        }
+    }
+
+    private void executeRandiqScript(String player, Card cardPlayed, int revealCardsPhase) {
+        if (player.equals("p1_human")) {
+            blackCount_p1_human++;
+
+        } else if (player.equals("p2_cpu")) {
+            blackCount_p2_cpu++;
+        }
+
+        switch (revealCardsPhase) {
+            case 0:
+                break;
+            case 1:
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                ///
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                break;
+            case 2:
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                ///
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                break;
+            case 3:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+                }
+
+                break;
+            case 4:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+                }
+                ///
+
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+                }
+
+                break;
+            case 5:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+                }
+                break;
+            case 6:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                break;
+            case 7:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                break;
+            case 8:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                break;
+            case 9:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0]   .currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0]   .currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                break;
+            case 10:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[4].currentValue += 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[4].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[4].currentValue -= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getColor().equals("white")) {
+                    this.getBoard_p1_human()[4].currentValue -= 2;
+
+                }
+                break;
+            case 11:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[4].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[5].currentValue += 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[4].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[4].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[5].currentValue -= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getColor().equals("white")) {
+                    this.getBoard_p1_human()[4].currentValue -= 2;
+
+                }
+                break;
+            case 12:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[4].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[5].currentValue += 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[4].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[5].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[4].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[5].currentValue -= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getColor().equals("white")) {
+                    this.getBoard_p1_human()[4].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getColor().equals("white")) {
+                    this.getBoard_p1_human()[5].currentValue -= 2;
+
+                }
+                break;
+            case 13:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[4].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[5].currentValue += 2;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getArchetype().equals("imperial")) {
+                    this.getBoard_p2_cpu()[6].currentValue += 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[0].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[1].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[2].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[3].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[4].currentValue += 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("imperial")) {
+                    this.getBoard_p1_human()[5].currentValue += 2;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[0].currentValue -= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[4].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[5].currentValue -= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getColor().equals("white")) {
+                    this.getBoard_p2_cpu()[6].currentValue -= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getColor().equals("white")) {
+                    this.getBoard_p1_human()[0].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getColor().equals("white")) {
+                    this.getBoard_p1_human()[1].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getColor().equals("white")) {
+                    this.getBoard_p1_human()[2].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getColor().equals("white")) {
+                    this.getBoard_p1_human()[3].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getColor().equals("white")) {
+                    this.getBoard_p1_human()[4].currentValue -= 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getColor().equals("white")) {
+                    this.getBoard_p1_human()[5].currentValue -= 2;
+
+                }
+                break;
+        }
+    }
+
+    private void executeGuardScript(String player, Card cardPlayed, int revealCardsPhase) {
+
+        if (player.equals("p1_human")) {
+            blackCount_p1_human++;
+
+        } else if (player.equals("p2_cpu")) {
+            blackCount_p2_cpu++;
+        }
+
+        switch (revealCardsPhase) {
+            case 0:
+                break;
+            case 1:
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                break;
+            case 2:
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                break;
+            case 3:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                break;
+            case 4:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+
+                break;
+            case 5:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+///
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                break;
+            case 6:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+            case 7:
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                cardPlayed.currentValue += 3;
+            }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+            case 8:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+            case 9:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+            case 10:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+            case 11:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                break;
+            case 12:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                break;
+            case 13:
+                if (this.getBoard_p2_cpu()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Guard")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                ///
+                if (this.getBoard_p2_cpu()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[5].getName().equals("Randiq")) {
+                    cardPlayed.currentValue += 4;
+
+                }
+                break;
+        }
+    }
+
+    private void executeRecalculateBoardValues(int revealCardsPhase) {
+
+
+        score_p2_cpu = 0;
+        score_p1_human = 0;
+        switch (revealCardsPhase) {
+            case 0:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                break;
+            case 1:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                break;
+            case 2:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+
+                break;
+            case 3:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+
+
+                break;
+            case 4:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+
+
+
+                break;
+            case 5:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+
+                break;
+            case 6:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+
+                break;
+            case 7:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+
+                break;
+            case 8:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                break;
+            case 9:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                break;
+            case 10:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[5].getCurrentValue();
+                break;
+            case 11:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[4].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[5].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[5].getCurrentValue();
+                break;
+            case 12:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[4].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[5].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[5].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[6].getCurrentValue();
+                break;
+            case 13:
+                score_p1_human += this.getBoard_p1_human()[0].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[1].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[2].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[3].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[4].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[5].getCurrentValue();
+                score_p1_human += this.getBoard_p1_human()[6].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[0].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[1].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[2].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[3].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[4].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[5].getCurrentValue();
+                score_p2_cpu += this.getBoard_p2_cpu()[6].getCurrentValue();
+                break;
         }
     }
 
@@ -497,6 +2864,10 @@ public class DuelHandler implements ActionListener {
 
                 }
                 if (this.getBoard_p2_cpu()[2].getName().equals("Tree")) {
+                    cardPlayed.currentValue += 3;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
 
                 }
@@ -712,10 +3083,11 @@ public class DuelHandler implements ActionListener {
                 if (this.getBoard_p2_cpu()[5].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
 
-                }   if (this.getBoard_p2_cpu()[6].getName().equals("Tree")) {
-                cardPlayed.currentValue += 3;
+                }
+                if (this.getBoard_p2_cpu()[6].getName().equals("Tree")) {
+                    cardPlayed.currentValue += 3;
 
-            }
+                }
 
                 if (this.getBoard_p1_human()[0].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
