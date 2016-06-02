@@ -353,6 +353,393 @@ public class DuelHandler implements ActionListener {
         } else if (cardPlayed.getName().equals("LumberjackAxe")){
             executeLumberjackAxeScript(player, cardPlayed, revealCardsPhase);
 
+        }  else if (cardPlayed.getName().equals("Toolmaker")){
+            executeToolmakerScript(player, cardPlayed, revealCardsPhase);
+
+        }
+    }
+
+    private void executeToolmakerScript(String player, Card cardPlayed, int revealCardsPhase) {
+
+        if (player.equals("p1_human")) {
+            greenCount_p1_human++;
+
+        } else if (player.equals("p2_cpu")) {
+            greenCount_p2_cpu++;
+        }
+        switch (revealCardsPhase) {
+            case 0:
+                break;
+            case 1:
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                break;
+            case 2:
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                break;
+            case 3:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+
+                break;
+            case 4:
+
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+
+                break;
+            case 5:
+
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                break;
+            case 6:
+
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 7:
+
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 8:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 9:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 10:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 11:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 12:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
+            case 13:
+                if (this.getBoard_p2_cpu()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+                }
+                if (this.getBoard_p2_cpu()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[1].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[2].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[3].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[4].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                if (this.getBoard_p1_human()[5].getSubtype().equals("tool")) {
+                    cardPlayed.currentValue *= 2;
+
+                }
+                break;
         }
     }
 
@@ -2237,7 +2624,7 @@ public class DuelHandler implements ActionListener {
 
                 }
                 ///
-               
+
                 break;
         }
     }

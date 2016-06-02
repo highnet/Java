@@ -113,7 +113,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (int i = 0; i < 20; i++) {
 
-            int rand = (int) (Math.random() * 5);
+            int rand = (int) (Math.random() * 6);
             System.out.println(rand);
 
             if (rand == 0) {
@@ -127,6 +127,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 deck1.add(new Card("Randiq"));
             } else if (rand == 4) {
                 deck1.add(new Card("LumberjackAxe"));
+            }  else if (rand == 5) {
+                deck1.add(new Card("Toolmaker"));
             }
 
         }
@@ -2653,6 +2655,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("Lumberjack.png", "Lumberjack");
         loadBufferedImage("Randiq.png", "Randiq");
         loadBufferedImage("LumberjackAxe.png", "LumberjackAxe");
+        loadBufferedImage("toolmaker.png", "Toolmaker");
 
         loadBufferedImage("forestry_icon.png", "forestry_icon");
         loadBufferedImage("plant_icon.png", "plant_icon");

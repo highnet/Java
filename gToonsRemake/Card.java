@@ -64,6 +64,15 @@ public class Card {
                 this.subtype = "tool";
                 break;
 
+            case "Toolmaker":
+                this.color = "green";
+                this.baseValue = 3;
+                this.effectText[0] = "x2 for each Tool";
+                this.effectText[1] = "";
+                this.archetype = "imperial";
+                this.subtype = "human";
+                break;
+
 
             case "null":
 
