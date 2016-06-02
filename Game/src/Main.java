@@ -1,14 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
-/**
- * Created by bokense on 25-Mar-16.
- */
 public class Main extends JFrame {
-    public final static int WIDTH = 807;
-    public final static int HEIGHT = 630;
+    public final static int WIDTH = 1024;
+    public final static int HEIGHT = 768;
 
     public Main() {
         this.initialize();
@@ -18,6 +18,8 @@ public class Main extends JFrame {
     public static void main(String[] args) throws FileNotFoundException {
 
         EventQueue.invokeLater(() -> {
+
+
 
 
             Main window = new Main();
@@ -37,7 +39,7 @@ public class Main extends JFrame {
     private void initialize() {
 
         this.setSize(WIDTH, HEIGHT);
-        this.setTitle("v 0.4 Development");
+        this.setTitle("Gtoons Remake v 0.1 Development");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridLayout(1, 1));
@@ -45,4 +47,6 @@ public class Main extends JFrame {
         this.setResizable(false);
 
     }
+
+
 }
