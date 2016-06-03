@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
@@ -113,29 +114,34 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         for (int i = 0; i < 20; i++) {
 
-            int rand = (int) (Math.random() * 6);
-            System.out.println(rand);
+            deck1.add(generateRandomCard());
 
-            if (rand == 0) {
-                deck1.add(new Card("Lumberjack"));
-            } else if (rand == 1) {
-                deck1.add(new Card("Tree"));
-
-            } else if (rand == 2) {
-                deck1.add(new Card("Guard"));
-            } else if (rand == 3) {
-                deck1.add(new Card("Randiq"));
-            } else if (rand == 4) {
-                deck1.add(new Card("LumberjackAxe"));
-            }  else if (rand == 5) {
-                deck1.add(new Card("Toolmaker"));
-            }
 
         }
 
 
         p1_human.setDecklist(deck1);
 
+
+    }
+
+    public static Card generateRandomCard() {
+
+        ArrayList<String> availableCards = new ArrayList<>();
+
+        availableCards.add("Lumberjack");
+        availableCards.add("Tree");
+        availableCards.add("Guard");
+        availableCards.add("Randiq");
+        availableCards.add("LumberjackAxe");
+        availableCards.add("Toolmaker");
+        availableCards.add("Shredder");
+        availableCards.add("GreenDragon");
+
+        int rand = (int) (Math.random() * availableCards.size());
+        System.out.println(rand);
+
+        return  new Card(availableCards.get(rand));
 
     }
 
@@ -214,7 +220,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (duelHandler.drawPhase1) {
 
-            if (phaseDebugMode){
+            if (phaseDebugMode) {
                 System.out.println("duelHandler.drawPhase1");
             }
             // MY SLOTS
@@ -2094,7 +2100,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             if (trigger_startDuel) {
                 trigger_startDuel = false;
                 duelInProgress = true;
-                duelHandler = new DuelHandler(p1_human.getDecklist(), p2_cpu.getDecklist());
+
+                  shuffleDeck(p1_human.getDecklist());
+                duelHandler = new DuelHandler(p1_human.getDecklist());
             } else if (trigger_endDuel) {
 
                 duelInProgress = false;
@@ -2288,24 +2296,33 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
+    private void shuffleDeck(Deque<Card> deckList) {
+
+        List<Card> cardList = new LinkedList<>(deckList);
+
+        Collections.shuffle(cardList);
+
+        deckList = new LinkedList<>(cardList);
+
+        p1_human.setDecklist(deckList);
+
+
+    }
+
     private void drawCards2() {
+
 
         for (int i = 0; i < 6; i++) {
             if (duelHandler.getHand_p1_human()[i].getName().equals("null")) {
-                duelHandler.getHand_p1_human()[i] = p1_human.getDecklist().pollFirst();
+                duelHandler.getHand_p1_human()[i] = duelHandler.getDecklist_p1_human().pollFirst();
                 break;
             }
         }
     }
 
-    private void drawCards2(Integer index) {
-        System.out.println(p1_human.getDecklist().peekFirst());
-        duelHandler.getHand_p1_human()[index] = p1_human.getDecklist().pollFirst();
-
-    }
 
     private void drawCards1(int index) {
-        duelHandler.getHand_p1_human()[index] = p1_human.getDecklist().poll();
+        duelHandler.getHand_p1_human()[index] = duelHandler.getDecklist_p1_human().pollFirst();
     }
 
 
@@ -2655,19 +2672,24 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("Lumberjack.png", "Lumberjack");
         loadBufferedImage("Randiq.png", "Randiq");
         loadBufferedImage("LumberjackAxe.png", "LumberjackAxe");
-        loadBufferedImage("toolmaker.png", "Toolmaker");
+        loadBufferedImage("Toolmaker.png", "Toolmaker");
+        loadBufferedImage("Shredder.png", "Shredder");
 
         loadBufferedImage("forestry_icon.png", "forestry_icon");
         loadBufferedImage("plant_icon.png", "plant_icon");
         loadBufferedImage("human_icon.png", "human_icon");
         loadBufferedImage("imperial_icon.png", "imperial_icon");
         loadBufferedImage("tool_icon.png", "tool_icon");
+        loadBufferedImage("mech_icon.png", "mech_icon");
+        loadBufferedImage("dragon_icon.png", "dragon_icon");
 
         loadBufferedImage("UserIcon1.png", "UserIcon1");
         loadBufferedImage("UserIcon2.png", "UserIcon2");
         loadBufferedImage("UserIcon3.png", "UserIcon3");
         loadBufferedImage("UserIcon4.png", "UserIcon4");
         loadBufferedImage("UserIcon5.png", "UserIcon5");
+
+        loadBufferedImage("GreenDragon.png", "GreenDragon");
 
     }
 

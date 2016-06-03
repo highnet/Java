@@ -73,6 +73,23 @@ public class Card {
                 this.subtype = "human";
                 break;
 
+            case "Shredder":
+                this.color = "red";
+                this.baseValue = 4;
+                this.effectText[0] = "-3 to all green";
+                this.effectText[1] = "x2 if next to a mech";
+                this.archetype = "forestry";
+                this.subtype = "mech";
+                break;
+            case "GreenDragon":
+                this.color = "green";
+                this.baseValue = 7;
+                this.effectText[0] = "+4 to all forestry";
+                this.effectText[1] = "turn your deck into trees";
+                this.archetype = "forestry";
+                this.subtype = "dragon";
+                break;
+
 
             case "null":
 
