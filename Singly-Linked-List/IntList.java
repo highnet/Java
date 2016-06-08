@@ -21,6 +21,14 @@ public class IntList {
 
         return scanNode.value == valueToFind;
     }
+    
+    public void reverseI2(){
+        this.head = this.head.reverseI2();
+    }
+    
+     public void reverseR(){
+        this.head = this.head.reverseR();
+    }
 
     public void reverseI() {
 
@@ -269,6 +277,28 @@ public class IntList {
         public IntListNode(int value, IntListNode next) {
             this.next = next;
             this.value = value;
+        }
+        
+        
+        ListNode reverseI2(){
+            ListNode prev = null, next = null, help = this;
+            while(help != null){
+                next = help.next;
+                help.next = prev;
+                prev = help;
+                help = next;
+            }
+            return prev;
+        }
+        
+        ListNode reverseR(){
+            if (this.next == null){
+                return this;
+            }
+            ListNode tail = this.next.reverseR();
+            this.next.next = this;
+            this.next = null;
+            return tail;
         }
 
         public void addToChildren(int value) {
