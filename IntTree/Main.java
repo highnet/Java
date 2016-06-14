@@ -1,41 +1,58 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
- * Created by bokense on 05-Jun-16.
+ * Created by highnet on 2016-06-14.
  */
 public class Main {
-
     public static void main(String[] args) {
+
         IntTree myTree1 = new IntTree();
 
         myTree1.add(12);
-        myTree1.add(4);
+        myTree1.add(77);
         myTree1.add(15);
-        myTree1.add(1);
-        myTree1.add(6);
+        myTree1.add(12);
+        myTree1.add(32);
         myTree1.add(13);
-        myTree1.add(5);
+        myTree1.add(45);
         myTree1.add(14);
+
         printBinaryTree(myTree1.root,0);
 
-        System.out.println(myTree1.searchIfContains(321831));
 
-        System.out.println(myTree1.countNodes());
+        IntTree myTree2 = new IntTree();
 
-        System.out.println(myTree1.maxHeight());
+        myTree2.add(12);
+        myTree2.add(77);
+        myTree2.add(15);
+        myTree2.add(121);
+        myTree2.add(32);
+        myTree2.add(13);
+        myTree2.add(45);
+        myTree2.add(14);
+
+        System.out.println(myTree1.equals(myTree2));
 
 
-        myTree1.printPreOrder();
-        System.out.println();
-        myTree1.printLevelOrder2(myTree1.root);
-
-        myTree1.paintInOrder();
-
-        myTree1.paintInOrderDown();
-
+        System.out.println(equals2(myTree1,myTree2));
 
 
     }
 
-    public static void printBinaryTree(IntTreeNode root, int level){
+    private static boolean equals2(IntTree myTree1, IntTree myTree2) {
+
+        Queue<Integer> myTree1_values = new LinkedList<>();
+        Queue<Integer> myTree2_values = new LinkedList<>();
+
+        myTree1.pushValues(myTree1_values);
+        myTree2.pushValues(myTree2_values);
+
+        return myTree1_values.equals(myTree2_values);
+    }
+
+
+    private static void printBinaryTree(IntTreeNode root, int level){
         if(root==null)
             return;
         printBinaryTree(root.right, level+1);
