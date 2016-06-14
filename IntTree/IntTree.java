@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Queue;
 
 public class IntTree {
 
@@ -94,9 +95,40 @@ public class IntTree {
         }
 
     }
+
+    public int minValue() {
+
+        return root.minValueOfChildren(root.value);
+    }
+
+    public int maxValue() {
+        return root.maxValueOfChildren(root.value);
+    }
+
+    public boolean equals(IntTree other){
+
+
+        return equals(this.root,other.root);
+    }
+
+    private boolean equals(IntTreeNode node1, IntTreeNode node2) {
+
+        if (node1 == null || node2 == null){
+            return node1 == node2;
+        }
+
+        if (node1.value != node2.value){
+            return false;
+        }
+
+       return equals(node1.right,node2.right) && equals(node1.left,node2.left);
+    }
+
+
+    public void pushValues(Queue<Integer> myTree_values) {
+
+        root.pushValues(myTree_values);
+
+
+    }
 }
-
-
-
-
-
