@@ -1,9 +1,0 @@
-public static boolean equal(BinaryNode t1, BinaryNode t2){
-      if(t1==null || t2==null) return false;
-      else if(t1.element != t2.element) return false;
-      else if(equal(t1.left,t2.left)) return false;
-      else if(equal(t1.right,t2.right)) return false;
-      else
-          return true;
- 
-  }
