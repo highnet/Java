@@ -13,65 +13,94 @@ import java.util.List;
 public class GameEngine extends JPanel implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
 
 
-    private Timer timer; // GAME CLOCK TIMER
+    private Timer timer; // Game clock timer, controls: gamespeed / painting / resolving the duel phase when game is over
 
-    private Timer drawTimer; //
+    private Timer drawTimer; // card drawing timer, controls: drawing cards during card draw phase 1 and phase 2
 
-    private Timer revealTimer;
+    private Timer revealTimer; // card revealing timer, controls: card reveals during card reveal phases
 
-    private Timer endDuelTimer;
+    private Timer endDuelTimer; // end duel timer, controls: determines how long the pause between the end of duel and a new duel.
 
-    private Map<String, BufferedImage> bufferedImageMap;
+    private Map<String, BufferedImage> bufferedImageMap; // Stores all bufferedimages(.png files) in an easy to use map.
 
-    private int mouseDragX;
-    private int mouseDragY;
+    private int mouseDragX; // mouse x coordinate pointer, updates every time the mouse is "dragged", hence the name.
+    private int mouseDragY; // mouse y coordinate pointer, updates every time the mouse is "dragged", hence the name.
 
-    private double nextTime;
+    private double nextTime; // pointer variable used for locking the game at a determined frame per second(fps). leave untouched (or may cause performance issues)
 
-    private Player p1_human;
-    private Player p2_cpu;
+    private Player p1_human; // Player 1 object (controlled by human)
+    private Player p2_cpu; // Player 2 object (controlled by AI)
 
-    private boolean trigger_startDuel;
-    private boolean trigger_endDuel;
-    private boolean duelInProgress;
+    private boolean trigger_startDuel; // Trigger switch(turns itself off after flipping it), begins the duel. (if this is triggered to true at any point, it will restart the game, not fully tested, may cause issues)
+    private boolean trigger_endDuel; // Trigger switch(turns itself off after flipping it), ends the duel. (if this is triggered to true at any point, it will end the game, not fully tested, may cause issues)
+    private boolean duelInProgress; // Boolean state, controls wether there is indeed a duel in progress.
 
-    private Font font1_18;
-    private Font font2_26;
-    private Font font3_12;
-    private Font font4_midscreen;
-    private Font font5;
 
+    private Font font1_18; // Font pointer. uses: // TODO: 2016-06-16
+    private Font font2_26; // Font pointer. uses:  // TODO: 2016-06-16
+    private Font font3_12; // Font pointer. uses:  // TODO: 2016-06-16
+    private Font font4_midscreen; // Font pointer, used solely for the mid screen text.
+    private Font font5; // Font pointer. uses: // TODO: 2016-06-16
+
+
+    /*
+    DuelHandler Object.
+
+    Isolated container of a duel.
+
+    Includes all duel logic, scripts, states, counters, decklists,
+     */
     private DuelHandler duelHandler;
 
-    private int mousedOverState;
+    private int mousedOverState; // pointer which determines which custom-defined area of the screen the mouse is located. (used for tooltip display)
 
-    private String helperTextPointer_MiddleScreen;
+    private String helperTextPointer_MiddleScreen; // Middle screen helper text pointer String.
+    private Color cyan; // custom defined cyan color. (does it really need to be a field)
 
-
-    private Color cyan;
-
-    private Card mouseDragCardPointer;
-    private int mouseDragCardIndexPointer;
-    private boolean phaseDebugMode;
-
-    private boolean ONE_PRESSED;
-
-    int animationFrameCounter;
+    private Card mouseDragCardPointer; // pointer which determines what kind of card the player is dragging around (used for placement of cards)
+    private int mouseDragCardIndexPointer; //  TODO: 2016-06-16 add comment description
+    private boolean phaseDebugMode; // determines whether text is printed to the console with information of which game phases are currently active
 
 
-    public GameEngine() {
-        addMouseListener(this);
-        addMouseMotionListener(this);
+    private boolean SHIFT_PRESSED;    // Virtual Key Boolean State Pointer
+
+    private boolean ONE_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean TWO_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean THREE_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean FOUR_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean FIVE_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean SIX_PRESSED;    // Virtual Key Boolean State Pointer
+    private boolean SEVEN_PRESSED;    // Virtual Key Boolean State Pointer
+
+
+    private int splash1_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash2_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash3_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash4_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash5_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash6_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash7_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash8_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash9_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash10_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash11_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash12_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash13_animationFrameCounter;// splash animation frame buffer counter pointer
+    private int splash14_animationFrameCounter;// splash animation frame buffer counter pointer
+
+
+    public GameEngine() { // GameEngine constructor.
+        addMouseListener(this); // Adds mouse listener.
+        addMouseMotionListener(this); // Adds mouse motion listener.
         addKeyListener(this); // Adds keyboard listener.
         setFocusable(true); // Setting required for keyboard listener.
 
-        startUp();
+        startUp(); // sets all startup configurations,
     }
 
 
     private void startUp() {
         System.out.println("STARTUP");
-
         drawTimer = new Timer(400, this);
         revealTimer = new Timer(2000, this);
         endDuelTimer = new Timer(10000, this);
@@ -91,49 +120,37 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         mouseDragCardIndexPointer = -1;
         mousedOverState = -1;
         phaseDebugMode = false;
-        animationFrameCounter = 0;
+        resetAnimationCounters();
         ONE_PRESSED = false;
-
+        TWO_PRESSED = false;
+        THREE_PRESSED = false;
+        FOUR_PRESSED = false;
+        FIVE_PRESSED = false;
+        SIX_PRESSED = false;
+        SEVEN_PRESSED = false;
+        SHIFT_PRESSED = false;
         //     Network network = new Network();
         bufferedImageMap = new HashMap<>();
-
         loadSprites();
-
         timer.start();
         drawTimer.start();
-
         p1_human = new Player("Highnet", new LinkedList<>(), (int) (Math.random() * (5) + 1));
         p2_cpu = new Player("Kirk43", new LinkedList<>(), (int) (Math.random() * (5) + 1));
-
         generateDecks();
-
         trigger_startDuel = true;
-
-
     }
 
 
-    private void generateDecks() {
+    private void generateDecks() { // Genereates a random , 20 card deck, from all "available cards"
         Deque<Card> deck1 = new LinkedList<>();
-
-
         for (int i = 0; i < 20; i++) {
-
             deck1.add(generateRandomCard());
-
-
         }
-
-
         p1_human.setDecklist(deck1);
-
-
     }
 
-    public static Card generateRandomCard() {
-
-        ArrayList<String> availableCards = new ArrayList<>();
-
+    private static Card generateRandomCard() { // Returns a random card from all "available cards"
+        ArrayList<String> availableCards = new ArrayList<>(); // Empty List of all available cards
         availableCards.add("Lumberjack");
         availableCards.add("Tree");
         availableCards.add("Guard");
@@ -144,10 +161,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         availableCards.add("GreenDragon");
 
         int rand = (int) (Math.random() * availableCards.size());
-        System.out.println(rand);
 
         return new Card(availableCards.get(rand));
-
     }
 
     @Override
@@ -155,123 +170,890 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         super.paintComponent(g);
 
-
         if (duelInProgress) {
             paintVitalInformation(g);
             paintHand(g);
-
-
             executeRequestedAnimations(g);
-
             paintBoard(g);
             paintMousedOverCardTooltip(g);
             paintDebugInfo(g);
-
-
             paintHelperTextMiddleScreen(g);
-
             paintCardTooltip(g);
-
-
             if (duelHandler.playphase1 && duelHandler.playphase1_waitingOnPlay) {
-
                 paintHelperNumbersPlayPhase1(g);
-
                 if (mouseDragCardPointer != null) {
                     paintMouseDragCardPointer(g);
                 }
                 if (duelHandler.checkForConfirmPlayButtonPhase1()) {
                     paintConfirmButton(g);
-
                 }
             }
-
-
             if (duelHandler.playPhase2 && duelHandler.playPhase2_waitingOnPlay) {
                 if (mouseDragCardPointer != null) {
                     paintMouseDragCardPointer(g);
                 }
-
                 if (duelHandler.checkForConfirmPlayButtonPhase2()) {
                     paintConfirmButton(g);
-
                 }
             }
-
-
         }
-
     }
 
     private void executeRequestedAnimations(Graphics g) {
 
-        if (ONE_PRESSED) {
+        if (!SHIFT_PRESSED && ONE_PRESSED || duelHandler.splashAnimation1Request) {
             executeSplashAnimation(g, 1);
+        }
+        if (SHIFT_PRESSED && ONE_PRESSED || duelHandler.splashAnimation2Request) {
+            executeSplashAnimation(g, 2);
+        }
+        if (!SHIFT_PRESSED && TWO_PRESSED || duelHandler.splashAnimation3Request) {
+            executeSplashAnimation(g, 3);
+        }
+        if (SHIFT_PRESSED && TWO_PRESSED || duelHandler.splashAnimation4Request) {
+            executeSplashAnimation(g, 4);
+        }
+        if (!SHIFT_PRESSED && THREE_PRESSED || duelHandler.splashAnimation5Request) {
+            executeSplashAnimation(g, 5);
+        }
+        if (SHIFT_PRESSED && THREE_PRESSED || duelHandler.splashAnimation6Request) {
+            executeSplashAnimation(g, 6);
+        }
+        if (!SHIFT_PRESSED && FOUR_PRESSED || duelHandler.splashAnimation7Request) {
+            executeSplashAnimation(g, 7);
+        }
+        if (SHIFT_PRESSED && FOUR_PRESSED || duelHandler.splashAnimation8Request) {
+            executeSplashAnimation(g, 8);
+        }
+        if (!SHIFT_PRESSED && FIVE_PRESSED || duelHandler.splashAnimation9Request) {
+            executeSplashAnimation(g, 9);
+        }
+        if (SHIFT_PRESSED && FIVE_PRESSED || duelHandler.splashAnimation10Request) {
+            executeSplashAnimation(g, 10);
+        }
+        if (!SHIFT_PRESSED && SIX_PRESSED || duelHandler.splashAnimation11Request) {
+            executeSplashAnimation(g, 11);
+        }
+        if (SHIFT_PRESSED && SIX_PRESSED || duelHandler.splashAnimation12Request) {
+            executeSplashAnimation(g, 12);
+        }
+        if (!SHIFT_PRESSED && SEVEN_PRESSED || duelHandler.splashAnimation13Request) {
+            executeSplashAnimation(g, 13);
+        }
+        if (SHIFT_PRESSED && SEVEN_PRESSED || duelHandler.splashAnimation14Request) {
+            executeSplashAnimation(g, 14);
         }
     }
 
-    private void executeSplashAnimation(Graphics g, int position) {
+    private void executeSplashAnimation(Graphics g, int requestedPosition) {
 
-        if (position == 1) {
+        if (requestedPosition == 1) {
 
-            if (animationFrameCounter < 5) {
+            if (splash1_animationFrameCounter < 5) {
                 g.drawImage(bufferedImageMap.get("splash_0"), 162, 407, this);
 
-            } else if (animationFrameCounter < 10) {
+            } else if (splash1_animationFrameCounter < 10) {
                 g.drawImage(bufferedImageMap.get("splash_1"), 162, 407, this);
 
-            } else if (animationFrameCounter < 15) {
+            } else if (splash1_animationFrameCounter < 15) {
                 g.drawImage(bufferedImageMap.get("splash_2"), 162, 407, this);
 
-            } else if (animationFrameCounter < 20) {
+            } else if (splash1_animationFrameCounter < 20) {
                 g.drawImage(bufferedImageMap.get("splash_3"), 162, 407, this);
 
-            } else if (animationFrameCounter < 25) {
+            } else if (splash1_animationFrameCounter < 25) {
                 g.drawImage(bufferedImageMap.get("splash_4"), 162, 407, this);
 
-            } else if (animationFrameCounter < 30) {
+            } else if (splash1_animationFrameCounter < 30) {
                 g.drawImage(bufferedImageMap.get("splash_5"), 162, 407, this);
 
-            } else if (animationFrameCounter < 35) {
+            } else if (splash1_animationFrameCounter < 35) {
                 g.drawImage(bufferedImageMap.get("splash_6"), 162, 407, this);
 
-            } else if (animationFrameCounter < 40) {
+            } else if (splash1_animationFrameCounter < 40) {
                 g.drawImage(bufferedImageMap.get("splash_7"), 162, 407, this);
 
-            } else if (animationFrameCounter < 45) {
+            } else if (splash1_animationFrameCounter < 45) {
                 g.drawImage(bufferedImageMap.get("splash_8"), 162, 407, this);
-            } else if (animationFrameCounter < 50) {
+            } else if (splash1_animationFrameCounter < 50) {
                 g.drawImage(bufferedImageMap.get("splash_9"), 162, 407, this);
 
-            } else if (animationFrameCounter < 55) {
+            } else if (splash1_animationFrameCounter < 55) {
                 g.drawImage(bufferedImageMap.get("splash_10"), 162, 407, this);
 
-            } else if (animationFrameCounter < 60) {
+            } else if (splash1_animationFrameCounter < 60) {
                 g.drawImage(bufferedImageMap.get("splash_11"), 162, 407, this);
 
-            } else if (animationFrameCounter < 65) {
+            } else if (splash1_animationFrameCounter < 65) {
                 g.drawImage(bufferedImageMap.get("splash_12"), 162, 407, this);
 
-            } else if (animationFrameCounter < 70) {
+            } else if (splash1_animationFrameCounter < 70) {
                 g.drawImage(bufferedImageMap.get("splash_13"), 162, 407, this);
 
-            } else if (animationFrameCounter < 75) {
+            } else if (splash1_animationFrameCounter < 75) {
                 g.drawImage(bufferedImageMap.get("splash_14"), 162, 407, this);
 
             }
 
+            if (splash1_animationFrameCounter == 76)
+
+            {
+                splash1_animationFrameCounter = 0;
+                duelHandler.splashAnimation1Request = false;
+
+            }
+
+            splash1_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 2) {
+
+            if (splash2_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 162, 205, this);
+            } else if (splash2_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 162, 205, this);
+
+            } else if (splash2_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 162, 205, this);
+
+            }
+
+            if (splash2_animationFrameCounter == 76)
+
+            {
+                splash2_animationFrameCounter = 0;
+                duelHandler.splashAnimation2Request = false;
+
+            }
+
+            splash2_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 3) {
+
+            if (splash3_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 322, 407, this);
+            } else if (splash3_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 322, 407, this);
+
+            } else if (splash3_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 322, 407, this);
+
+            }
+
+            if (splash3_animationFrameCounter == 76)
+
+            {
+                splash3_animationFrameCounter = 0;
+                duelHandler.splashAnimation3Request = false;
+
+            }
+
+            splash3_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 4) {
+
+            if (splash4_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 322, 205, this);
+            } else if (splash4_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 322, 205, this);
+
+            } else if (splash4_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 322, 205, this);
+
+            }
+
+            if (splash4_animationFrameCounter == 76)
+
+            {
+                splash4_animationFrameCounter = 0;
+                duelHandler.splashAnimation4Request = false;
+
+            }
+
+            splash4_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 5) {
+
+            if (splash5_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 482, 407, this);
+            } else if (splash5_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 482, 407, this);
+
+            } else if (splash5_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 482, 407, this);
+
+            }
+
+            if (splash5_animationFrameCounter == 76)
+
+            {
+                splash5_animationFrameCounter = 0;
+                duelHandler.splashAnimation5Request = false;
+
+            }
+
+            splash5_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 6) {
+
+            if (splash6_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 482, 205, this);
+            } else if (splash6_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 482, 205, this);
+
+            } else if (splash6_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 482, 205, this);
+
+            }
+
+            if (splash6_animationFrameCounter == 76)
+
+            {
+                splash6_animationFrameCounter = 0;
+                duelHandler.splashAnimation6Request = false;
+
+            }
+
+            splash6_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 7) {
+
+            if (splash7_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 642, 407, this);
+            } else if (splash7_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 642, 407, this);
+
+            } else if (splash7_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 642, 407, this);
+
+            }
+
+            if (splash7_animationFrameCounter == 76)
+
+            {
+                splash7_animationFrameCounter = 0;
+                duelHandler.splashAnimation7Request = false;
+
+            }
+
+            splash7_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 8) {
+            if (splash8_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 642, 205, this);
+            } else if (splash8_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 642, 205, this);
+
+            } else if (splash8_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 642, 205, this);
+
+            }
+
+            if (splash8_animationFrameCounter == 76)
+
+            {
+                splash8_animationFrameCounter = 0;
+                duelHandler.splashAnimation8Request = false;
+
+            }
+
+            splash8_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 9) {
+
+
+            if (splash9_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 237, 569, this);
+            } else if (splash9_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 237, 569, this);
+
+            } else if (splash9_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 237, 569, this);
+
+            }
+
+            if (splash9_animationFrameCounter == 76)
+
+            {
+                splash9_animationFrameCounter = 0;
+                duelHandler.splashAnimation9Request = false;
+
+            }
+
+            splash9_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 10) {
+            if (splash10_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 237, 44, this);
+            } else if (splash10_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 237, 44, this);
+
+            } else if (splash10_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 237, 44, this);
+
+            }
+
+            if (splash10_animationFrameCounter == 76)
+
+            {
+                splash10_animationFrameCounter = 0;
+                duelHandler.splashAnimation10Request = false;
+
+            }
+
+            splash10_animationFrameCounter += 4;
+        } else if (requestedPosition == 11) {
+
+            if (splash11_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 395, 569, this);
+            } else if (splash11_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 395, 569, this);
+
+            } else if (splash11_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 395, 569, this);
+
+            }
+
+            if (splash11_animationFrameCounter == 76)
+
+            {
+                splash11_animationFrameCounter = 0;
+                duelHandler.splashAnimation11Request = false;
+
+            }
+
+            splash11_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 12) {
+
+            if (splash12_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 395, 44, this);
+            } else if (splash12_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 395, 44, this);
+
+            } else if (splash12_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 395, 44, this);
+
+            }
+
+            if (splash12_animationFrameCounter == 76)
+
+            {
+                splash12_animationFrameCounter = 0;
+                duelHandler.splashAnimation12Request = false;
+
+            }
+
+            splash12_animationFrameCounter += 4;
+        } else if (requestedPosition == 13) {
+            if (splash13_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 557, 569, this);
+            } else if (splash13_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 557, 569, this);
+
+            } else if (splash13_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 557, 569, this);
+
+            }
+
+            if (splash13_animationFrameCounter == 76)
+
+            {
+                splash13_animationFrameCounter = 0;
+                duelHandler.splashAnimation13Request = false;
+
+            }
+
+            splash13_animationFrameCounter += 4;
+
+        } else if (requestedPosition == 14) {
+            if (splash14_animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 557, 44, this);
+            } else if (splash14_animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 557, 44, this);
+
+            } else if (splash14_animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 557, 44, this);
+
+            }
+
+            if (splash14_animationFrameCounter == 76)
+
+            {
+                splash14_animationFrameCounter = 0;
+                duelHandler.splashAnimation14Request = false;
+
+            }
+
+            splash14_animationFrameCounter += 4;
         }
-
-        if (animationFrameCounter == 76)
-
-        {
-            animationFrameCounter = 0;
-
-        }
-
-        animationFrameCounter+=4;
-
-        System.out.println(animationFrameCounter);
     }
 
 
@@ -1850,7 +2632,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 mousedOverState = 4;
             } else if (mouseDragX > 929 && mouseDragX < 1017 && mouseDragY > 599 && mouseDragY < 688) {
                 mousedOverState = 5;
-            }
+            } // STOPSHIP TODO: NEEDS EXPANSION FOR ALL OTHER TOOLTIPS
+
         }
 
     }
@@ -2150,7 +2933,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         g2d.drawImage(bufferedImageMap.get("UserIcon" + p2_cpu.playerIconID), 7, 48, 53, 53, this);
 
         g2d.setColor(Color.black);
-// MARKER
 
 
         if (duelHandler.getScore_p1_human() <= 99) {
@@ -2435,6 +3217,48 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 break;
 
+            case KeyEvent.VK_2:
+
+                TWO_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_3:
+
+                THREE_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_4:
+
+                FOUR_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_5:
+
+                FIVE_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_6:
+
+                SIX_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_7:
+
+                SEVEN_PRESSED = true;
+
+                break;
+
+            case KeyEvent.VK_SHIFT:
+
+                SHIFT_PRESSED = true;
+
+                break;
+
 
         }
     }
@@ -2443,6 +3267,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void keyReleased(KeyEvent e) {
 
+        resetAnimationCounters(); // Assures that all animation frames are reset in case of a key release. TODO: 2016-06-16  #Hackfix.
 
         switch (e.getKeyCode()) {
 
@@ -2450,9 +3275,71 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
                 ONE_PRESSED = false;
 
+
+                break;
+
+            case KeyEvent.VK_2:
+
+                TWO_PRESSED = false;
+
+
+                break;
+
+            case KeyEvent.VK_3:
+
+                THREE_PRESSED = false;
+
+                break;
+
+            case KeyEvent.VK_4:
+
+                FOUR_PRESSED = false;
+
+                break;
+
+            case KeyEvent.VK_5:
+
+                FIVE_PRESSED = false;
+
+                break;
+
+            case KeyEvent.VK_6:
+
+                SIX_PRESSED = false;
+
+                break;
+
+            case KeyEvent.VK_7:
+
+                SEVEN_PRESSED = false;
+
+                break;
+
+            case KeyEvent.VK_SHIFT:
+
+                SHIFT_PRESSED = false;
+
                 break;
         }
 
+    }
+
+    private void resetAnimationCounters() { // resets all animation frame counters, mostly used to stop a bug where if you are debugging the splash animations and leave the frame counter at a high level the animation seem to not play since they are only a few frames short.
+
+        splash1_animationFrameCounter = 0;
+        splash2_animationFrameCounter = 0;
+        splash3_animationFrameCounter = 0;
+        splash4_animationFrameCounter = 0;
+        splash5_animationFrameCounter = 0;
+        splash6_animationFrameCounter = 0;
+        splash7_animationFrameCounter = 0;
+        splash8_animationFrameCounter = 0;
+        splash9_animationFrameCounter = 0;
+        splash10_animationFrameCounter = 0;
+        splash11_animationFrameCounter = 0;
+        splash12_animationFrameCounter = 0;
+        splash13_animationFrameCounter = 0;
+        splash14_animationFrameCounter = 0;
     }
 
     @Override

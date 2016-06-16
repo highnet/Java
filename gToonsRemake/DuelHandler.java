@@ -7,35 +7,27 @@ import java.util.LinkedList;
 /**
  * Created by bokense on 24-May-16.
  */
-public class DuelHandler implements ActionListener {
+class DuelHandler{
 
-    boolean drawPhase1 = true;
-    public boolean playphase1 = false;
-    public boolean playphase1_waitingOnPlay = false;
-    public boolean playphase1_revealCards_0 = false;
-    public boolean playphase1_revealCards_1 = false;
-    public boolean playphase1_revealCards_2 = false;
-    public boolean playphase1_revealCards_3 = false;
-    public boolean playphase1_revealCards_4 = false;
-    public boolean playphase1_revealCards_5 = false;
-    public boolean playphase1_revealCards_6 = false;
-    public boolean playphase1_revealCards_7 = false;
-    public boolean playphase1_revealCards_8 = false;
-    public boolean drawPhase2 = false;
-    public boolean playPhase2 = false;
-    public boolean mulliganOptionPhase = false;
-    public boolean mulliganOptionPhase_waitingOnOption = false;
+      boolean drawPhase1 = true;
+      boolean playphase1 = false;
+      boolean playphase1_waitingOnPlay = false;
+      boolean playphase1_revealCards_0 = false;
+      boolean playphase1_revealCards_1 = false;
+      boolean playphase1_revealCards_2 = false;
+      boolean playphase1_revealCards_3 = false;
+      boolean playphase1_revealCards_4 = false;
+      boolean playphase1_revealCards_5 = false;
+      boolean playphase1_revealCards_6 = false;
+      boolean playphase1_revealCards_7 = false;
+      boolean playphase1_revealCards_8 = false;
+      boolean drawPhase2 = false;
+      boolean playPhase2 = false;
+      boolean mulliganOptionPhase = false;
+      boolean mulliganOptionPhase_waitingOnOption = false;
 
     int cardsDrawn = 0;
     int cardsDrawn2 = 0;
-
-    public Deque<Card> getDecklist_p1_human() {
-        return decklist_p1_human;
-    }
-
-    public void setDecklist_p1_human(Deque<Card> decklist_p1_human) {
-        this.decklist_p1_human = decklist_p1_human;
-    }
 
     private Deque<Card> decklist_p1_human;
     private Card[] board_p1_human;
@@ -71,6 +63,22 @@ public class DuelHandler implements ActionListener {
     public boolean resolveGamePhase;
 
 
+    public boolean splashAnimation1Request = false;
+    public boolean splashAnimation2Request = false;
+    public boolean splashAnimation3Request = false;
+    public boolean splashAnimation4Request = false;
+    public boolean splashAnimation5Request = false;
+    public boolean splashAnimation6Request = false;
+    public boolean splashAnimation7Request = false;
+    public boolean splashAnimation8Request = false;
+    public boolean splashAnimation9Request = false;
+    public boolean splashAnimation10Request = false;
+    public boolean splashAnimation11Request = false;
+    public boolean splashAnimation12Request = false;
+    public boolean splashAnimation13Request = false;
+    public boolean splashAnimation14Request = false;
+
+
     public DuelHandler(Deque<Card> set_decklist_p1_human) {
         this.board_p1_human = new Card[7];
         this.board_p2_cpu = new Card[7];
@@ -95,7 +103,13 @@ public class DuelHandler implements ActionListener {
 
         AIhandler = new AI();
     }
+    public Deque<Card> getDecklist_p1_human() {
+        return decklist_p1_human;
+    }
 
+    public void setDecklist_p1_human(Deque<Card> decklist_p1_human) {
+        this.decklist_p1_human = decklist_p1_human;
+    }
 
     public Card[] getHand_p1_human() {
         return hand_p1_human;
@@ -249,10 +263,6 @@ public class DuelHandler implements ActionListener {
         this.yellowCount_p2_cpu = yelloweCount_p2_cpu;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
 
     public boolean checkForConfirmPlayButtonPhase1() {
 
@@ -349,7 +359,7 @@ public class DuelHandler implements ActionListener {
     private void cardScriptFork(Card cardPlayed, String player, int revealCardsPhase) {
 
         if (cardPlayed.getName().equals("Tree")) {
-            executeTreeScript(player, cardPlayed);
+            executeTreeScript(player, cardPlayed,revealCardsPhase);
 
         } else if (cardPlayed.getName().equals("Lumberjack")) {
             executeLumberjackScript(player, cardPlayed, revealCardsPhase);
@@ -385,7 +395,7 @@ public class DuelHandler implements ActionListener {
             }
 
             decklist_p1_human = newDeck;
-
+            executeAnimationScript_splash(revealCardsPhase);
 
         } else if (player.equals("p2_cpu")) {
             greenCount_p2_cpu++;
@@ -805,6 +815,7 @@ public class DuelHandler implements ActionListener {
             redCount_p2_cpu++;
         }
 
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -1186,6 +1197,8 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             greenCount_p2_cpu++;
         }
+
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -1569,7 +1582,7 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             greenCount_p2_cpu++;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -2307,7 +2320,7 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             blackCount_p2_cpu++;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -3446,9 +3459,11 @@ public class DuelHandler implements ActionListener {
 
                 break;
         }
+        executeAnimationScript_splash(revealCardsPhase);
     }
 
     private void executeRecalculateBoardValues(int revealCardsPhase) {
+
 
 
         score_p2_cpu = 0;
@@ -3598,7 +3613,7 @@ public class DuelHandler implements ActionListener {
         }
     }
 
-    private void executeTreeScript(String player, Card cardPlayed) {
+    private void executeTreeScript(String player, Card cardPlayed, int revealCardsPhase) {
         if (player.equals("p1_human")) {
             greenCount_p1_human++;
         } else if (player.equals("p2_cpu")) {
@@ -3606,6 +3621,57 @@ public class DuelHandler implements ActionListener {
         }
         cardPlayed.currentValue += (this.greenCount_p2_cpu + this.greenCount_p1_human);
 
+        executeAnimationScript_splash(revealCardsPhase);
+
+
+
+    }
+
+    private void executeAnimationScript_splash(int revealCardsPhase) {
+        switch (revealCardsPhase){
+            case 0:
+                splashAnimation1Request = true;
+                break;
+            case 1:
+                splashAnimation2Request = true;
+                break;
+            case 2:
+                splashAnimation3Request = true;
+                break;
+            case 3:
+                splashAnimation4Request = true;
+                break;
+            case 4:
+                splashAnimation5Request = true;
+                break;
+            case 5:
+                splashAnimation6Request = true;
+                break;
+            case 6:
+                splashAnimation7Request = true;
+                break;
+            case 7:
+                splashAnimation8Request = true;
+                break;
+            case 8:
+                splashAnimation10Request = true;
+                break;
+            case 9:
+                splashAnimation9Request = true;
+                break;
+            case 10:
+                splashAnimation12Request = true;
+                break;
+            case 11:
+                splashAnimation11Request = true;
+                break;
+            case 12:
+                splashAnimation14Request = true;
+                break;
+            case 13:
+                splashAnimation13Request = true;
+                break;
+        }
     }
 
     private void executeLumberjackScript(String player, Card cardPlayed, int revealCardsPhase) {
@@ -3981,7 +4047,7 @@ public class DuelHandler implements ActionListener {
                 }
                 break;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
     }
 
 
