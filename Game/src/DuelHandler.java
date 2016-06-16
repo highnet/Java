@@ -1,29 +1,30 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Deque;
+import java.util.LinkedList;
 
 
 /**
  * Created by bokense on 24-May-16.
  */
-public class DuelHandler implements ActionListener {
+class DuelHandler{
 
-    boolean drawPhase1 = true;
-    public boolean playphase1 = false;
-    public boolean playphase1_waitingOnPlay = false;
-    public boolean playphase1_revealCards_0 = false;
-    public boolean playphase1_revealCards_1 = false;
-    public boolean playphase1_revealCards_2 = false;
-    public boolean playphase1_revealCards_3 = false;
-    public boolean playphase1_revealCards_4 = false;
-    public boolean playphase1_revealCards_5 = false;
-    public boolean playphase1_revealCards_6 = false;
-    public boolean playphase1_revealCards_7 = false;
-    public boolean playphase1_revealCards_8 = false;
-    public boolean drawPhase2 = false;
-    public boolean playPhase2 = false;
-    public boolean mulliganOptionPhase = false;
-    public boolean mulliganOptionPhase_waitingOnOption = false;
+      boolean drawPhase1 = true;
+      boolean playphase1 = false;
+      boolean playphase1_waitingOnPlay = false;
+      boolean playphase1_revealCards_0 = false;
+      boolean playphase1_revealCards_1 = false;
+      boolean playphase1_revealCards_2 = false;
+      boolean playphase1_revealCards_3 = false;
+      boolean playphase1_revealCards_4 = false;
+      boolean playphase1_revealCards_5 = false;
+      boolean playphase1_revealCards_6 = false;
+      boolean playphase1_revealCards_7 = false;
+      boolean playphase1_revealCards_8 = false;
+      boolean drawPhase2 = false;
+      boolean playPhase2 = false;
+      boolean mulliganOptionPhase = false;
+      boolean mulliganOptionPhase_waitingOnOption = false;
 
     int cardsDrawn = 0;
     int cardsDrawn2 = 0;
@@ -31,7 +32,7 @@ public class DuelHandler implements ActionListener {
     private Deque<Card> decklist_p1_human;
     private Card[] board_p1_human;
     private Card[] hand_p1_human;
-    private int score_p1_human;
+    private int score_p1_human = 0;
     private int blueCount_p1_human;
     private int whiteCount_p1_human;
     private int blackCount_p1_human;
@@ -39,10 +40,10 @@ public class DuelHandler implements ActionListener {
     private int greenCount_p1_human;
     private int yellowCount_p1_human;
 
-    private Deque<Card> decklist_p2_cpu;
+ //   private Deque<Card> decklist_p2_cpu;
     private Card[] board_p2_cpu;
     private Card[] hand_p2_cpu;
-    private int score_p2_cpu;
+    private int score_p2_cpu = 0;
     private int blueCount_p2_cpu;
     private int whiteCount_p2_cpu;
     private int blackCount_p2_cpu;
@@ -62,7 +63,23 @@ public class DuelHandler implements ActionListener {
     public boolean resolveGamePhase;
 
 
-    public DuelHandler(Deque<Card> set_decklist_p1_human, Deque<Card> set_decklist_p2_cpu) {
+    public boolean splashAnimation1Request = false;
+    public boolean splashAnimation2Request = false;
+    public boolean splashAnimation3Request = false;
+    public boolean splashAnimation4Request = false;
+    public boolean splashAnimation5Request = false;
+    public boolean splashAnimation6Request = false;
+    public boolean splashAnimation7Request = false;
+    public boolean splashAnimation8Request = false;
+    public boolean splashAnimation9Request = false;
+    public boolean splashAnimation10Request = false;
+    public boolean splashAnimation11Request = false;
+    public boolean splashAnimation12Request = false;
+    public boolean splashAnimation13Request = false;
+    public boolean splashAnimation14Request = false;
+
+
+    public DuelHandler(Deque<Card> set_decklist_p1_human) {
         this.board_p1_human = new Card[7];
         this.board_p2_cpu = new Card[7];
 
@@ -82,11 +99,17 @@ public class DuelHandler implements ActionListener {
             this.hand_p2_cpu[i] = new Card("null");
         }
         this.decklist_p1_human = set_decklist_p1_human;
-        this.decklist_p2_cpu = set_decklist_p2_cpu;
+
 
         AIhandler = new AI();
     }
+    public Deque<Card> getDecklist_p1_human() {
+        return decklist_p1_human;
+    }
 
+    public void setDecklist_p1_human(Deque<Card> decklist_p1_human) {
+        this.decklist_p1_human = decklist_p1_human;
+    }
 
     public Card[] getHand_p1_human() {
         return hand_p1_human;
@@ -240,10 +263,6 @@ public class DuelHandler implements ActionListener {
         this.yellowCount_p2_cpu = yelloweCount_p2_cpu;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
 
     public boolean checkForConfirmPlayButtonPhase1() {
 
@@ -340,7 +359,7 @@ public class DuelHandler implements ActionListener {
     private void cardScriptFork(Card cardPlayed, String player, int revealCardsPhase) {
 
         if (cardPlayed.getName().equals("Tree")) {
-            executeTreeScript(player, cardPlayed);
+            executeTreeScript(player, cardPlayed,revealCardsPhase);
 
         } else if (cardPlayed.getName().equals("Lumberjack")) {
             executeLumberjackScript(player, cardPlayed, revealCardsPhase);
@@ -359,10 +378,435 @@ public class DuelHandler implements ActionListener {
         } else if (cardPlayed.getName().equals("Shredder")) {
             executeShredderScript(player, cardPlayed, revealCardsPhase);
 
+        } else if (cardPlayed.getName().equals("GreenDragon")) {
+            executeGreenDragonScript(player, cardPlayed, revealCardsPhase);
+
         }
     }
 
-    private void executeShredderScript(String player, Card cardPlayed, int revealCardsPhase) {
+    private void executeGreenDragonScript(String player, Card cardPlayed, int revealCardsPhase) {
+        if (player.equals("p1_human")) {
+            greenCount_p1_human++;
+
+            Deque <Card> newDeck = new LinkedList<>();
+
+            for(int i = 0; i < decklist_p1_human.size(); i++){
+                newDeck.add(new Card("Tree"));
+            }
+
+            decklist_p1_human = newDeck;
+            executeAnimationScript_splash(revealCardsPhase);
+
+        } else if (player.equals("p2_cpu")) {
+            greenCount_p2_cpu++;
+        }
+
+
+        switch (revealCardsPhase) {
+            case 0:
+                break;
+            case 1:
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue += 4;
+                }
+                ///
+
+                break;
+            case 2:
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 4;
+                }
+                ///
+
+                break;
+            case 3:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+                }
+                ///
+
+                break;
+            case 4:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+                }
+                ///
+
+                break;
+            case 5:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+                }
+///
+
+                break;
+            case 6:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                ///
+
+            case 7:
+
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                ///
+
+                break;
+            case 8:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                ///
+
+                break;
+            case 9:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                ///
+
+
+                break;
+            case 10:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[4].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[4].currentValue  += 4;
+
+                }
+                ///
+
+                break;
+            case 11:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[4].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[5].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[4].currentValue += 4;
+
+                }
+                ///
+
+                break;
+            case 12:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue  += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[4].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[5].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[4].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[5].currentValue  += 4;
+
+                }
+                ///
+
+                break;
+            case 13:
+                if (this.getBoard_p2_cpu()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[0].currentValue += 4;
+                }
+                if (this.getBoard_p2_cpu()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[1].currentValue += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[2].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[3].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[4].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[5].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[5].currentValue  += 4;
+
+                }
+                if (this.getBoard_p2_cpu()[6].getArchetype().equals("forestry")) {
+                    this.getBoard_p2_cpu()[6].currentValue  += 4;
+
+                }
+
+                if (this.getBoard_p1_human()[0].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[0].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[1].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[1].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[2].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[2].currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[3].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[3].currentValue += 4;
+
+                }
+                if (this.getBoard_p1_human()[4].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[4].currentValue  += 4;
+
+                }
+                if (this.getBoard_p1_human()[5].getArchetype().equals("forestry")) {
+                    this.getBoard_p1_human()[5].currentValue  += 4;
+
+                }
+                ///
+
+                break;
+        }
+
+
+    }
+
+    private void executeShredderScript(String player, Card cardPlayed, int revealCardsPhase)  {
 
         if (player.equals("p1_human")) {
             redCount_p1_human++;
@@ -371,6 +815,7 @@ public class DuelHandler implements ActionListener {
             redCount_p2_cpu++;
         }
 
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -752,6 +1197,8 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             greenCount_p2_cpu++;
         }
+
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -1135,7 +1582,7 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             greenCount_p2_cpu++;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -1873,7 +2320,7 @@ public class DuelHandler implements ActionListener {
         } else if (player.equals("p2_cpu")) {
             blackCount_p2_cpu++;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
         switch (revealCardsPhase) {
             case 0:
                 break;
@@ -3012,9 +3459,11 @@ public class DuelHandler implements ActionListener {
 
                 break;
         }
+        executeAnimationScript_splash(revealCardsPhase);
     }
 
     private void executeRecalculateBoardValues(int revealCardsPhase) {
+
 
 
         score_p2_cpu = 0;
@@ -3164,7 +3613,7 @@ public class DuelHandler implements ActionListener {
         }
     }
 
-    private void executeTreeScript(String player, Card cardPlayed) {
+    private void executeTreeScript(String player, Card cardPlayed, int revealCardsPhase) {
         if (player.equals("p1_human")) {
             greenCount_p1_human++;
         } else if (player.equals("p2_cpu")) {
@@ -3172,6 +3621,57 @@ public class DuelHandler implements ActionListener {
         }
         cardPlayed.currentValue += (this.greenCount_p2_cpu + this.greenCount_p1_human);
 
+        executeAnimationScript_splash(revealCardsPhase);
+
+
+
+    }
+
+    private void executeAnimationScript_splash(int revealCardsPhase) {
+        switch (revealCardsPhase){
+            case 0:
+                splashAnimation1Request = true;
+                break;
+            case 1:
+                splashAnimation2Request = true;
+                break;
+            case 2:
+                splashAnimation3Request = true;
+                break;
+            case 3:
+                splashAnimation4Request = true;
+                break;
+            case 4:
+                splashAnimation5Request = true;
+                break;
+            case 5:
+                splashAnimation6Request = true;
+                break;
+            case 6:
+                splashAnimation7Request = true;
+                break;
+            case 7:
+                splashAnimation8Request = true;
+                break;
+            case 8:
+                splashAnimation10Request = true;
+                break;
+            case 9:
+                splashAnimation9Request = true;
+                break;
+            case 10:
+                splashAnimation12Request = true;
+                break;
+            case 11:
+                splashAnimation11Request = true;
+                break;
+            case 12:
+                splashAnimation14Request = true;
+                break;
+            case 13:
+                splashAnimation13Request = true;
+                break;
+        }
     }
 
     private void executeLumberjackScript(String player, Card cardPlayed, int revealCardsPhase) {
@@ -3356,7 +3856,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p1_human()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p1_human()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3411,15 +3910,12 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[1].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[4].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3427,12 +3923,10 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[5].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
 
                 if (this.getBoard_p1_human()[0].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p1_human()[1].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3448,7 +3942,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p1_human()[4].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 break;
             case 12:
@@ -3461,7 +3954,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3473,7 +3965,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[5].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
 
                 if (this.getBoard_p1_human()[0].getName().equals("Tree")) {
@@ -3556,7 +4047,7 @@ public class DuelHandler implements ActionListener {
                 }
                 break;
         }
-
+        executeAnimationScript_splash(revealCardsPhase);
     }
 
 

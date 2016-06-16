@@ -9,7 +9,6 @@ public class AI {
     public void generatePhase1Play(Card[] hand_p2_cpu, Card[] board_p2_cpu) {
 
 
-
         board_p2_cpu[0] = GameEngine.generateRandomCard();
         board_p2_cpu[1] = GameEngine.generateRandomCard();
         board_p2_cpu[2] = GameEngine.generateRandomCard();
@@ -21,14 +20,25 @@ public class AI {
         System.out.println(board_p2_cpu[3]);
 
 
-
     }
 
     public void generatePhase2Play(Card[] hand_p2_cpu, Card[] board_p2_cpu) {
 
-        board_p2_cpu[4] = GameEngine.generateRandomCard();
-        board_p2_cpu[5] = GameEngine.generateRandomCard();
-        board_p2_cpu[6] = GameEngine.generateRandomCard();
+        if (board_p2_cpu[0].getName().equals("GreenDragon") ||
+                board_p2_cpu[1].getName().equals("GreenDragon") ||
+                board_p2_cpu[2].getName().equals("GreenDragon") ||
+                board_p2_cpu[3].getName().equals("GreenDragon")) {
+            board_p2_cpu[4] = new Card("Tree");
+            board_p2_cpu[5] = new Card("Tree");
+            board_p2_cpu[6] = new Card("Tree");
+
+        } else {
+            board_p2_cpu[4] = GameEngine.generateRandomCard();
+            board_p2_cpu[5] = GameEngine.generateRandomCard();
+            board_p2_cpu[6] = GameEngine.generateRandomCard();
+        }
+
+
 
 
         System.out.println(board_p2_cpu[4]);
