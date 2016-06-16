@@ -43,9 +43,9 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private DuelHandler duelHandler;
 
-    int mousedOverState;
+    private int mousedOverState;
 
-    String helperTextPointer_MiddleScreen;
+    private String helperTextPointer_MiddleScreen;
 
 
     private Color cyan;
@@ -54,6 +54,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int mouseDragCardIndexPointer;
     private boolean phaseDebugMode;
 
+    private boolean ONE_PRESSED;
+
+    int animationFrameCounter;
+
+
     public GameEngine() {
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -61,13 +66,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         setFocusable(true); // Setting required for keyboard listener.
 
         startUp();
-
-
     }
 
 
     private void startUp() {
         System.out.println("STARTUP");
+
         drawTimer = new Timer(400, this);
         revealTimer = new Timer(2000, this);
         endDuelTimer = new Timer(10000, this);
@@ -80,14 +84,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         font2_26 = new Font("Consola", Font.BOLD, 26);
         font3_12 = new Font("Consola", Font.BOLD, 12);
         font4_midscreen = new Font("Consola", Font.BOLD, 22);
-        font5 = new Font("Consola", Font.BOLD, 120);
+        font5 = new Font("Consola", Font.BOLD, 115);
         helperTextPointer_MiddleScreen = "Welcome to the duel";
         cyan = new Color(0, 186, 213);
         mouseDragCardPointer = null;
         mouseDragCardIndexPointer = -1;
         mousedOverState = -1;
         phaseDebugMode = false;
-
+        animationFrameCounter = 0;
+        ONE_PRESSED = false;
 
         //     Network network = new Network();
         bufferedImageMap = new HashMap<>();
@@ -141,7 +146,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         int rand = (int) (Math.random() * availableCards.size());
         System.out.println(rand);
 
-        return  new Card(availableCards.get(rand));
+        return new Card(availableCards.get(rand));
 
     }
 
@@ -152,8 +157,12 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         if (duelInProgress) {
-            paintBackground(g);
+            paintVitalInformation(g);
             paintHand(g);
+
+
+            executeRequestedAnimations(g);
+
             paintBoard(g);
             paintMousedOverCardTooltip(g);
             paintDebugInfo(g);
@@ -162,6 +171,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             paintHelperTextMiddleScreen(g);
 
             paintCardTooltip(g);
+
 
             if (duelHandler.playphase1 && duelHandler.playphase1_waitingOnPlay) {
 
@@ -174,13 +184,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                     paintConfirmButton(g);
 
                 }
-            }
-
-            if (duelHandler.mulliganOptionPhase_waitingOnOption) {
-
-                paintMulliganOption(g);
-
-
             }
 
 
@@ -200,10 +203,77 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     }
 
-    private void paintMulliganOption(Graphics g) {
+    private void executeRequestedAnimations(Graphics g) {
 
-
+        if (ONE_PRESSED) {
+            executeSplashAnimation(g, 1);
+        }
     }
+
+    private void executeSplashAnimation(Graphics g, int position) {
+
+        if (position == 1) {
+
+            if (animationFrameCounter < 5) {
+                g.drawImage(bufferedImageMap.get("splash_0"), 162, 407, this);
+
+            } else if (animationFrameCounter < 10) {
+                g.drawImage(bufferedImageMap.get("splash_1"), 162, 407, this);
+
+            } else if (animationFrameCounter < 15) {
+                g.drawImage(bufferedImageMap.get("splash_2"), 162, 407, this);
+
+            } else if (animationFrameCounter < 20) {
+                g.drawImage(bufferedImageMap.get("splash_3"), 162, 407, this);
+
+            } else if (animationFrameCounter < 25) {
+                g.drawImage(bufferedImageMap.get("splash_4"), 162, 407, this);
+
+            } else if (animationFrameCounter < 30) {
+                g.drawImage(bufferedImageMap.get("splash_5"), 162, 407, this);
+
+            } else if (animationFrameCounter < 35) {
+                g.drawImage(bufferedImageMap.get("splash_6"), 162, 407, this);
+
+            } else if (animationFrameCounter < 40) {
+                g.drawImage(bufferedImageMap.get("splash_7"), 162, 407, this);
+
+            } else if (animationFrameCounter < 45) {
+                g.drawImage(bufferedImageMap.get("splash_8"), 162, 407, this);
+            } else if (animationFrameCounter < 50) {
+                g.drawImage(bufferedImageMap.get("splash_9"), 162, 407, this);
+
+            } else if (animationFrameCounter < 55) {
+                g.drawImage(bufferedImageMap.get("splash_10"), 162, 407, this);
+
+            } else if (animationFrameCounter < 60) {
+                g.drawImage(bufferedImageMap.get("splash_11"), 162, 407, this);
+
+            } else if (animationFrameCounter < 65) {
+                g.drawImage(bufferedImageMap.get("splash_12"), 162, 407, this);
+
+            } else if (animationFrameCounter < 70) {
+                g.drawImage(bufferedImageMap.get("splash_13"), 162, 407, this);
+
+            } else if (animationFrameCounter < 75) {
+                g.drawImage(bufferedImageMap.get("splash_14"), 162, 407, this);
+
+            }
+
+        }
+
+        if (animationFrameCounter == 76)
+
+        {
+            animationFrameCounter = 0;
+
+        }
+
+        animationFrameCounter+=4;
+
+        System.out.println(animationFrameCounter);
+    }
+
 
     private void paintConfirmButton(Graphics g) {
 
@@ -2035,10 +2105,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     }
 
 
-    private void paintBackground(Graphics g) {
+    private void paintVitalInformation(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-
-        //  g2d.drawImage(bufferedImageMap.get("background"),0,0,this);
 
         g2d.drawImage(bufferedImageMap.get("nobackground2"), 0, 0, this);
 
@@ -2081,10 +2149,26 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         g2d.drawImage(bufferedImageMap.get("UserIcon" + p2_cpu.playerIconID), 7, 48, 53, 53, this);
 
+        g2d.setColor(Color.black);
+// MARKER
+
+
+        if (duelHandler.getScore_p1_human() <= 99) {
+            font5 = new Font("Consola", Font.BOLD, 115);
+        } else if (duelHandler.getScore_p1_human() <= 999) {
+            font5 = new Font("Consola", Font.BOLD, 75); // size undetermined
+        }
 
         g2d.setFont(font5);
-        g2d.setColor(Color.black);
         g2d.drawString(String.valueOf(duelHandler.getScore_p1_human()), 10, 492);
+
+
+        if (duelHandler.getScore_p2_cpu() <= 99) {
+            font5 = new Font("Consola", Font.BOLD, 115);
+        } else if (duelHandler.getScore_p2_cpu() <= 999) {
+            font5 = new Font("Consola", Font.BOLD, 75); // size undetermined
+        }
+        g2d.setFont(font5);
         g2d.drawString(String.valueOf(duelHandler.getScore_p2_cpu()), 10, 371);
 
 
@@ -2101,7 +2185,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 trigger_startDuel = false;
                 duelInProgress = true;
 
-                  shuffleDeck(p1_human.getDecklist());
+                shuffleDeck(p1_human.getDecklist());
                 duelHandler = new DuelHandler(p1_human.getDecklist());
             } else if (trigger_endDuel) {
 
@@ -2345,8 +2429,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                 mouseDragCardIndexPointer = -1;
                 break;
 
+            case KeyEvent.VK_1:
 
-            case KeyEvent.VK_X:
+                ONE_PRESSED = true;
+
+                break;
 
 
         }
@@ -2356,6 +2443,15 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void keyReleased(KeyEvent e) {
 
+
+        switch (e.getKeyCode()) {
+
+            case KeyEvent.VK_1:
+
+                ONE_PRESSED = false;
+
+                break;
+        }
 
     }
 
@@ -2674,7 +2770,6 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("LumberjackAxe.png", "LumberjackAxe");
         loadBufferedImage("Toolmaker.png", "Toolmaker");
         loadBufferedImage("Shredder.png", "Shredder");
-
         loadBufferedImage("forestry_icon.png", "forestry_icon");
         loadBufferedImage("plant_icon.png", "plant_icon");
         loadBufferedImage("human_icon.png", "human_icon");
@@ -2682,14 +2777,30 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         loadBufferedImage("tool_icon.png", "tool_icon");
         loadBufferedImage("mech_icon.png", "mech_icon");
         loadBufferedImage("dragon_icon.png", "dragon_icon");
-
         loadBufferedImage("UserIcon1.png", "UserIcon1");
         loadBufferedImage("UserIcon2.png", "UserIcon2");
         loadBufferedImage("UserIcon3.png", "UserIcon3");
         loadBufferedImage("UserIcon4.png", "UserIcon4");
         loadBufferedImage("UserIcon5.png", "UserIcon5");
-
         loadBufferedImage("GreenDragon.png", "GreenDragon");
+
+
+        loadBufferedImage("splash0.png", "splash_0");
+        loadBufferedImage("splash1.png", "splash_1");
+        loadBufferedImage("splash2.png", "splash_2");
+        loadBufferedImage("splash3.png", "splash_3");
+        loadBufferedImage("splash4.png", "splash_4");
+        loadBufferedImage("splash5.png", "splash_5");
+        loadBufferedImage("splash6.png", "splash_6");
+        loadBufferedImage("splash7.png", "splash_7");
+        loadBufferedImage("splash8.png", "splash_8");
+        loadBufferedImage("splash9.png", "splash_9");
+        loadBufferedImage("splash10.png", "splash_10");
+        loadBufferedImage("splash11.png", "splash_11");
+        loadBufferedImage("splash12.png", "splash_12");
+        loadBufferedImage("splash13.png", "splash_13");
+        loadBufferedImage("splash14.png", "splash_14");
+
 
     }
 

@@ -40,7 +40,7 @@ public class DuelHandler implements ActionListener {
     private Deque<Card> decklist_p1_human;
     private Card[] board_p1_human;
     private Card[] hand_p1_human;
-    private int score_p1_human;
+    private int score_p1_human = 0;
     private int blueCount_p1_human;
     private int whiteCount_p1_human;
     private int blackCount_p1_human;
@@ -48,10 +48,10 @@ public class DuelHandler implements ActionListener {
     private int greenCount_p1_human;
     private int yellowCount_p1_human;
 
-    private Deque<Card> decklist_p2_cpu;
+ //   private Deque<Card> decklist_p2_cpu;
     private Card[] board_p2_cpu;
     private Card[] hand_p2_cpu;
-    private int score_p2_cpu;
+    private int score_p2_cpu = 0;
     private int blueCount_p2_cpu;
     private int whiteCount_p2_cpu;
     private int blackCount_p2_cpu;
@@ -3790,7 +3790,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p1_human()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p1_human()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3845,15 +3844,12 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[1].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[4].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3861,12 +3857,10 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[5].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
 
                 if (this.getBoard_p1_human()[0].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p1_human()[1].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3882,7 +3876,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p1_human()[4].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 break;
             case 12:
@@ -3895,7 +3888,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[2].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
                 if (this.getBoard_p2_cpu()[3].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
@@ -3907,7 +3899,6 @@ public class DuelHandler implements ActionListener {
                 }
                 if (this.getBoard_p2_cpu()[5].getName().equals("Tree")) {
                     cardPlayed.currentValue += 3;
-
                 }
 
                 if (this.getBoard_p1_human()[0].getName().equals("Tree")) {
