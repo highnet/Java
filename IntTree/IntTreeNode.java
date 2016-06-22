@@ -132,9 +132,21 @@ public class IntTreeNode {
         if (this.right != null){
             this.right.pushValues(myTree_values);
         }
-
-
-
-
     }
+    
+         @Override
+        public String toString() {
+
+            String s = Integer.toString(this.value);
+
+            if (left != null) {
+                s = " [" + left.toString() + "] " + s;
+            }
+
+
+            if (right != null) {
+                s = s + " [" + right + "] ";
+            }
+            return s;
+        }
 }
