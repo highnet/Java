@@ -131,4 +131,12 @@ public class IntTree {
 
 
     }
+    
+        @Override
+    public String toString() {
+        if (root == null) {
+            return "[]";
+        }
+        return " [" + root.toString() + "] ";
+    }
 }
