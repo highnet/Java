@@ -25,7 +25,7 @@ public void drawArrow(Graphics g, int xStart, int yStart, int xEnd, int yEnd, in
 
 
 
-        if (yEnd>yStart) {              // if the arrow points down the rotation works normally. if the arrow points down the rotation needs to be inverted.
+        if (yEnd>yStart) {              // if the arrow points down the rotation works normally. if the arrow points up the rotation needs to be inverted.
 
             g2d.rotate(tetha,xStart,yStart);   // rotate along the arrow origin.
 
