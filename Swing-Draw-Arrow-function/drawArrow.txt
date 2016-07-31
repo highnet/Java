@@ -1,0 +1,54 @@
+// WORKS BY DRAWING AN ARROW PARALLEL TO THE X AXIS OF THE REQUIRED LENGHT AND THE ROTATING IT TO THE DESIRED ANGLE.
+
+
+public void drawArrow(Graphics g, int xStart, int yStart, int xEnd, int yEnd, int strokeSize, Color color){
+
+        Graphics2D g2d = (Graphics2D) g;   // create a g2d object
+
+
+        double vectorMagnitude = Math.sqrt(Math.pow(xEnd-xStart,2)+Math.pow(yEnd-yStart,2));   // calculate the total magnitude of arrow
+ 
+
+
+        double vectorDotProduct = (vectorMagnitude*(xEnd-xStart));   // calculate the dot (scalar) product of the original and rotated vectors. 
+
+    
+
+        double tetha = Math.acos(vectorDotProduct/(Math.pow(vectorMagnitude,2)));  // calculate the angle necessary for the rotation
+
+
+
+        g2d.setStroke(new BasicStroke(strokeSize));
+        g2d.setColor(color);
+
+        AffineTransform old = g2d.getTransform();  // save original transormation to restore after drawing
+
+
+
+        if (yEnd>yStart) {              // if the arrow points down the rotation works normally. if the arrow points down the rotation needs to be inverted.
+
+            g2d.rotate(tetha,xStart,yStart);   // rotate along the arrow origin.
+
+            g.drawLine(xStart, yStart, (int) (xStart + vectorMagnitude), yStart);   // draw the line
+
+            g.drawLine((int) (xStart + vectorMagnitude), yStart, (int) (xStart + vectorMagnitude) - 5, yStart - 5);
+
+            g.drawLine((int) (xStart + vectorMagnitude), yStart, (int) (xStart + vectorMagnitude) - 5, yStart + 5);  // draw the chevrons
+
+        } else {   // inverts rotation in case arrow must point up.  otherwise it will be mirrored along the y axis.
+
+            g2d.rotate(-tetha,xStart,yStart);   // rotate with -tetha to invert rotation.
+
+            g.drawLine(xStart, yStart, (int) (xStart + vectorMagnitude), yStart);
+
+            g.drawLine((int) (xStart + vectorMagnitude), yStart, (int) (xStart + vectorMagnitude) - 5, yStart - 5);
+
+            g.drawLine((int) (xStart + vectorMagnitude), yStart, (int) (xStart + vectorMagnitude) - 5, yStart + 5);
+        }
+
+
+        g2d.setTransform(old); // restore old transform otherwise every object drown after will be transformed also.
+
+
+
+    }
