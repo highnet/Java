@@ -24,7 +24,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private int currentTileY = 0;
 
     private int tileBrushIndex = 0;
-    private String tileBrush = "grass";
+    private String tileBrush = "furnace";
 
     private int npcBrushIndex = 0;
     private String npcBrush = "SHEEP";
@@ -89,11 +89,14 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private ArrayList<String> BrushTileList = new ArrayList<>();
     private ArrayList<String> brushNpcList = new ArrayList<>();
 
-    AudioInputStream audioInputStream;
-    Clip movementSound;
-    Clip rainSound;
-    Clip woodsSound;
-    Clip menuSound;
+    private AudioInputStream audioInputStream;
+    private Clip movementSound;
+    private Clip chopSound;
+    private Clip rainSound;
+    private Clip woodsSound;
+    private  Clip menuSound;
+
+    private LinkedList<Clip> soundClipBank = new LinkedList<>();
 
     private boolean rainSoundLoaded = false;
     private boolean woodsSoundLoaded = false;
@@ -492,6 +495,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             rainSound.open(audioInputStream);
             rainSound.start();
             rainSound.loop(999);
+            soundClipBank.add(rainSound);
             rainSoundLoaded = true;
 
         } catch (LineUnavailableException | IOException e) {
@@ -515,6 +519,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             woodsSound.open(audioInputStream);
             woodsSound.start();
             woodsSound.loop(999);
+            soundClipBank.add(woodsSound);
             woodsSoundLoaded = true;
 
         } catch (LineUnavailableException | IOException e) {
@@ -542,6 +547,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             menuSound.start();
 
             menuSound.loop(999);
+            soundClipBank.add(menuSound);
             menuSoundLoaded = true;
 
 
@@ -1199,6 +1205,23 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         super.paintComponent(g);
 
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint( RenderingHints.KEY_TEXT_LCD_CONTRAST,150);
+
+        g2d.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
+
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+
+
+
+
 
         if (engagedSuccessfully) {
 
@@ -1210,7 +1233,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
         if (!engagedSuccessfully) {
             Layer0(g);
-            Layer1(g);
+           Layer1(g);
             Layer2(g);
 
 
@@ -2102,7 +2125,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
                         g.setColor(Color.green);
                         g.fillRect(i * 25, j * 25, 25, 25);
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
-                        g.drawImage(bufferedImageMap.get("TREE"), i * 25 - 19, j * 25 - 80, 65, 100, this);     // draws a tree
+
                         break;
                     case "t0stone":
                         g.drawImage(bufferedImageMap.get("GRASS0"), i * 25, j * 25, 25, 25, this);     // draws a grass
@@ -2222,7 +2245,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
         for (int j = 0; j < 24; j++) { // foreach tile outer loop
-            for (int i = 31; i > 0; i--) { // foreach tile inner loop
+            for (int i = 31; i >= 0; i--) { // foreach tile inner loop
 
                 String tileTypeToPaint = currentOverWorld.tilemap[i][j].type; // store tile type as string
                 switch (tileTypeToPaint) { // Rendering unit for each tile type
@@ -3744,6 +3767,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         npcBehaviour();
         naturalProcesses();
         collisionMeshGenerator();
+        cleanSoundClipBank();
 
         if (player1.HP < 0) {
             System.out.println("GAME OVER,!!!!!");
@@ -3759,6 +3783,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
 
     }
+
+
 
 
     @Override
@@ -4506,10 +4532,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         }
 
         try {
+
+            if (!(movementSound == null) && !movementSound.isActive()){
+                movementSound.close();
+            }
+
             movementSound = AudioSystem.getClip();
-            movementSound.open(audioInputStream);
+
+
+
+                movementSound.open(audioInputStream);
+
 
             movementSound.start();
+            soundClipBank.add(movementSound);
+
 
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
@@ -4518,18 +4555,19 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
     private void loadChopSound() {
 
-        File woodChoop = new File("Data/Sound/WoodChop.wav");
+        File woodChop = new File("Data/Sound/WoodChop.wav");
 
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(woodChoop);
+            audioInputStream = AudioSystem.getAudioInputStream(woodChop);
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
 
         try {
-            Clip woodsSound = AudioSystem.getClip();
-            woodsSound.open(audioInputStream);
-            woodsSound.start();
+             chopSound = AudioSystem.getClip();
+            chopSound.open(audioInputStream);
+            chopSound.start();
+            soundClipBank.add(chopSound);
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
@@ -4698,7 +4736,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
             currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("furnace", false, true, false);
         } else if (tileBrush.equals("furnace_lit")) {
             currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("furnace", false, true, true);
-        } else if (tileBrush.equals("cookingpot")) {
+        } else if (tileBrush.equals("cooking_pot")) {
             currentOverWorld.tilemap[currentTileX][currentTileY] = new Tile("cookingpot", false, true, true);
         }
 
@@ -6481,6 +6519,21 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         return (i < upper && i > lower);
     }
 
+    private void cleanSoundClipBank() {
+
+        LinkedList<Clip> tempClipList = new LinkedList<>();
+
+        for (Clip clip : soundClipBank){
+            if (!clip.isActive()){
+                clip.close();
+                tempClipList.add(clip);
+            }
+        }
+
+        for (Clip clip : tempClipList) {
+            soundClipBank.remove(clip);
+        }
+    }
 
 }
 
