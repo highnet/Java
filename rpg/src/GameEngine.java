@@ -756,8 +756,8 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
         boolean paintScreen;
         if (currTime >= nextTime) {
             // assign the time for the next update
-            double delta = 0.04;
-            nextTime += delta;
+            double delta = 0.03;
+            nextTime = currTime + delta;
             paintScreen = true;
 
 
