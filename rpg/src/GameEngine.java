@@ -752,11 +752,11 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
     private boolean paint() {
         // convert the time to seconds
         double currTime = (double) System.nanoTime() / 1000000000.0;
+        double delta = 0.03;
 
         boolean paintScreen;
         if (currTime >= nextTime) {
             // assign the time for the next update
-            double delta = 0.03;
             nextTime = currTime + delta;
             paintScreen = true;
 
@@ -768,6 +768,7 @@ public class GameEngine extends JPanel implements MouseListener, MouseMotionList
 
             if (sleepTime > 0) {
                 // sleep until the next update
+                System.out.println(sleepTime);
                 try {
                     Thread.sleep(sleepTime);
                 } catch (InterruptedException e) {
