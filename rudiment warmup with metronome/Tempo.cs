@@ -11,10 +11,13 @@ public class Tempo : MonoBehaviour {
     public Color colorLow = Color.red;
     public Color colorOff = Color.black;
     float t = 0;
+    float i = 0;
+    bool startMoving = false;
 
     public Renderer rend;
+    public Rigidbody rb;
 
-    public double bpm = 140.0F;
+    public float bpm = 140.0F;
     public float gain = 0.5F;
     public int signatureHi = 4;
     public int signatureLo = 4;
@@ -27,7 +30,8 @@ public class Tempo : MonoBehaviour {
     private bool running = false;
     void Start()
     {
-        rend = GetComponentInChildren<Renderer>();
+        rend = GetComponent<Renderer>();
+        rb = GetComponent<Rigidbody>();
 
         accent = signatureHi;
         double startTick = AudioSettings.dspTime;
@@ -37,10 +41,24 @@ public class Tempo : MonoBehaviour {
         rend.material.color = colorOff;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
 
 
+      
+
+            i += Time.deltaTime / ((4f / bpm) * 60f);
+
+            rb.transform.position = Vector3.Lerp(new Vector3(-4, 0, 0), new Vector3(4f, 0, 0), i);
+
+
+        if (i > 1)
+        {
+            i = 0;
+        }
+
+    
+    
 
 
     rend.material.color = colorOff;
@@ -50,6 +68,11 @@ public class Tempo : MonoBehaviour {
         t += Time.deltaTime / 0.1f;
         if (accent == 1) {
             rend.material.color = Color.Lerp(colorHi, colorOff, t);
+
+            if (oldAccent != accent)
+            {
+                i = 0;
+            }
         } else 
         {
             rend.material.color = Color.Lerp(colorLow, colorOff, t);
