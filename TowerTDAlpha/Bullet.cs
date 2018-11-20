@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class Bullet : MonoBehaviour {
     // Use this for initialization
     void Start () {
         
-	}
+	}   
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour {
 
             if (e != null)
             {
-                Debug.Log(e.ToString());
+
                 e.GetComponent<Enemy>().health -= inheritedDamage;
             }
         }
@@ -48,8 +48,6 @@ public class Bullet : MonoBehaviour {
     
         if (target!= null)
         {
-
-
                 transform.position = Vector3.MoveTowards(transform.position, target.position, inheritedSpeed * Time.deltaTime);
                 transform.LookAt(target);
         }
