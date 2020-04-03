@@ -1,6 +1,5 @@
 package com.company;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,16 +8,16 @@ public class Main {
 
     enum Material{Purpleheart_Wood,Imperial_Iron,Third_Age_Iron,Zarosian_Insignia,Samite_Silk,
         Imperial_Steel,White_Oak,Goldrune,Orthenglass,Vellum,Cadmium_Red,Ancient_Vis,Tyrian_Purple,
-        Leathe_Scraps,Chaotic_Brimstone,Demonhide,Eye_Of_Dagon,Hellfire_Metal,Keramos,White_marble,
+        Leather_Scraps,Chaotic_Brimstone,Demonhide,Eye_Of_Dagon,Hellfire_Metal,Keramos,White_marble,
         Cobalt_Blue,Everlight_Silvthril,Star_Of_Saradomin,Blood_Of_Orcus,Stormguard_Steel,Wings_Of_War,
-        Animal_furs,Armadylean_Yellow,Malachite_Green,Mark_Of_The_Kzaj,Vulcanised_Rubber,Warforged_Bronze,
+        Animal_furs,Armadylean_Yellow,Malachite_Green, Mark_Of_The_Kyzaj,Vulcanised_Rubber,Warforged_Bronze,
         Fossilissed_Bone,Yubiusk_Clay,Aetherium_Alloy,Quintessence,Soapstone};
 
     enum Hotspot{Centurion_Remains,Venator_Remains,Legionary_Remains,Castra_Debris,Lodge_Bar_Storage,
         Lodge_Art_Storage,Administratum_Debris,Cultist_Footlocker,Sacrificial_Altar,Promodroi_Remains,
         Dis_Dungeon_Debris,Praesidio_Remains,Monoceros_Remains,Amphitheatre_Debris,Ceramic_Studio_Debris,
         Carcerem_Debris,Stadio_Debris,Inferal_Art,Shaktroth_Remains, Dominion_Games_Podium,Ikovian_Memorial,
-        Oikos_Studio_Debris,Kharidet_Chapel_Debris,Pontifex_remains,Tailory_debris,Animal_Trophies,Goblin_Dorm_debris,
+        Oikos_Studio_Debris,Kharidet_Chapel_Debris,Gladiatorial_Goblin_remains,Keshik_Ger,Crucible_Stands_Debris,Pontifex_remains,Tailory_debris,Animal_Trophies,Goblin_Dorm_debris,
         Oikos_fishing_hut_remains,Weapons_research_debris,Orcus_altar,Dis_overspill,Big_high_war_god_shrine,Gravitron_research_debris,
         Acropolis_debris,Armarium_debris,Yubiusk_animal_pen,Keshik_town_debris,Goblin_trainee_remains,Byzorth_remains,
         Destroyed_golem,Kyzaj_Champions_boudior,Culinarum_Debris,Icyene_weapon_rack,Keshik_weapon_rack,
@@ -75,7 +74,7 @@ public class Main {
 
         materialsList = new ArrayList<>();
         materialsList.add(Material.Third_Age_Iron);
-        materialsList.add(Material.Leathe_Scraps);
+        materialsList.add(Material.Leather_Scraps);
         materialsList.add(Material.Chaotic_Brimstone);
         materialsList.add(Material.Demonhide);
         database.put(Hotspot.Cultist_Footlocker,materialsList);
@@ -109,7 +108,7 @@ public class Main {
 
         materialsList = new ArrayList<>();
         materialsList.add(Material.Keramos);
-        materialsList.add(Material.Leathe_Scraps);
+        materialsList.add(Material.Leather_Scraps);
         materialsList.add(Material.Cobalt_Blue);
         database.put(Hotspot.Monoceros_Remains,materialsList);
 
@@ -149,7 +148,7 @@ public class Main {
 
         materialsList = new ArrayList<>();
         materialsList.add(Material.Third_Age_Iron);
-        materialsList.add(Material.Leathe_Scraps);
+        materialsList.add(Material.Leather_Scraps);
         materialsList.add(Material.Chaotic_Brimstone);
         materialsList.add(Material.Hellfire_Metal);
         database.put(Hotspot.Shaktroth_Remains,materialsList);
@@ -182,7 +181,54 @@ public class Main {
         materialsList.add(Material.Tyrian_Purple);
         database.put(Hotspot.Kharidet_Chapel_Debris,materialsList);
 
-        // TODO: finish the 76+ hotspots
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.Malachite_Green);
+        materialsList.add(Material.Mark_Of_The_Kyzaj);
+        materialsList.add(Material.Vulcanised_Rubber);
+        materialsList.add(Material.Warforged_Bronze);
+        database.put(Hotspot.Gladiatorial_Goblin_remains,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.White_Oak);
+        materialsList.add(Material.Leather_Scraps);
+        materialsList.add(Material.Animal_furs);
+        materialsList.add(Material.Armadylean_Yellow);
+        database.put(Hotspot.Keshik_Ger,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.Mark_Of_The_Kyzaj);
+        materialsList.add(Material.Warforged_Bronze);
+        materialsList.add(Material.Fossilissed_Bone);
+        database.put(Hotspot.Crucible_Stands_Debris,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.Zarosian_Insignia);
+        materialsList.add(Material.Goldrune);
+        materialsList.add(Material.Ancient_Vis);
+        database.put(Hotspot.Pontifex_remains,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.Samite_Silk);
+        materialsList.add(Material.Goldrune);
+        materialsList.add(Material.Animal_furs);
+        materialsList.add(Material.Armadylean_Yellow);
+        database.put(Hotspot.Tailory_debris,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.Orthenglass);
+        materialsList.add(Material.Cadmium_Red);
+        materialsList.add(Material.Chaotic_Brimstone);
+        materialsList.add(Material.Animal_furs);
+        database.put(Hotspot.Animal_Trophies,materialsList);
+
+        materialsList = new ArrayList<>();
+        materialsList.add(Material.White_Oak);
+        materialsList.add(Material.Malachite_Green);
+        materialsList.add(Material.Vulcanised_Rubber);
+        materialsList.add(Material.Yubiusk_Clay);
+        database.put(Hotspot.Goblin_Dorm_debris,materialsList);
+
+        //Todo 84+
 
         return database;
     }
@@ -195,6 +241,10 @@ public class Main {
                 matchedHotspots.add(hotspot);
             }
         }
+        if (matchedHotspots.isEmpty()){
+            System.out.println("No matches found");
+            return null;
+        }
         return matchedHotspots;
     }
 
@@ -202,8 +252,19 @@ public class Main {
         
         Map<Hotspot, ArrayList<Material>> database = PopulateDatabase();
         ArrayList <Material> materialList = new ArrayList<>();
+            materialList.add(Material.Vellum);
+        System.out.println(FindHotspot(database,materialList));
+
+        materialList = new ArrayList<>();
+            materialList.add(Material.Leather_Scraps);
+        System.out.println(FindHotspot(database,materialList));
+
+        materialList = new ArrayList<>();
+            materialList.add(Material.Imperial_Steel);
+        System.out.println(FindHotspot(database,materialList));
+
+        materialList = new ArrayList<>();
         materialList.add(Material.Zarosian_Insignia);
-        materialList.add(Material.Samite_Silk);
         System.out.println(FindHotspot(database,materialList));
     }
 
