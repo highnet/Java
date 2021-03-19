@@ -59,7 +59,27 @@ public class StudentSolutionImplementation implements StudentSolution {
     // Implementieren Sie hier Ihre Methode zur Überprüfung, ob ein Matching stabil ist.
     public boolean isStableMatching(StableMatchingInstance instance, StableMatchingSolution solution) {
 
+        int numberOfChildren = solution.getN();
+        for (int family = 0; family < numberOfChildren; family++) {
+            for (int child = 0; child < numberOfChildren; child++) {
 
+                int rankOfChildForFamily = instance.getRankOfChildForFamily(family,child);
+                int rankOfCurrentChildForFamily = instance.getRankOfChildForFamily(family,solution.getAssignedChild(family));
+
+                int rankOfFamilyForChild = instance.getRankOfFamilyForChild(child,family);
+                int rankOfCurrentFamilyForChild = instance.getRankOfFamilyForChild(child, solution.getAssignedFamily(child));
+
+                if (rankOfChildForFamily < rankOfCurrentChildForFamily && rankOfFamilyForChild < rankOfCurrentFamilyForChild){
+                    return  false;
+                }
+            }
+        }
         return true;
+
+        //for f in family:
+            //for s in child:
+                // if family prefers child over their currently assigned child AND if child prefers family over their currently assigned family
+                        //-> return false
+                        //-> else return true
     }
 }
