@@ -7,6 +7,10 @@ import main.java.exercise.helper.PriorityQueue;
 import main.java.framework.StudentInformation;
 import main.java.framework.StudentSolution;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class StudentSolutionImplementation implements StudentSolution {
     @Override
     public StudentInformation provideStudentInformation() {
@@ -35,6 +39,7 @@ public class StudentSolutionImplementation implements StudentSolution {
 
     // Implementieren Sie hier Ihre Lösung für A*
     public void aStar(Graph g, PriorityQueue q, Heuristic h, int source, int target, int[] path) {
+
         // A* find the shortest path from a source node to a target node in a directed weighted graph G=(V,A)
         // A Priority Queue data structure is used to help solve A*
         // the source node is added to the open set
@@ -48,31 +53,36 @@ public class StudentSolutionImplementation implements StudentSolution {
         // PriorityQueue q -> data structure to model the open set and help pick the next node in the open set with lowest f_score
         // Heuristic h -> heuristic used to determine the distance of a node to the end node
 
-        // gscore = {map with default value of infinity}
-        // gscore(s) = 0 # set g score of initial node to 0
-        // gscore(x) = infinity for all x in V except s # set g score of other nodes to infinity
+        System.out.println("Hello A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
 
-        // cameFrom = {an empty map} null for all x in V // set all predecessors to null, use the cameFrom map to store predecessors
+        HashMap<Integer, Double> gScore = new HashMap<>(); // gscore = {map with default value of infinity} use the gscore map to store gscore
+        gScore.put(source,0.0);  // gScore(s) = 0  set g score of initial node to 0
 
-        // Q.enqueue(s,h(s)) # add start node to the open set with its h_score
+        HashMap<Integer,Integer> cameFrom = new HashMap<>();     // cameFrom = {an empty map}  use the cameFrom map to store predecessors
+        q.add(source,h.evaluate(source));// Priority Queue Q ← {(s, h(s))} add source node to the open set
 
-        // while Q =/= empty do # while q is not empty
-        //          currentNode = take the node x with minimal f_cost from priorityqueue Q
-        //          if curentNode == t # we found our source node?
-        //                   return trace_path(cameFrom,currentNode)
-        //          add current node to closed list
-        //          for all v:(CurrentNode,v) in A do # for all neighbors of x
-        //            if closedlist.contains(successor) then continue
-        //            tentative_g = g(currentNode) + c(currentNode, successor)
-        //            if openlist.contains(successor) and tentative_g >= gScore(successor) then continue
-        //            successor.predecessor := currentNode
-        //            g(successor) = tentative_g
-        //            f := tentative_g + h(successor)
-        //            if openlist.contains(successor) then
-        //               openlist.updateKey(successor, f)
-        //            else
-        //               openlist.enqueue(successor, f)
+        while(!q.isEmpty()){ // while Q =/= ∅ do
+            int x = q.removeFirst(); // x ← remove node x with minimal cost f(x) = g(x) + h(x) from Q
+            if (x == target){ // if x = target then
+                System.out.println("Found target node");
+                tracePath(cameFrom,x); // build the path s, . . . , predecessors_of(t), t
+            }
 
+            int[] xSuccessors = g.getSuccessors(x);
+            System.out.println("x has " + xSuccessors.length + " successors");
+            for (int i = 0; i < xSuccessors.length; i++){
+                System.out.println("successor: " + i);
+                double gCandidate = gScore.getOrDefault(x,Double.MAX_VALUE) + g.getEdgeWeight(x,xSuccessors[i]); //gcandidate ← g(x) + w_xv
+                System.out.println("gCandidate = " + gCandidate);
+
+            }
+
+
+        }
+    }
+
+    private void tracePath(HashMap<Integer, Integer> cameFrom, int x) {
+        System.out.println("TODO: TRACE PATH");
     }
 
 
