@@ -41,25 +41,26 @@ public class StudentSolutionImplementation implements StudentSolution {
     // Implementieren Sie hier Ihre Lösung für A*
     public void aStar(Graph g, PriorityQueue q, Heuristic h, int source, int target, int[] path) {
 
-        // A* find the shortest path from a source node to a target node in a directed weighted graph G=(V,A)
-        // A Priority Queue data structure is used to help solve A*
-        // the source node is added to the open set
-        // In order to traverse to the next node, we will pick the node with the lowest f_score from the open set
-        // when we pick a node, we will update the f_score of all of its neighbors
-        // f_score = g_score + h_score.
-        // Where g_score is the shortest known cost distance to a node and
-        // h_score is its heuristic score(distance to end node)
+        /*
+         A* finds the shortest path from a source node to a target node in a directed weighted graph G=(V,A)
+         A Priority Queue data structure is used to help solve A*
+         the source node is added to the open set
+         In order to traverse to the next node, we will pick the node with the lowest f_score from the open set
+         when we pick a node, we will update the f_score of all of its neighbors
+         f_score = g_score + h_score.
+         Where g_score is the shortest known cost distance to a node and
+         h_score is its heuristic score(distance to end node)
 
-        // Graph g -> the graph we will conduct the A* search on
-        // PriorityQueue q -> data structure to model the open set and help pick the next node in the open set with lowest f_score
-        // Heuristic h -> heuristic used to determine the distance of a node to the end node
+         Graph g -> the graph we will conduct the A* search on
+         PriorityQueue q -> data structure to model the open set and help pick the next node in the open set with lowest f_score
+         Heuristic h -> heuristic used to determine the distance of a node to the end node
+        */
 
-        //System.out.println("Running A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
+        System.out.println("Running A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
 
         boolean pathFound = false;
         HashMap<Integer,Integer> cameFrom = new HashMap<>();     // cameFrom = {an empty map}  use the cameFrom map to store predecessors
         HashMap<Integer, Double> gScore = new HashMap<>(); // gscore = {map with default value of infinity} use the gscore map to store gscore
-
         for (int i = 0; i < g.numberOfEdges(); i++){
             if (i == source){
                 gScore.put(source,0.0); // g(s)=0
@@ -69,29 +70,23 @@ public class StudentSolutionImplementation implements StudentSolution {
            // System.out.println("g(" + i + ")= " + gScore.get(i));
         }
         q.add(source,h.evaluate(source));// Priority Queue Q ← {(s, h(s))} add source node to the open set
-
         while(!q.isEmpty() && !pathFound){ // while Q =/= ∅ do
             int currentNode = q.removeFirst(); // x ← remove node x with minimal cost f(x) = g(x) + h(x) from Q
             // System.out.println("    Current node: " + currentNode);
             if (currentNode == target){ // if x = target then
                // System.out.println("        Found target node");
-
                 Deque<Integer> totalPath = new LinkedList<>();
-
                 totalPath.add(currentNode);
                 while (cameFrom.containsKey(currentNode)){
                     currentNode = cameFrom.get(currentNode);
                     totalPath.addFirst(currentNode);
                 }
-
                 //System.out.println("        Total Path : " + totalPath.toString() + ", reconstructing solution array");
-
                 for (int i = path.length - totalPath.size(); i < path.length; i++){
                     path[i] = totalPath.removeFirst();
                 }
                 pathFound = true;
             }
-
             int[] xSuccessors = g.getSuccessors(currentNode);
           //  System.out.println("x has " + xSuccessors.length + " successors");
             for (int successor : xSuccessors) { // for all v such that (x,v) exists in A do
@@ -110,8 +105,4 @@ public class StudentSolutionImplementation implements StudentSolution {
             }
         }
     }
-
-
-
-
 }
