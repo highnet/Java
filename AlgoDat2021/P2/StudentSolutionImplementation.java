@@ -7,9 +7,10 @@ import main.java.exercise.helper.PriorityQueue;
 import main.java.framework.StudentInformation;
 import main.java.framework.StudentSolution;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 
 public class StudentSolutionImplementation implements StudentSolution {
     @Override
@@ -53,37 +54,64 @@ public class StudentSolutionImplementation implements StudentSolution {
         // PriorityQueue q -> data structure to model the open set and help pick the next node in the open set with lowest f_score
         // Heuristic h -> heuristic used to determine the distance of a node to the end node
 
-        System.out.println("Hello A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
+        //System.out.println("Running A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
 
-        HashMap<Integer, Double> gScore = new HashMap<>(); // gscore = {map with default value of infinity} use the gscore map to store gscore
-        gScore.put(source,0.0);  // gScore(s) = 0  set g score of initial node to 0
-
+        boolean pathFound = false;
         HashMap<Integer,Integer> cameFrom = new HashMap<>();     // cameFrom = {an empty map}  use the cameFrom map to store predecessors
+        HashMap<Integer, Double> gScore = new HashMap<>(); // gscore = {map with default value of infinity} use the gscore map to store gscore
+
+        for (int i = 0; i < g.numberOfEdges(); i++){
+            if (i == source){
+                gScore.put(source,0.0); // g(s)=0
+            } else {
+                gScore.put(i,Double.MAX_VALUE); // g(x)= ∞ ∀x ∈ V \ {s}
+            }
+           // System.out.println("g(" + i + ")= " + gScore.get(i));
+        }
         q.add(source,h.evaluate(source));// Priority Queue Q ← {(s, h(s))} add source node to the open set
 
-        while(!q.isEmpty()){ // while Q =/= ∅ do
-            int x = q.removeFirst(); // x ← remove node x with minimal cost f(x) = g(x) + h(x) from Q
-            if (x == target){ // if x = target then
-                System.out.println("Found target node");
-                tracePath(cameFrom,x); // build the path s, . . . , predecessors_of(t), t
+        while(!q.isEmpty() && !pathFound){ // while Q =/= ∅ do
+            int currentNode = q.removeFirst(); // x ← remove node x with minimal cost f(x) = g(x) + h(x) from Q
+            // System.out.println("    Current node: " + currentNode);
+            if (currentNode == target){ // if x = target then
+               // System.out.println("        Found target node");
+
+                Deque<Integer> totalPath = new LinkedList<>();
+
+                totalPath.add(currentNode);
+                while (cameFrom.containsKey(currentNode)){
+                    currentNode = cameFrom.get(currentNode);
+                    totalPath.addFirst(currentNode);
+                }
+
+                //System.out.println("        Total Path : " + totalPath.toString() + ", reconstructing solution array");
+
+                for (int i = path.length - totalPath.size(); i < path.length; i++){
+                    path[i] = totalPath.removeFirst();
+                }
+                pathFound = true;
             }
 
-            int[] xSuccessors = g.getSuccessors(x);
-            System.out.println("x has " + xSuccessors.length + " successors");
-            for (int i = 0; i < xSuccessors.length; i++){
-                System.out.println("successor: " + i);
-                double gCandidate = gScore.getOrDefault(x,Double.MAX_VALUE) + g.getEdgeWeight(x,xSuccessors[i]); //gcandidate ← g(x) + w_xv
-                System.out.println("gCandidate = " + gCandidate);
-
+            int[] xSuccessors = g.getSuccessors(currentNode);
+          //  System.out.println("x has " + xSuccessors.length + " successors");
+            for (int successor : xSuccessors) { // for all v such that (x,v) exists in A do
+             //   System.out.println("successor: " + successor);
+                double gTentative = gScore.get(currentNode) + g.getEdgeWeight(currentNode, successor); //gCandidate ← g(x) + w_xv
+            //    System.out.println("gCandidate = " + gTentative);
+                if (gTentative < gScore.get(successor)){ // if gCandidate < g(v) then
+                    gScore.put(successor, gTentative); // g(v) ← gCandidate
+                    cameFrom.put(successor, currentNode); // cameFrom(v) ← x;  // better path to v
+                    if (q.contains(successor)){
+                        q.decreaseWeight(successor,gTentative + h.evaluate(successor)); // reduce the cost of v in Q to gCandidate + h(v)
+                    }else {
+                        q.add(successor,gTentative+h.evaluate(successor)); // add v to Q with f_cost gCandidate + h(v)
+                    }
+                }
             }
-
-
         }
     }
 
-    private void tracePath(HashMap<Integer, Integer> cameFrom, int x) {
-        System.out.println("TODO: TRACE PATH");
-    }
+
 
 
 }
