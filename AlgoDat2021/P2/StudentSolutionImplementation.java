@@ -56,7 +56,7 @@ public class StudentSolutionImplementation implements StudentSolution {
          Heuristic h -> heuristic used to determine the distance of a node to the end node
         */
 
-        System.out.println("Running A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
+       // System.out.println("Running A* from source: " + source + " to target: " + target + ", with total vertices: " + g.numberOfVertices() +  ", and total edges: " + g.numberOfEdges() );
 
         boolean pathFound = false;
         HashMap<Integer,Integer> cameFrom = new HashMap<>();     // cameFrom = {an empty map}  use the cameFrom map to store predecessors
@@ -67,32 +67,23 @@ public class StudentSolutionImplementation implements StudentSolution {
             } else {
                 gScore.put(i,Double.MAX_VALUE); // g(x)= ∞ ∀x ∈ V \ {s}
             }
-           // System.out.println("g(" + i + ")= " + gScore.get(i));
+            // System.out.println("g(" + i + ")= " + gScore.get(i));
         }
         q.add(source,h.evaluate(source));// Priority Queue Q ← {(s, h(s))} add source node to the open set
         while(!q.isEmpty() && !pathFound){ // while Q =/= ∅ do
             int currentNode = q.removeFirst(); // x ← remove node x with minimal cost f(x) = g(x) + h(x) from Q
             // System.out.println("    Current node: " + currentNode);
             if (currentNode == target){ // if x = target then
-               // System.out.println("        Found target node");
-                Deque<Integer> totalPath = new LinkedList<>();
-                totalPath.add(currentNode);
-                while (cameFrom.containsKey(currentNode)){
-                    currentNode = cameFrom.get(currentNode);
-                    totalPath.addFirst(currentNode);
-                }
-                //System.out.println("        Total Path : " + totalPath.toString() + ", reconstructing solution array");
-                for (int i = path.length - totalPath.size(); i < path.length; i++){
-                    path[i] = totalPath.removeFirst();
-                }
-                pathFound = true;
+                // System.out.println("        Found target node");
+                pathFound = traceBackPath(cameFrom, currentNode, path);
+
             }
             int[] xSuccessors = g.getSuccessors(currentNode);
-          //  System.out.println("x has " + xSuccessors.length + " successors");
+            //  System.out.println("x has " + xSuccessors.length + " successors");
             for (int successor : xSuccessors) { // for all v such that (x,v) exists in A do
-             //   System.out.println("successor: " + successor);
+                //   System.out.println("successor: " + successor);
                 double gTentative = gScore.get(currentNode) + g.getEdgeWeight(currentNode, successor); //gCandidate ← g(x) + w_xv
-            //    System.out.println("gCandidate = " + gTentative);
+                //    System.out.println("gCandidate = " + gTentative);
                 if (gTentative < gScore.get(successor)){ // if gCandidate < g(v) then
                     gScore.put(successor, gTentative); // g(v) ← gCandidate
                     cameFrom.put(successor, currentNode); // cameFrom(v) ← x;  // better path to v
@@ -104,5 +95,23 @@ public class StudentSolutionImplementation implements StudentSolution {
                 }
             }
         }
+    }
+
+    private boolean traceBackPath(HashMap<Integer, Integer> cameFrom, int currentNode, int[] path) {
+
+        if (path == null){
+            return  false;
+        }
+        Deque<Integer> totalPath = new LinkedList<>();
+        totalPath.add(currentNode);
+        while (cameFrom.containsKey(currentNode)){
+            currentNode = cameFrom.get(currentNode);
+            totalPath.addFirst(currentNode);
+        }
+        //System.out.println("        Total Path : " + totalPath.toString() + ", reconstructing solution array");
+        for (int i = path.length - totalPath.size(); i < path.length; i++){
+            path[i] = totalPath.removeFirst();
+        }
+        return true;
     }
 }
